@@ -1,10 +1,10 @@
 # 경로별 담당자. 마지막으로 일치한 규칙이 우선합니다.
-# @A_GITHUB_ID / @B_GITHUB_ID 는 자리표시자입니다(밑줄은 GitHub 아이디에 쓸 수 없어 실제 사용자와 겹치지 않음).
-# 저장소를 만든 뒤 실제 아이디로 바꾸세요: docs/github-setup.md 3단계.
-# 주의: GitHub Free에서는 공개 저장소에서만 CODEOWNERS가 리뷰어 지정에 쓰입니다(docs/github-setup.md 0단계).
+# 저장소 소유자: @jongha-rdy34. 트랙별 @A_GITHUB_ID / @B_GITHUB_ID 는 아직 자리표시자입니다(밑줄은 GitHub 아이디에 쓸 수 없어 실제 사용자와 겹치지 않음).
+# A/B 배정이 정해지면 실제 아이디로 바꾸세요: docs/github-setup.md 3단계.
+# public 저장소라 GitHub Free에서도 CODEOWNERS가 동작합니다.
 
-# 기본값: 두 사람 모두
-*                               @A_GITHUB_ID @B_GITHUB_ID
+# 기본값: 저장소 소유자
+*                               @jongha-rdy34
 
 # A: 서비스 트랙 (platform, backend-api, web-frontend, hospital-search)
 /backend/                       @A_GITHUB_ID
