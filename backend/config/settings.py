@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "triage",
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,10 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# --- MediPath ---
+# DRF errors use the contract Error shape (contracts/openapi.yaml #/components/schemas/Error).
+REST_FRAMEWORK = {"EXCEPTION_HANDLER": "triage.errors.exception_handler"}
+# data/mappings (T11). docker compose mounts it at /app/data/mappings.
+MAPPINGS_DIR = Path(os.environ.get("MAPPINGS_DIR", BASE_DIR.parent / "data" / "mappings"))
