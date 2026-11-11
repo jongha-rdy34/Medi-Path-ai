@@ -28,7 +28,7 @@ git push -u origin main
 git pull --rebase origin main
 ```
 
-## 2단계. 팀원을 collaborator로 초대
+## 2단계. 팀원을 collaborator로 초대 · 완료(`ley-21`, 2026-11-11)
 
 ```bash
 gh api -X PUT repos/jongha-rdy34/Medi-Path-ai/collaborators/<팀원_ID> -f permission=push
