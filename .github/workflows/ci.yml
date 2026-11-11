@@ -157,7 +157,7 @@ jobs:
       - uses: actions/checkout@v7
       - run: cp .env.example .env
       - name: Start core profile and wait for healthchecks
-        run: docker compose -f infra/docker-compose.yml --profile core up --build -d --wait --wait-timeout 300
+        run: docker compose --env-file .env -f infra/docker-compose.yml --profile core up --build -d --wait --wait-timeout 300
       - name: Health endpoints return 200 (T02 acceptance)
         run: |
           curl -fsS http://localhost:8000/api/health
@@ -165,9 +165,9 @@ jobs:
           curl -fsS -o /dev/null http://localhost:5173/
       - name: Logs on failure
         if: failure()
-        run: docker compose -f infra/docker-compose.yml --profile core logs --tail 100
+        run: docker compose --env-file .env -f infra/docker-compose.yml --profile core logs --tail 100
       - if: always()
-        run: docker compose -f infra/docker-compose.yml --profile core down -v
+        run: docker compose --env-file .env -f infra/docker-compose.yml --profile core down -v
 
   ci-ok:
     needs: [changes, contracts, backend, ml-service, frontend, data, compose]

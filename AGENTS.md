@@ -65,7 +65,7 @@ DB 스키마 변경, 새 외부 의존성 추가, 모델 교체 기준 변경, `
 ## 7. 명령어
 ```
 전체 실행:     cp .env.example .env   # 최초 1회
-               docker compose -f infra/docker-compose.yml --profile core up --build
+               docker compose --env-file .env -f infra/docker-compose.yml --profile core up --build
                # health: http://localhost:8000/api/health, http://localhost:8001/health, http://localhost:5173/
 백엔드 테스트: cd backend && pip install -r requirements-dev.txt && pytest && ruff check .
 ML 테스트:     cd ml-service && pip install -r requirements-dev.txt && pytest && ruff check .
