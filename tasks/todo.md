@@ -113,10 +113,10 @@ PR 4개를 이 순서로 올립니다.
 - **의존**: T10, T11
 
 ### T13 [B] LLM 평가셋과 Gemini 구현 · M
-- [ ] `ml-service/llm/eval/cases.jsonl`: 증상 문장 50~100개 → 정답 구조화 JSON(T11 증상 ID)과 **정답 질환 ID**. 질환 라벨은 T14의 end-to-end 평가에 씁니다
-- [ ] `LLMProvider` 인터페이스(`extract_symptoms`, `next_questions`, `explain`)와 `GeminiProvider` 구현(JSON 스키마 강제)
-- [ ] 평가 스크립트: 증상 추출 F1, JSON 파싱 성공률, 평균 지연, 1천 건당 비용
-- [ ] 위험 요인 3종(`extra_marital_contacts`, `receiving_unsterile_injections`, `family_history`)은 묻지도 추출하지도 않음(SPEC 6절). 프롬프트와 출력 필터로 막고 테스트로 확인
+- [x] `ml-service/llm/eval/cases.jsonl`: 증상 문장 50~100개 → 정답 구조화 JSON(T11 증상 ID)과 **정답 질환 ID**. 질환 라벨은 T14의 end-to-end 평가에 씁니다
+- [x] `LLMProvider` 인터페이스(`extract_symptoms`, `next_questions`, `explain`)와 `GeminiProvider` 구현(JSON 스키마 강제)
+- [x] 평가 스크립트: 증상 추출 F1, JSON 파싱 성공률, 평균 지연, 1천 건당 비용
+- [x] 위험 요인 3종(`extra_marital_contacts`, `receiving_unsterile_injections`, `family_history`)은 묻지도 추출하지도 않음(SPEC 6절). 프롬프트와 출력 필터로 막고 테스트로 확인
 - **검증**: `python -m llm.eval --provider gemini` 실행 시 결과표 출력. 그 결과를 `docs/adr/0001-llm-choice.md`에 기록
 - **의존**: T01, T11
 
