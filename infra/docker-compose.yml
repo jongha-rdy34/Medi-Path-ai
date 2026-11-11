@@ -5,8 +5,8 @@
 #   docker compose -f infra/docker-compose.yml --profile core up --build
 #
 # 프로필
-#   core     : 상시 공개용(frontend, backend, ml-service, postgres, elasticsearch). RAM 4~8GB.
-#   pipeline : Kafka/Flink/Spark/Airflow. 자리만 확보했습니다. T53, T60~T62에서 이 파일 아래쪽에 추가합니다.
+#   core     : 상시 공개용(frontend, backend, ml-service, postgres). 병원 검색은 Kakao 로컬 API(T21)라 ES가 필요 없습니다.
+#   pipeline : Elasticsearch(심평원 병원·응급실 병상, T60). Kafka/Flink/Spark/Airflow는 T53, T60~T62에서 추가합니다.
 #
 # 참고
 #   - 프로필: https://github.com/compose-spec/compose-spec/blob/main/15-profiles.md
@@ -40,13 +40,10 @@ services:
     environment:
       POSTGRES_HOST: postgres
       ML_SERVICE_URL: http://ml-service:8001
-      ELASTICSEARCH_URL: http://elasticsearch:9200
     ports:
       - "8000:8000"
     depends_on:
       postgres:
-        condition: service_healthy
-      elasticsearch:
         condition: service_healthy
       ml-service:
         condition: service_healthy
@@ -80,11 +77,11 @@ services:
       retries: 10
 
   elasticsearch:
-    profiles: [core]
+    profiles: [pipeline]
     image: elasticsearch:9.4.8
     environment:
       discovery.type: single-node
-      # 로컬 개발 전용. 배포(T31)에서는 포트를 외부에 열지 않고 내부 네트워크로만 접근합니다.
+      # 로컬 개발 전용. 배포에서는 포트를 외부에 열지 않고 내부 네트워크로만 접근합니다.
       xpack.security.enabled: "false"
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       # 단일 노드 개발용: 호스트 디스크 사용률이 90%를 넘으면 샤드가 배정되지 않아 클러스터가 red가 됩니다.
@@ -100,7 +97,7 @@ services:
       timeout: 10s
       retries: 12
 
-  # --- pipeline 프로필 (자리 확보) ---------------------------------------------
+  # --- pipeline 프로필: 위 elasticsearch 외 서비스는 자리만 확보 ---------------
   # kafka, flink-jobmanager, flink-taskmanager, spark, airflow 서비스를 여기에 추가하고
   # 각 서비스에 `profiles: [pipeline]`을 붙입니다. (T53, T60, T61, T62)
 
