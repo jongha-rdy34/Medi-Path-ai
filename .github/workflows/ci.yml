@@ -1,0 +1,157 @@
+# 바뀐 경로의 잡만 실행하고, 마지막 `ci-ok` 잡이 결과를 모읍니다.
+# 브랜치 보호의 필수 체크에는 `ci-ok` 하나만 등록합니다(docs/github-setup.md 4단계).
+# 건너뛴(skipped) 잡은 실패로 보지 않습니다.
+#
+# 참고: https://github.com/dorny/paths-filter (README "Conditional execution")
+#       https://github.com/actions/setup-python , https://github.com/actions/setup-node
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read # dorny/paths-filter
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      contracts: ${{ steps.filter.outputs.contracts }}
+      backend: ${{ steps.filter.outputs.backend }}
+      ml_service: ${{ steps.filter.outputs.ml_service }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      compose: ${{ steps.filter.outputs.compose }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            workflow: &workflow
+              - '.github/workflows/ci.yml'
+            contracts:
+              - *workflow
+              - 'contracts/**'
+              - 'redocly.yaml'
+              - '.redocly.lint-ignore.yaml'
+            backend:
+              - *workflow
+              - 'backend/**'
+            ml_service:
+              - *workflow
+              - 'ml-service/**'
+            frontend:
+              - *workflow
+              - 'frontend/**'
+            compose:
+              - *workflow
+              - 'infra/**'
+              - '.env.example'
+              - 'backend/**'
+              - 'ml-service/**'
+              - 'frontend/**'
+
+  contracts:
+    needs: changes
+    if: ${{ needs.changes.outputs.contracts == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: npx --yes @redocly/cli@2.77.0 lint contracts/openapi.yaml contracts/ml-service.openapi.yaml
+
+  backend:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest
+
+  ml-service:
+    needs: changes
+    if: ${{ needs.changes.outputs.ml_service == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ml-service
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: ml-service/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest
+
+  frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run check:lint
+      - run: npm run test
+      - run: npm run build
+
+  compose:
+    needs: changes
+    if: ${{ needs.changes.outputs.compose == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: cp .env.example .env
+      - name: Start core profile and wait for healthchecks
+        run: docker compose -f infra/docker-compose.yml --profile core up --build -d --wait --wait-timeout 300
+      - name: Health endpoints return 200 (T02 acceptance)
+        run: |
+          curl -fsS http://localhost:8000/api/health
+          curl -fsS http://localhost:8001/health
+          curl -fsS -o /dev/null http://localhost:5173/
+      - name: Logs on failure
+        if: failure()
+        run: docker compose -f infra/docker-compose.yml --profile core logs --tail 100
+      - if: always()
+        run: docker compose -f infra/docker-compose.yml --profile core down -v
+
+  ci-ok:
+    needs: [changes, contracts, backend, ml-service, frontend, compose]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any job failed or was cancelled
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: exit 1
+      - run: echo "all required checks passed or were skipped"
