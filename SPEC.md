@@ -1,7 +1,18 @@
-# SPEC (초안 v0.1): 증상 기반 진료과·병원 안내 서비스
+# SPEC v1.0: 증상 기반 진료과·병원 안내 서비스
 
-> 상태: **초안, 팀 검토 대기**. 아래 "열린 질문"이 정해지면 v1.0으로 확정하고, 그다음 `tasks/plan.md`와 `tasks/todo.md`를 만듭니다.
-> 작성 방식: agent-skills `spec-driven-development`의 Phase 0(범위 확인)과 Phase 1(명세)
+> 상태: **v1.0 (2026-11-11 결정 반영)**. 실행 계획은 `tasks/plan.md`, 태스크 목록은 `tasks/todo.md`에 있습니다.
+> 팀: 2명(A, B). 둘 다 AI 코딩 에이전트로 작업합니다. 최종 발표: **2026-12-24**. 중간 발표 없음.
+> 작성 방식: agent-skills `spec-driven-development`
+
+## 확정된 결정 (2026-11-11)
+
+| 항목 | 결정 |
+|---|---|
+| 백엔드 | Django + DRF |
+| LLM | **미정 → 2주차 평가로 결정.** 후보는 Gemini API(키 보유)와 HuggingFace 오픈 모델 + LoRA 추가학습. 3.1절 참고 |
+| 학습 환경 | Colab, SSAFY 강의장 RTX 5060, 팀원 RTX 3080 Ti(12GB) |
+| 저장소 | 아직 없음. **1주차 첫 태스크(T00)에서 GitHub 저장소를 만듭니다.** 이유는 plan.md "리스크" 참고 |
+| 배포 | 공개 URL을 목표로 합니다(클라우드 VM 1대 + docker compose). 6절 참고 |
 
 ---
 
@@ -42,17 +53,19 @@
 
 agent-skills 기준으로 이 요청은 독립적으로 테스트할 수 있는 기능 여러 개를 묶고 있습니다. 그래서 **모듈 지도를 먼저 합의**하고, 모듈마다 상세 스펙(`docs/specs/SPEC-<id>.md`)을 씁니다. 모듈 ID는 한 번 정하면 바꾸지 않습니다.
 
-| Module id | 책임 | 의존 | 주 담당(안) |
+| Module id | 책임 | 의존 | 담당 |
 |---|---|---|---|
-| `api-contract` | OpenAPI 명세(요청/응답 스키마). 모든 병렬 작업의 기준점 | — | 전원 합의 |
-| `data-foundation` | 증상·질환·진료과 데이터 수집, 정제, EDA, 질환→진료과 매핑 테이블 | — | 데이터 |
-| `triage-model` | 증상→질환 분류 모델(베이스라인 → 파인튜닝), 추론 서비스 | `data-foundation`, `api-contract` | ML |
-| `llm-assistant` | 자연어 증상 구조화, 추가 질문 생성, 결과 설명문, 위급 신호 1차 감지 | `api-contract` | AI/백엔드 |
-| `hospital-search` | 병원·응급실 데이터 적재, Elasticsearch geo 검색 | `api-contract` | 데이터/백엔드 |
-| `backend-api` | 위 모듈을 엮는 메인 API(세션, 오케스트레이션, 로깅) | `api-contract`, `triage-model`, `llm-assistant`, `hospital-search` | 백엔드 |
-| `web-frontend` | Vue 3 UI(증상 입력/대화, 결과, 지도) | `api-contract` (개발 중에는 Mock 사용) | 프론트 |
-| `data-pipeline` | Kafka/Flink/Spark/Airflow로 실시간 수집, 배치 처리, 재학습 자동화 | `data-foundation`, `hospital-search`, `triage-model` | 데이터 |
-| `platform` | docker compose, CI(GitHub Actions), 환경변수와 시크릿 관리 | — | 전원 |
+| `api-contract` | OpenAPI 명세(요청/응답 스키마). 모든 병렬 작업의 기준점 | — | A 초안 → B 리뷰 |
+| `platform` | docker compose, CI(GitHub Actions), 환경변수와 시크릿, 배포 | — | A |
+| `data-foundation` | 증상·질환·진료과 데이터 수집, 정제, EDA, 질환→진료과 매핑 테이블 | — | B |
+| `triage-model` | 증상→질환 분류 모델(베이스라인 → 파인튜닝), 추론 서비스(ml-service) | `data-foundation`, `api-contract` | B |
+| `llm-assistant` | 자연어 증상 구조화, 추가 질문 생성, 결과 설명문, 위급 신호 1차 감지 | `api-contract` | B |
+| `hospital-search` | 병원·응급실 데이터 적재, Elasticsearch geo 검색 | `api-contract` | A |
+| `backend-api` | 위 모듈을 엮는 메인 API(세션, 오케스트레이션, 로깅) | `api-contract`, `triage-model`, `llm-assistant`, `hospital-search` | A |
+| `web-frontend` | Vue 3 UI(증상 입력/대화, 결과, 지도) | `api-contract` (개발 중에는 Mock 사용) | A |
+| `data-pipeline` | 실시간: Kafka/Flink 응급실 병상 수집(A). 배치: Spark/Airflow 재학습(B) | `data-foundation`, `hospital-search`, `triage-model` | A + B |
+
+**역할 분담 원칙**: A는 "서비스 트랙"(백엔드, 프론트, 검색, 배포), B는 "데이터·AI 트랙"(데이터, 모델, LLM)을 맡습니다. 두 사람이 같이 손대는 곳은 `contracts/openapi.yaml`, `infra/docker-compose.yml` 둘뿐이고, 둘 다 상대방의 PR 리뷰를 거쳐야 바꿀 수 있습니다.
 
 **빌드 순서**
 ```
@@ -89,10 +102,29 @@ api-contract, platform, data-foundation
 | ML 서빙 | FastAPI (별도 컨테이너) | 모델 교체와 재학습을 백엔드 배포와 분리하고, ML 담당이 독립적으로 작업할 수 있습니다. |
 | 프론트 | Vue 3 + Vite + TypeScript + Pinia, 지도는 Kakao Maps JS SDK | 권고 스택을 따르고, 국내 주소와 좌표에 강합니다. |
 | 모델 | 베이스라인: TF-IDF/원핫 + LogisticRegression·LightGBM → 파인튜닝: 한국어 BERT 계열(KM-BERT, KLUE-RoBERTa 등) 다중 클래스 분류 | 베이스라인을 먼저 만들어야 파인튜닝 효과를 숫자로 증명할 수 있습니다. |
-| LLM | Claude 또는 OpenAI API (structured output / tool use) | 증상 추출 결과를 JSON 스키마로 강제해 모델 입력과 연결합니다. |
+| LLM | `LLMProvider` 인터페이스 뒤에 Gemini API / HF 오픈 모델(LoRA) 구현체를 둠 | 3.1절. 어떤 모델을 쓰든 출력은 JSON 스키마로 강제해 분류 모델 입력과 연결합니다. |
 | 검색 | Elasticsearch (geo_distance + 진료과 필터 + 한글 nori 분석기) | 과제 권고사항이고, "주변 병원" 기능에 바로 쓰입니다. |
 | 파이프라인 | Kafka, Flink(PyFlink), Spark(PySpark), Airflow | 과제 권고사항입니다. 아래 5절에서 각 도구에 실제 쓰임을 붙였습니다. |
 | 실험 관리 | MLflow (선택) | 재학습한 모델의 버전 관리와 비교에 씁니다. |
+
+### 3.1 AI 모델 전략 (파인튜닝 + API)
+
+**제안하신 "HuggingFace 멀티모달 LLM 추가학습 → 답변 송출"에 대한 검토 의견**
+
+1. **멀티모달은 지금 입력에 필요하지 않습니다.** 사용자 입력은 텍스트입니다. 멀티모달이 의미 있는 건 "피부 발진 사진 업로드" 같은 이미지 입력 기능을 넣을 때뿐이라서, 이건 확장 기능(stretch)으로 미룹니다.
+2. **직접 학습한 LLM을 공개 URL에서 서비스하려면 GPU 서버가 필요합니다.** 7B 모델을 상시 띄우는 클라우드 GPU는 학생 예산으로 부담이 큽니다. 집 PC(3080 Ti)를 서버로 쓰면 PC가 꺼질 때 서비스도 멈춥니다.
+3. **대신 "파인튜닝" 요건은 두 층으로 확실히 채웁니다.**
+
+| 층 | 무엇 | 학습 장비 | 서비스 방식 | 우선순위 |
+|---|---|---|---|---|
+| ① 분류 모델 파인튜닝 | 한국어 BERT 계열(KLUE-RoBERTa, KM-BERT 등)을 증상→질환 다중분류로 파인튜닝 | Colab 또는 5060/3080 Ti | **CPU로 추론 가능**(약 110M 파라미터) → 배포 VM에서 그대로 실행 | **필수** |
+| ② 대화·설명 LLM | 증상 구조화, 추가 질문, 결과 설명 | — | Gemini API | **필수(MVP)** |
+| ③ 소형 LLM LoRA 실험 | Qwen2.5-3B, Gemma 계열 3~4B 등을 QLoRA로 "증상 → 구조화 JSON" 과제에 추가학습 | 3080 Ti(12GB)에서 가능한 규모 | 발표에서 **Gemini 대비 성능·비용 비교표**로 제시. 서비스는 GPU가 켜져 있을 때만 전환 | 확장 |
+
+- 2주차에 **LLM 평가셋**(증상 문장 50~100개 → 정답 구조화 JSON)을 만들어 Gemini를 측정합니다. 같은 평가셋으로 ③의 LoRA 모델도 비교합니다. LLM 최종 선택은 이 숫자로 정합니다.
+- 코드에서는 `LLMProvider` 인터페이스(`extract_symptoms`, `next_questions`, `explain`) 하나만 의존합니다. Gemini와 로컬 모델 교체는 환경변수 하나로 합니다.
+- **RTX 5060 주의**: RTX 50 시리즈(Blackwell)는 CUDA 12.8 이상으로 빌드된 PyTorch가 필요합니다(`cu128` 휠). 구버전 PyTorch에서는 GPU가 인식되지 않을 수 있으니 T12에서 먼저 확인합니다.
+- **Gemini 무료 등급 주의**: 무료 등급에서는 입력 데이터가 구글 제품 개선에 쓰일 수 있습니다. 6절 원칙대로 개인 식별 정보는 절대 보내지 않습니다.
 
 ---
 
@@ -124,6 +156,12 @@ api-contract, platform, data-foundation
 | Elasticsearch | 병원 geo 검색, 증상 키워드 자동완성(nori) |
 
 ---
+
+## 5.1 배포 (공개 URL)
+
+- **구성**: 클라우드 VM 1대 + `docker compose` + Caddy(자동 HTTPS) + 도메인(무료 DuckDNS 또는 저가 도메인)
+- **VM 후보**: 크레딧이나 무료 등급이 있는 클라우드(GCP 신규 크레딧, AWS 프리티어, Oracle Cloud Always Free ARM 등). 어느 곳을 쓸지는 T40에서 비교해 정하고, 처음 쓰는 사람도 따라 할 수 있는 단계별 가이드(`docs/deploy.md`)를 함께 작성합니다.
+- **compose 프로필 분리**: 상시 공개용 `core`(frontend, backend, ml-service, postgres, elasticsearch)는 RAM 4~8GB면 돌아갑니다. 반면 Kafka/Flink/Spark/Airflow를 담은 `pipeline` 프로필까지 띄우면 16GB 이상이 필요합니다. 그래서 `pipeline`은 로컬이나 발표 시연 때만 켜는 것을 기본으로 하고, VM 여유가 있으면 상시로 올립니다.
 
 ## 6. 안전·법적 경계 (필수)
 
@@ -186,12 +224,9 @@ ML 테스트:    cd ml-service && pytest
 
 ---
 
-## 11. 열린 질문 (결정 필요)
+## 11. 열린 질문
 
-1. **팀 구성**: 몇 명이고, 각자 어떤 역할(백엔드/프론트/데이터·ML)을 맡나요? 2절의 담당 배정에 필요합니다.
-2. **기간**: 마감일과 중간 발표 일정이 언제인가요? 마일스톤을 나누는 기준이 됩니다.
-3. **백엔드**: Django(추천)와 Spring 중 무엇으로 할까요? 팀에 Java가 더 익숙한 사람이 많으면 Spring + Python ML 서비스 구성도 가능합니다.
-4. **LLM 제공사와 예산**: Claude와 OpenAI 중 어느 쪽인가요? 누가 API 키를 발급하고 비용을 부담하나요?
-5. **파인튜닝용 GPU**: Colab, 학교 서버, 클라우드 중 무엇을 쓸 수 있나요?
-6. **GitHub 저장소**: 이미 만든 조직이나 저장소가 있나요? 없으면 지금 만든 로컬 저장소를 기준으로 시작합니다.
-7. **배포**: 최종 데모를 로컬(docker compose)로만 할까요, 클라우드에 공개 URL까지 둘까요?
+1. **LLM 최종 선택**: 2주차 평가(T13) 결과를 보고 결정합니다.
+2. **학습 데이터 확보 가능 여부**: AI Hub 신청 승인 여부에 따라 한국어 데이터와 영어 데이터(번역) 중 무엇을 주력으로 쓸지 정합니다(T10).
+3. **클라우드 계정**: 누구 명의로, 어느 클라우드를 쓸지 정합니다(T40).
+4. **A/B 배정**: 두 분 중 누가 A(서비스 트랙)이고 누가 B(데이터·AI 트랙)인지 정해 주세요.
