@@ -1,4 +1,4 @@
-# Implementation Plan: 증상 기반 진료과·병원 안내 서비스
+# Implementation Plan: MediPath (메디패스) · 증상 기반 진료과·병원 안내 서비스
 
 > 기준 문서: `SPEC.md` v1.0 · 태스크 상세: `tasks/todo.md`
 > 기간: 2026-11-11(수) ~ 2026-12-24(목) 발표, 약 6주 · 팀 2명(A: 서비스 트랙, B: 데이터·AI 트랙)
