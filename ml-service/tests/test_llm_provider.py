@@ -145,9 +145,10 @@ def test_explain_falls_back_when_empty(bad):
     assert p.explain(["pneumonia"], ["high_fever"]).strip()
 
 
-def test_temporary_overload_is_retried():
+@pytest.mark.parametrize("code", [500, 502, 503, 504])
+def test_temporary_server_errors_are_retried(code):
     overloaded = errors.ServerError(
-        503, {"error": {"code": 503, "message": "high demand", "status": "UNAVAILABLE"}}
+        code, {"error": {"code": code, "message": "temporary", "status": "UNAVAILABLE"}}
     )
     p, client = provider(overloaded, json.dumps({"symptoms": [], "emergency_suspected": False}))
 

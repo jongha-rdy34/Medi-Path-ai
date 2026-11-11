@@ -76,8 +76,8 @@ class GeminiProvider:
                     model=self.model, contents=contents, config=config
                 )
             except errors.APIError as exc:
-                # 429 quota and 503 overload are temporary; anything else is a real error.
-                if exc.code not in (429, 503) or attempt == self.max_retries:
+                # 429 quota and 5xx gateway/overload errors are temporary; others are real.
+                if exc.code not in (429, 500, 502, 503, 504) or attempt == self.max_retries:
                     raise
                 time.sleep(self.retry_sleep * 2**attempt)  # exponential backoff
         raise RuntimeError("unreachable")
