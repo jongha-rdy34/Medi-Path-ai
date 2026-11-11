@@ -21,6 +21,7 @@
 | `web-frontend` | `frontend/` | A |
 | `data-pipeline` | `pipeline/` (kafka·flink: A / spark·airflow: B) | A + B |
 
+- `prototypes/`는 팀원의 프로토타입 자리입니다. 에이전트는 이 폴더를 수정하지 않습니다(옮기는 태스크 제외).
 - 태스크가 지정한 모듈 폴더 밖의 파일은 수정하지 않습니다. 꼭 필요하면 PR 설명에 이유를 적고 해당 담당자에게 리뷰를 받습니다.
 - **공동 소유 파일**: `contracts/*`, `infra/docker-compose.yml`. 바꾸는 PR은 반드시 상대방이 리뷰합니다.
 - 다른 모듈은 `contracts/`의 계약만 보고 연동합니다. 상대 모듈 내부 구현에 의존하지 않습니다.
