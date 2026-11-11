@@ -1,0 +1,2267 @@
+{
+ "provider": "gemini",
+ "model": "gemini-3.5-flash-lite",
+ "run_at": "2026-11-11T08:00:54+00:00",
+ "summary": {
+  "cases": 59,
+  "precision": 0.9722,
+  "recall": 0.9459,
+  "f1": 0.9589,
+  "json_parse_rate": 1.0,
+  "latency_avg_s": 2.344,
+  "latency_p95_s": 8.412,
+  "avg_prompt_tokens": 2683.7,
+  "avg_output_tokens": 102.7,
+  "cost_per_1k_calls_usd": null,
+  "risk_factor_ids_in_raw_output": 0,
+  "emergency_suspected_cases": 6
+ },
+ "cases": [
+  {
+   "id": "c001",
+   "expected": [
+    "pus_filled_pimples",
+    "blackheads",
+    "scurring"
+   ],
+   "disease_id": "acne",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "pus_filled_pimples",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "blackheads",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "scurring",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.2000270309999905,
+    "prompt_tokens": 2685,
+    "output_tokens": 83
+   }
+  },
+  {
+   "id": "c002",
+   "expected": [
+    "patches_in_throat",
+    "high_fever",
+    "muscle_wasting"
+   ],
+   "disease_id": "aids",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "patches_in_throat",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "high_fever",
+      "severity": "severe",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "muscle_wasting",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.8913302969999677,
+    "prompt_tokens": 2683,
+    "output_tokens": 94
+   }
+  },
+  {
+   "id": "c003",
+   "expected": [
+    "history_of_alcohol_consumption",
+    "distention_of_abdomen",
+    "yellowish_skin",
+    "vomiting",
+    "abdominal_pain"
+   ],
+   "disease_id": "alcoholic_hepatitis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "distention_of_abdomen",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowish_skin",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "vomiting",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "abdominal_pain",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.8937469210000017,
+    "prompt_tokens": 2690,
+    "output_tokens": 106
+   }
+  },
+  {
+   "id": "c004",
+   "expected": [
+    "continuous_sneezing",
+    "watering_from_eyes",
+    "chills",
+    "shivering"
+   ],
+   "disease_id": "allergy",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "continuous_sneezing",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "watering_from_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "chills",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.8722603610001443,
+    "prompt_tokens": 2689,
+    "output_tokens": 84
+   }
+  },
+  {
+   "id": "c005",
+   "expected": [
+    "swelling_joints",
+    "painful_walking",
+    "movement_stiffness",
+    "stiff_neck",
+    "muscle_weakness"
+   ],
+   "disease_id": "arthritis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "swelling_joints",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "painful_walking",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "movement_stiffness",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "stiff_neck",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "muscle_weakness",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.0471329500001048,
+    "prompt_tokens": 2693,
+    "output_tokens": 127
+   }
+  },
+  {
+   "id": "c006",
+   "expected": [
+    "spinning_movements",
+    "loss_of_balance",
+    "nausea",
+    "vomiting"
+   ],
+   "disease_id": "bppv",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "spinning_movements",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_balance",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "nausea",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "vomiting",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.9636937020000005,
+    "prompt_tokens": 2685,
+    "output_tokens": 103
+   }
+  },
+  {
+   "id": "c007",
+   "expected": [
+    "cough",
+    "breathlessness",
+    "mucoid_sputum",
+    "fatigue"
+   ],
+   "disease_id": "bronchial_asthma",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "cough",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "breathlessness",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "mucoid_sputum",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "fatigue",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.8958185649998995,
+    "prompt_tokens": 2683,
+    "output_tokens": 102
+   }
+  },
+  {
+   "id": "c008",
+   "expected": [
+    "neck_pain",
+    "back_pain",
+    "weakness_in_limbs",
+    "dizziness"
+   ],
+   "disease_id": "cervical_spondylosis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "neck_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "back_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "weakness_in_limbs",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "dizziness",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.1257144420001168,
+    "prompt_tokens": 2687,
+    "output_tokens": 106
+   }
+  },
+  {
+   "id": "c009",
+   "expected": [
+    "red_spots_over_body",
+    "itching",
+    "high_fever",
+    "loss_of_appetite",
+    "malaise"
+   ],
+   "disease_id": "chicken_pox",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "red_spots_over_body",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "itching",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "mild_fever",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_appetite",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "malaise",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.0418037849999564,
+    "prompt_tokens": 2691,
+    "output_tokens": 128
+   }
+  },
+  {
+   "id": "c010",
+   "expected": [
+    "yellowing_of_eyes",
+    "yellowish_skin",
+    "itching",
+    "nausea",
+    "abdominal_pain"
+   ],
+   "disease_id": "chronic_cholestasis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "yellowing_of_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowish_skin",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "itching",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "nausea",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "abdominal_pain",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.7608880249999856,
+    "prompt_tokens": 2687,
+    "output_tokens": 123
+   }
+  },
+  {
+   "id": "c011",
+   "expected": [
+    "runny_nose",
+    "congestion",
+    "throat_irritation",
+    "phlegm",
+    "loss_of_smell"
+   ],
+   "disease_id": "common_cold",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "runny_nose",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "congestion",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "throat_irritation",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "phlegm",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_smell",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.1333838820000892,
+    "prompt_tokens": 2688,
+    "output_tokens": 125
+   }
+  },
+  {
+   "id": "c012",
+   "expected": [
+    "headache",
+    "pain_behind_the_eyes",
+    "joint_pain",
+    "muscle_pain",
+    "chills"
+   ],
+   "disease_id": "dengue",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "headache",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "pain_behind_the_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "joint_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "muscle_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "chills",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.9308392380000896,
+    "prompt_tokens": 2693,
+    "output_tokens": 124
+   }
+  },
+  {
+   "id": "c013",
+   "expected": [
+    "polyuria",
+    "excessive_hunger",
+    "weight_loss",
+    "blurred_and_distorted_vision"
+   ],
+   "disease_id": "diabetes",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "polyuria",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "excessive_hunger",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "weight_loss",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "blurred_and_distorted_vision",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 2.622604729999921,
+    "prompt_tokens": 2684,
+    "output_tokens": 107
+   }
+  },
+  {
+   "id": "c014",
+   "expected": [
+    "skin_rash",
+    "itching",
+    "burning_micturition",
+    "stomach_pain"
+   ],
+   "disease_id": "drug_reaction",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "skin_rash",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "itching",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "burning_micturition",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "stomach_pain",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.1424914639999315,
+    "prompt_tokens": 2690,
+    "output_tokens": 104
+   }
+  },
+  {
+   "id": "c015",
+   "expected": [
+    "itching",
+    "nodal_skin_eruptions",
+    "skin_rash",
+    "dischromic_patches"
+   ],
+   "disease_id": "fungal_infection",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "itching",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "nodal_skin_eruptions",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "dischromic_patches",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.270694069000001,
+    "prompt_tokens": 2687,
+    "output_tokens": 86
+   }
+  },
+  {
+   "id": "c016",
+   "expected": [
+    "vomiting",
+    "diarrhoea",
+    "sunken_eyes",
+    "dehydration"
+   ],
+   "disease_id": "gastroenteritis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "vomiting",
+      "severity": "severe",
+      "duration_days": 1
+     },
+     {
+      "symptom_id": "diarrhoea",
+      "severity": "severe",
+      "duration_days": 1
+     },
+     {
+      "symptom_id": "sunken_eyes",
+      "severity": null,
+      "duration_days": 1
+     },
+     {
+      "symptom_id": "dehydration",
+      "severity": null,
+      "duration_days": 1
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.0660811749999084,
+    "prompt_tokens": 2684,
+    "output_tokens": 153
+   }
+  },
+  {
+   "id": "c017",
+   "expected": [
+    "acidity",
+    "stomach_pain",
+    "cough",
+    "ulcers_on_tongue"
+   ],
+   "disease_id": "gerd",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "acidity",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "stomach_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "cough",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "ulcers_on_tongue",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 2.3473898610000106,
+    "prompt_tokens": 2682,
+    "output_tokens": 104
+   }
+  },
+  {
+   "id": "c018",
+   "expected": [
+    "chest_pain",
+    "sweating",
+    "breathlessness",
+    "vomiting"
+   ],
+   "disease_id": "heart_attack",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "chest_pain",
+      "severity": "severe",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "sweating",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "breathlessness",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "nausea",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": true,
+    "emergency_reason": "가슴 통증과 호흡곤란은 심혈관 질환 등 위급 상황일 수 있습니다.",
+    "parsed": true,
+    "latency_s": 1.2258651530000861,
+    "prompt_tokens": 2684,
+    "output_tokens": 139
+   }
+  },
+  {
+   "id": "c019",
+   "expected": [
+    "constipation",
+    "pain_during_bowel_movements",
+    "bloody_stool",
+    "irritation_in_anus",
+    "pain_in_anal_region"
+   ],
+   "disease_id": "hemorrhoids",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "constipation",
+      "severity": "severe",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "pain_during_bowel_movements",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "bloody_stool",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "irritation_in_anus",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.0798584799999844,
+    "prompt_tokens": 2690,
+    "output_tokens": 119
+   }
+  },
+  {
+   "id": "c020",
+   "expected": [
+    "mild_fever",
+    "yellowing_of_eyes",
+    "dark_urine",
+    "muscle_pain",
+    "loss_of_appetite"
+   ],
+   "disease_id": "hepatitis_a",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "mild_fever",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowing_of_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "dark_urine",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "muscle_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_appetite",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 2.8681675699999687,
+    "prompt_tokens": 2688,
+    "output_tokens": 130
+   }
+  },
+  {
+   "id": "c021",
+   "expected": [
+    "yellowish_skin",
+    "yellow_urine",
+    "fatigue",
+    "itching"
+   ],
+   "disease_id": "hepatitis_b",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "yellowish_skin",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellow_urine",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "fatigue",
+      "severity": "severe",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "itching",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.2658691900001031,
+    "prompt_tokens": 2681,
+    "output_tokens": 108
+   }
+  },
+  {
+   "id": "c022",
+   "expected": [
+    "fatigue",
+    "loss_of_appetite",
+    "yellowish_skin",
+    "yellowing_of_eyes",
+    "nausea"
+   ],
+   "disease_id": "hepatitis_c",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "fatigue",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_appetite",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowish_skin",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowing_of_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "nausea",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 22.0558924190002,
+    "prompt_tokens": 2685,
+    "output_tokens": 128
+   }
+  },
+  {
+   "id": "c023",
+   "expected": [
+    "joint_pain",
+    "vomiting",
+    "yellowing_of_eyes",
+    "dark_urine",
+    "abdominal_pain"
+   ],
+   "disease_id": "hepatitis_d",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "joint_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "vomiting",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowing_of_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "dark_urine",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "abdominal_pain",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.2486183619998883,
+    "prompt_tokens": 2684,
+    "output_tokens": 124
+   }
+  },
+  {
+   "id": "c024",
+   "expected": [
+    "yellowing_of_eyes",
+    "abdominal_pain",
+    "loss_of_appetite",
+    "joint_pain",
+    "fatigue"
+   ],
+   "disease_id": "hepatitis_e",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "yellowing_of_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "abdominal_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_appetite",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "joint_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "fatigue",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.685025171999996,
+    "prompt_tokens": 2688,
+    "output_tokens": 128
+   }
+  },
+  {
+   "id": "c025",
+   "expected": [
+    "headache",
+    "dizziness",
+    "lack_of_concentration",
+    "loss_of_balance"
+   ],
+   "disease_id": "hypertension",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "headache",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "dizziness",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "lack_of_concentration",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_balance",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.541388674000018,
+    "prompt_tokens": 2684,
+    "output_tokens": 104
+   }
+  },
+  {
+   "id": "c026",
+   "expected": [
+    "weight_loss",
+    "excessive_hunger",
+    "fast_heart_rate",
+    "sweating",
+    "irritability"
+   ],
+   "disease_id": "hyperthyroidism",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "weight_loss",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "excessive_hunger",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "fast_heart_rate",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "sweating",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "irritability",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 8.412337198999921,
+    "prompt_tokens": 2689,
+    "output_tokens": 123
+   }
+  },
+  {
+   "id": "c027",
+   "expected": [
+    "palpitations",
+    "sweating",
+    "excessive_hunger",
+    "anxiety"
+   ],
+   "disease_id": "hypoglycemia",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "shivering",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "palpitations",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "sweating",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "excessive_hunger",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "anxiety",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.1258479159998842,
+    "prompt_tokens": 2690,
+    "output_tokens": 120
+   }
+  },
+  {
+   "id": "c028",
+   "expected": [
+    "cold_hands_and_feets",
+    "brittle_nails",
+    "enlarged_thyroid",
+    "depression",
+    "fatigue"
+   ],
+   "disease_id": "hypothyroidism",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "cold_hands_and_feets",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "brittle_nails",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "enlarged_thyroid",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "depression",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "fatigue",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.07083446799993,
+    "prompt_tokens": 2688,
+    "output_tokens": 128
+   }
+  },
+  {
+   "id": "c029",
+   "expected": [
+    "red_sore_around_nose",
+    "yellow_crust_ooze",
+    "blister",
+    "high_fever"
+   ],
+   "disease_id": "impetigo",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "red_sore_around_nose",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellow_crust_ooze",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "blister",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "mild_fever",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.0551440870001443,
+    "prompt_tokens": 2687,
+    "output_tokens": 111
+   }
+  },
+  {
+   "id": "c030",
+   "expected": [
+    "yellowish_skin",
+    "itching",
+    "dark_urine",
+    "high_fever",
+    "weight_loss"
+   ],
+   "disease_id": "jaundice",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "yellowish_skin",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "itching",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "dark_urine",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "high_fever",
+      "severity": "severe",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "weight_loss",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.0799000360000264,
+    "prompt_tokens": 2684,
+    "output_tokens": 130
+   }
+  },
+  {
+   "id": "c031",
+   "expected": [
+    "high_fever",
+    "chills",
+    "sweating",
+    "headache",
+    "muscle_pain",
+    "nausea"
+   ],
+   "disease_id": "malaria",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "high_fever",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "chills",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "sweating",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "headache",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "muscle_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "nausea",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.4888411530000667,
+    "prompt_tokens": 2695,
+    "output_tokens": 139
+   }
+  },
+  {
+   "id": "c032",
+   "expected": [
+    "headache",
+    "blurred_and_distorted_vision",
+    "stiff_neck",
+    "irritability"
+   ],
+   "disease_id": "migraine",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "headache",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "blurred_and_distorted_vision",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "stiff_neck",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "irritability",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.156830981999974,
+    "prompt_tokens": 2688,
+    "output_tokens": 106
+   }
+  },
+  {
+   "id": "c033",
+   "expected": [
+    "knee_pain",
+    "hip_joint_pain",
+    "painful_walking",
+    "swelling_joints"
+   ],
+   "disease_id": "osteoarthritis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "knee_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "hip_joint_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "painful_walking",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "swelling_joints",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.2686859810000897,
+    "prompt_tokens": 2684,
+    "output_tokens": 106
+   }
+  },
+  {
+   "id": "c034",
+   "expected": [
+    "headache",
+    "weakness_of_one_body_side",
+    "vomiting"
+   ],
+   "disease_id": "paralysis_brain_hemorrhage",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "headache",
+      "severity": "severe",
+      "duration_days": 0
+     },
+     {
+      "symptom_id": "weakness_of_one_body_side",
+      "severity": null,
+      "duration_days": 0
+     },
+     {
+      "symptom_id": "vomiting",
+      "severity": null,
+      "duration_days": 0
+     }
+    ],
+    "emergency_suspected": true,
+    "emergency_reason": "한쪽 팔다리 힘 빠짐과 심한 두통 등 뇌졸중 의심 증상이 있어 위급할 수 있습니다.",
+    "parsed": true,
+    "latency_s": 1.3507885900000929,
+    "prompt_tokens": 2682,
+    "output_tokens": 160
+   }
+  },
+  {
+   "id": "c035",
+   "expected": [
+    "indigestion",
+    "abdominal_pain",
+    "passage_of_gases",
+    "loss_of_appetite"
+   ],
+   "disease_id": "peptic_ulcer",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "indigestion",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "abdominal_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "passage_of_gases",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_appetite",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.9104203780000262,
+    "prompt_tokens": 2681,
+    "output_tokens": 109
+   }
+  },
+  {
+   "id": "c036",
+   "expected": [
+    "high_fever",
+    "cough",
+    "rusty_sputum",
+    "breathlessness",
+    "chest_pain"
+   ],
+   "disease_id": "pneumonia",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "high_fever",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "cough",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "rusty_sputum",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "breathlessness",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "chest_pain",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": true,
+    "emergency_reason": "가슴 통증과 호흡곤란이 동반되어 응급 상황일 가능성이 있습니다.",
+    "parsed": true,
+    "latency_s": 1.072177259,
+    "prompt_tokens": 2685,
+    "output_tokens": 152
+   }
+  },
+  {
+   "id": "c037",
+   "expected": [
+    "silver_like_dusting",
+    "skin_peeling",
+    "small_dents_in_nails",
+    "joint_pain"
+   ],
+   "disease_id": "psoriasis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "silver_like_dusting",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "small_dents_in_nails",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "joint_pain",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.9598365960000592,
+    "prompt_tokens": 2684,
+    "output_tokens": 90
+   }
+  },
+  {
+   "id": "c038",
+   "expected": [
+    "blood_in_sputum",
+    "mild_fever",
+    "loss_of_appetite",
+    "phlegm"
+   ],
+   "disease_id": "tuberculosis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "cough",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "blood_in_sputum",
+      "severity": "severe",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "mild_fever",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "loss_of_appetite",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": true,
+    "emergency_reason": "가래에 피가 섞여 나옴",
+    "parsed": true,
+    "latency_s": 0.9746622879999904,
+    "prompt_tokens": 2688,
+    "output_tokens": 137
+   }
+  },
+  {
+   "id": "c039",
+   "expected": [
+    "high_fever",
+    "chills",
+    "belly_pain",
+    "diarrhoea",
+    "fatigue"
+   ],
+   "disease_id": "typhoid",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "high_fever",
+      "severity": "severe",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "chills",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "belly_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "diarrhoea",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "fatigue",
+      "severity": "severe",
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.5954494679999698,
+    "prompt_tokens": 2690,
+    "output_tokens": 137
+   }
+  },
+  {
+   "id": "c040",
+   "expected": [
+    "burning_micturition",
+    "continuous_feel_of_urine",
+    "foul_smell_of_urine",
+    "bladder_discomfort"
+   ],
+   "disease_id": "urinary_tract_infection",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "burning_micturition",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "continuous_feel_of_urine",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "foul_smell_of_urine",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "bladder_discomfort",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 7.450075249000065,
+    "prompt_tokens": 2688,
+    "output_tokens": 116
+   }
+  },
+  {
+   "id": "c041",
+   "expected": [
+    "prominent_veins_on_calf",
+    "swollen_legs",
+    "bruising",
+    "cramps"
+   ],
+   "disease_id": "varicose_veins",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "prominent_veins_on_calf",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "swollen_legs",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "bruising",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "cramps",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 2.525681286000008,
+    "prompt_tokens": 2690,
+    "output_tokens": 108
+   }
+  },
+  {
+   "id": "c042",
+   "expected": [
+    "high_fever",
+    "cough",
+    "phlegm"
+   ],
+   "disease_id": "pneumonia",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "high_fever",
+      "severity": null,
+      "duration_days": 1
+     },
+     {
+      "symptom_id": "cough",
+      "severity": null,
+      "duration_days": 1
+     },
+     {
+      "symptom_id": "mucoid_sputum",
+      "severity": null,
+      "duration_days": 1
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 2.573833951000097,
+    "prompt_tokens": 2677,
+    "output_tokens": 111
+   }
+  },
+  {
+   "id": "c043",
+   "expected": [
+    "chest_pain",
+    "sweating"
+   ],
+   "disease_id": "heart_attack",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "chest_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "sweating",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": true,
+    "emergency_reason": "가슴 통증과 식은땀은 심근경색 등 응급 심장 질환의 신호일 수 있습니다.",
+    "parsed": true,
+    "latency_s": 0.9555154639999728,
+    "prompt_tokens": 2672,
+    "output_tokens": 97
+   }
+  },
+  {
+   "id": "c044",
+   "expected": [
+    "diarrhoea",
+    "vomiting"
+   ],
+   "disease_id": "gastroenteritis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "diarrhoea",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "vomiting",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.387093971000013,
+    "prompt_tokens": 2675,
+    "output_tokens": 61
+   }
+  },
+  {
+   "id": "c045",
+   "expected": [
+    "runny_nose",
+    "throat_irritation"
+   ],
+   "disease_id": "common_cold",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "runny_nose",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "throat_irritation",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.3565438390000963,
+    "prompt_tokens": 2677,
+    "output_tokens": 64
+   }
+  },
+  {
+   "id": "c046",
+   "expected": [
+    "headache",
+    "acidity",
+    "indigestion"
+   ],
+   "disease_id": "migraine",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "headache",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "acidity",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "indigestion",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.6978057480000643,
+    "prompt_tokens": 2677,
+    "output_tokens": 80
+   }
+  },
+  {
+   "id": "c047",
+   "expected": [
+    "burning_micturition",
+    "continuous_feel_of_urine"
+   ],
+   "disease_id": "urinary_tract_infection",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "continuous_feel_of_urine",
+      "severity": "moderate",
+      "duration_days": null
+     },
+     {
+      "symptom_id": "burning_micturition",
+      "severity": "severe",
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.3242298889999802,
+    "prompt_tokens": 2676,
+    "output_tokens": 85
+   }
+  },
+  {
+   "id": "c048",
+   "expected": [
+    "runny_nose",
+    "continuous_sneezing",
+    "redness_of_eyes"
+   ],
+   "disease_id": "allergy",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "runny_nose",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "continuous_sneezing",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "redness_of_eyes",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 2.10511918300017,
+    "prompt_tokens": 2675,
+    "output_tokens": 54
+   }
+  },
+  {
+   "id": "c049",
+   "expected": [
+    "high_fever",
+    "pain_behind_the_eyes",
+    "muscle_pain"
+   ],
+   "disease_id": "dengue",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "high_fever",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "pain_behind_the_eyes",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "muscle_pain",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.3392087450001782,
+    "prompt_tokens": 2679,
+    "output_tokens": 54
+   }
+  },
+  {
+   "id": "c050",
+   "expected": [
+    "red_spots_over_body",
+    "itching",
+    "mild_fever"
+   ],
+   "disease_id": "chicken_pox",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "red_spots_over_body",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "itching",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "mild_fever",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 3.104755348000026,
+    "prompt_tokens": 2678,
+    "output_tokens": 85
+   }
+  },
+  {
+   "id": "c051",
+   "expected": [
+    "dizziness",
+    "spinning_movements"
+   ],
+   "disease_id": "bppv",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "dizziness",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "spinning_movements",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.2329794549998496,
+    "prompt_tokens": 2675,
+    "output_tokens": 62
+   }
+  },
+  {
+   "id": "c052",
+   "expected": [
+    "bloody_stool",
+    "pain_in_anal_region"
+   ],
+   "disease_id": "hemorrhoids",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "bloody_stool",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "pain_in_anal_region",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 1.5300585600000431,
+    "prompt_tokens": 2678,
+    "output_tokens": 67
+   }
+  },
+  {
+   "id": "c053",
+   "expected": [
+    "slurred_speech",
+    "altered_sensorium"
+   ],
+   "disease_id": "paralysis_brain_hemorrhage",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "slurred_speech",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "altered_sensorium",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": true,
+    "emergency_reason": "말이 어눌해지고 의식이 흐려지는 증상은 뇌졸중 등 응급 상황을 의심할 수 있습니다.",
+    "parsed": true,
+    "latency_s": 1.8511871140001404,
+    "prompt_tokens": 2671,
+    "output_tokens": 102
+   }
+  },
+  {
+   "id": "c054",
+   "expected": [
+    "knee_pain",
+    "painful_walking"
+   ],
+   "disease_id": "osteoarthritis",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "knee_pain",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "painful_walking",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 5.326690734000067,
+    "prompt_tokens": 2681,
+    "output_tokens": 63
+   }
+  },
+  {
+   "id": "c055",
+   "expected": [
+    "polyuria",
+    "fatigue",
+    "weight_loss"
+   ],
+   "disease_id": "diabetes",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "polyuria",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "fatigue",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "weight_loss",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 5.7405968999999,
+    "prompt_tokens": 2679,
+    "output_tokens": 80
+   }
+  },
+  {
+   "id": "c056",
+   "expected": [
+    "breathlessness",
+    "cough"
+   ],
+   "disease_id": "bronchial_asthma",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "breathlessness",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "cough",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 2.7927028569999948,
+    "prompt_tokens": 2680,
+    "output_tokens": 59
+   }
+  },
+  {
+   "id": "c057",
+   "expected": [
+    "receiving_blood_transfusion",
+    "yellowing_of_eyes",
+    "fatigue"
+   ],
+   "disease_id": "hepatitis_b",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "fatigue",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowing_of_eyes",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 0.8177375110001321,
+    "prompt_tokens": 2676,
+    "output_tokens": 39
+   }
+  },
+  {
+   "id": "c058",
+   "expected": [
+    "high_fever",
+    "patches_in_throat"
+   ],
+   "disease_id": "aids",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "patches_in_throat",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 5.794463929999893,
+    "prompt_tokens": 2680,
+    "output_tokens": 44
+   }
+  },
+  {
+   "id": "c059",
+   "expected": [
+    "fatigue",
+    "yellowing_of_eyes"
+   ],
+   "disease_id": "hepatitis_c",
+   "extraction": {
+    "symptoms": [
+     {
+      "symptom_id": "fatigue",
+      "severity": null,
+      "duration_days": null
+     },
+     {
+      "symptom_id": "yellowing_of_eyes",
+      "severity": null,
+      "duration_days": null
+     }
+    ],
+    "emergency_suspected": false,
+    "emergency_reason": null,
+    "parsed": true,
+    "latency_s": 9.69047664499999,
+    "prompt_tokens": 2677,
+    "output_tokens": 39
+   }
+  }
+ ]
+}
