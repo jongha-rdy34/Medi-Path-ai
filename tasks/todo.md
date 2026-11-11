@@ -99,12 +99,14 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - [ ] `ml-service/llm/eval/cases.jsonl`: 증상 문장 50~100개 → 정답 구조화 JSON(T11 증상 ID)과 **정답 질환 ID**. 질환 라벨은 T14의 end-to-end 평가에 씁니다
 - [ ] `LLMProvider` 인터페이스(`extract_symptoms`, `next_questions`, `explain`)와 `GeminiProvider` 구현(JSON 스키마 강제)
 - [ ] 평가 스크립트: 증상 추출 F1, JSON 파싱 성공률, 평균 지연, 1천 건당 비용
+- [ ] 위험 요인 3종(`extra_marital_contacts`, `receiving_unsterile_injections`, `family_history`)은 묻지도 추출하지도 않음(SPEC 6절). 프롬프트와 출력 필터로 막고 테스트로 확인
 - **검증**: `python -m llm.eval --provider gemini` 실행 시 결과표 출력. 그 결과를 `docs/adr/0001-llm-choice.md`에 기록
 - **의존**: T01, T11
 
 ### T14 [B] 베이스라인 분류 모델 + ml-service `/predict` · M
 - [ ] 원핫 또는 TF-IDF + LogisticRegression/LightGBM, 학습·평가 스크립트
 - [ ] 분할: `Training.csv` 중복 제거 → 고유 증상 조합 단위 그룹 분할(train/val/test). 같은 조합이 두 셋에 겹치지 않는지 테스트로 확인. `Testing.csv`는 쓰지 않음
+- [ ] 위험 요인 3종은 학습·추론 입력에서 항상 0(SPEC 6절)
 - [ ] 노이즈 테스트셋: 시드 고정, 증상 일부 제거(dropout) + 관련 없는 증상 추가
 - [ ] end-to-end 평가: T13 평가셋 문장 → LLM 구조화 → `/predict` Top-3 정확도와 진료과 추천 정확도
 - [ ] FastAPI `/predict`(T01 계약), 모델 파일은 버전 이름으로 저장
