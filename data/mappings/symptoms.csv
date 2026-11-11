@@ -1,0 +1,132 @@
+symptom_id,name_ko,synonyms_ko
+itching,가려움,간지러움|가렵다
+skin_rash,피부 발진,발진|두드러기
+nodal_skin_eruptions,결절성 피부 발진,피부에 오돌토돌한 혹
+continuous_sneezing,계속되는 재채기,재채기
+shivering,몸 떨림,덜덜 떨림
+chills,오한,으슬으슬함|춥고 떨림
+joint_pain,관절통,관절이 아픔|마디가 쑤심
+stomach_pain,윗배 통증,명치 통증|위가 아픔
+acidity,신물 올라옴,위산 역류|속쓰림
+ulcers_on_tongue,혀 궤양,혓바늘|혀가 헐었음
+muscle_wasting,근육 위축,근육이 빠짐
+vomiting,구토,토함|토했어요
+burning_micturition,배뇨 시 작열감,소변볼 때 따가움|배뇨통
+spotting_urination,소변에 피가 비침,소변에 핏방울
+fatigue,피로,피곤함|기운이 없음
+weight_gain,체중 증가,살이 찜
+anxiety,불안,불안감|초조함
+cold_hands_and_feets,손발 차가움,수족냉증|손발이 참
+mood_swings,감정 기복,기분이 오락가락함
+weight_loss,체중 감소,살이 빠짐
+restlessness,안절부절못함,가만히 있지 못함
+lethargy,무기력,축 처짐
+patches_in_throat,목 안의 반점,목 안에 하얀 막
+irregular_sugar_level,혈당 불안정,혈당이 오르내림
+cough,기침,콜록거림
+high_fever,고열,열이 높음|열이 펄펄 남
+sunken_eyes,눈 꺼짐,눈이 퀭함
+breathlessness,호흡곤란,숨이 참|숨쉬기 힘듦|숨이 가쁨
+sweating,땀 많이 남,식은땀
+dehydration,탈수,탈수 증상
+indigestion,소화불량,체함|더부룩함
+headache,두통,머리가 아픔
+yellowish_skin,피부가 노래짐,피부 황달
+dark_urine,진한 소변,소변 색이 진함|콜라색 소변
+nausea,메스꺼움,구역질|울렁거림|속이 메슥거림
+loss_of_appetite,식욕 부진,입맛이 없음|밥맛이 없음
+pain_behind_the_eyes,눈 뒤 통증,눈 안쪽이 아픔
+back_pain,허리·등 통증,요통|허리가 아픔|등이 아픔
+constipation,변비,변이 안 나옴
+abdominal_pain,복통,배가 아픔|배앓이
+diarrhoea,설사,묽은 변
+mild_fever,미열,열이 조금 남
+yellow_urine,노란 소변,소변이 노람
+yellowing_of_eyes,눈 흰자가 노래짐,눈 황달
+acute_liver_failure,급성 간부전,
+fluid_overload,체액 과다,몸에 물이 참
+swelling_of_stomach,배가 부음,복부 부종
+swelled_lymph_nodes,림프절 부음,임파선이 부음|멍울이 잡힘
+malaise,전신 불쾌감,몸이 안 좋음|몸살 기운
+blurred_and_distorted_vision,시야 흐림,눈이 침침함|흐릿하게 보임
+phlegm,가래,담
+throat_irritation,목 따가움,목이 칼칼함|목이 따끔함|인후통
+redness_of_eyes,눈 충혈,눈이 빨개짐
+sinus_pressure,코 주위 압박감,광대 쪽이 묵직함|부비동 압통
+runny_nose,콧물,콧물이 흐름
+congestion,코막힘,코가 막힘
+chest_pain,흉통,가슴 통증|가슴이 아픔|가슴이 조임
+weakness_in_limbs,팔다리 힘 빠짐,팔다리에 힘이 없음
+fast_heart_rate,빠른 맥박,맥박이 빠름|빈맥
+pain_during_bowel_movements,배변 시 통증,변 볼 때 아픔
+pain_in_anal_region,항문 통증,항문이 아픔
+bloody_stool,혈변,변에 피가 섞임
+irritation_in_anus,항문 가려움,항문이 간지러움
+neck_pain,뒷목 통증,목덜미가 아픔
+dizziness,어지럼,어지러움|현기증
+cramps,근육 경련,쥐가 남
+bruising,멍,멍이 잘 듦
+obesity,비만,
+swollen_legs,다리 부기,다리가 부음
+swollen_blood_vessels,혈관 부풀어 오름,혈관이 튀어나옴
+puffy_face_and_eyes,얼굴·눈 부기,얼굴이 부음|눈이 부음
+enlarged_thyroid,갑상선 비대,목 앞이 부음|갑상선이 커짐
+brittle_nails,손발톱이 잘 부러짐,손톱이 갈라짐
+swollen_extremeties,손발 부기,손발이 부음
+excessive_hunger,심한 허기,배가 자주 고픔
+extra_marital_contacts,배우자 외 성 접촉 이력,
+drying_and_tingling_lips,입술 건조·저림,입술이 마르고 저림
+slurred_speech,말이 어눌함,발음이 꼬임|말이 잘 안 나옴
+knee_pain,무릎 통증,무릎이 아픔
+hip_joint_pain,고관절 통증,엉덩이 관절이 아픔
+muscle_weakness,근력 약화,근육에 힘이 없음
+stiff_neck,목 경직,목이 뻣뻣함
+swelling_joints,관절 부기,관절이 부음
+movement_stiffness,움직임 뻣뻣함,몸이 굳음
+spinning_movements,빙빙 도는 어지럼,세상이 도는 느낌|회전성 어지럼
+loss_of_balance,균형 상실,중심을 못 잡음
+unsteadiness,비틀거림,휘청거림
+weakness_of_one_body_side,한쪽 몸 힘 빠짐,편마비|한쪽 팔다리에 힘이 없음
+loss_of_smell,후각 상실,냄새를 못 맡음
+bladder_discomfort,방광 불편감,방광이 불편함
+foul_smell_of_urine,소변 악취,소변 냄새가 심함
+continuous_feel_of_urine,잔뇨감,소변을 봐도 시원하지 않음|자꾸 소변이 마려움
+passage_of_gases,방귀가 잦음,가스가 많이 참
+internal_itching,몸속 가려움,
+toxic_look_typhos,몹시 아파 보이는 얼굴,
+depression,우울,우울감
+irritability,짜증,예민함
+muscle_pain,근육통,근육이 쑤심|몸살
+altered_sensorium,의식 변화,정신이 혼미함|의식이 흐림
+red_spots_over_body,몸의 붉은 반점,붉은 점이 생김
+belly_pain,배꼽 주위 통증,배꼽 주위가 아픔
+abnormal_menstruation,월경 이상,생리 불순
+dischromic_patches,피부 변색 반점,피부색이 얼룩덜룩함
+watering_from_eyes,눈물 흘림,눈물이 남
+increased_appetite,식욕 증가,
+polyuria,다뇨,소변을 자주 많이 봄
+family_history,가족력,
+mucoid_sputum,점액성 가래,끈적한 가래
+rusty_sputum,녹슨 색 가래,갈색 가래
+lack_of_concentration,집중력 저하,집중이 안 됨
+visual_disturbances,시각 장애,시야 이상|앞이 잘 안 보임
+receiving_blood_transfusion,수혈 이력,
+receiving_unsterile_injections,비위생적 주사 이력,
+coma,혼수,의식이 없음
+stomach_bleeding,위출혈,토혈|피를 토함
+distention_of_abdomen,복부 팽창,배가 빵빵함
+history_of_alcohol_consumption,음주력,술을 자주 마심
+blood_in_sputum,객혈,가래에 피가 섞임
+prominent_veins_on_calf,종아리 정맥 돌출,종아리 핏줄이 튀어나옴
+palpitations,두근거림,가슴이 두근거림
+painful_walking,걸을 때 통증,걸을 때 아픔
+pus_filled_pimples,화농성 여드름,고름 여드름
+blackheads,블랙헤드,
+scurring,흉터,여드름 흉터
+skin_peeling,피부 벗겨짐,각질|피부가 일어남
+silver_like_dusting,은백색 각질,하얀 비늘 같은 각질
+small_dents_in_nails,손톱 함몰,손톱이 패임
+inflammatory_nails,손발톱 염증,손톱 주위 염증
+blister,물집,수포
+red_sore_around_nose,코 주위 붉은 상처,코 주변 진물 상처
+yellow_crust_ooze,노란 딱지·진물,노란 딱지

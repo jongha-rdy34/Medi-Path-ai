@@ -1,0 +1,42 @@
+disease_id,kaggle_label,disease_name_ko,department_code,alt_department_codes,reason_ko,source_url,review_status
+fungal_infection,Fungal infection,진균 감염(피부 곰팡이),14,,피부·손발톱의 곰팡이 감염은 피부과에서 진료합니다.,,draft
+allergy,Allergy,알레르기,13,01|14,"재채기·콧물 같은 코 증상이 중심이면 이비인후과, 전신 증상이면 내과(알레르기)에서 진료합니다.",,draft
+gerd,GERD,위식도역류질환,01,,신물·속쓰림 같은 소화기 증상은 내과(소화기)에서 진료합니다.,,draft
+chronic_cholestasis,Chronic cholestasis,만성 담즙정체,01,,간·담도 질환은 내과(소화기)에서 진료합니다.,,draft
+drug_reaction,Drug Reaction,약물 이상반응,14,01,"약을 먹은 뒤 생긴 발진은 피부과, 전신 증상이 있으면 내과에서 진료합니다.",,draft
+peptic_ulcer,Peptic ulcer diseae,소화성 궤양,01,,위·십이지장 궤양은 내과(소화기)에서 진료합니다.,,draft
+aids,AIDS,후천성면역결핍증,01,,감염 질환은 내과(감염)에서 진료합니다.,,draft
+diabetes,Diabetes,당뇨병,01,23,혈당 관리는 내과(내분비)에서 진료합니다.,,draft
+gastroenteritis,Gastroenteritis,위장염,01,23,구토·설사·복통은 내과(소화기)에서 진료합니다.,,draft
+bronchial_asthma,Bronchial Asthma,기관지 천식,01,,천식은 내과(호흡기)에서 진료합니다.,,draft
+hypertension,Hypertension,고혈압,01,23,혈압 관리는 내과(순환기)에서 진료합니다.,,draft
+migraine,Migraine,편두통,02,,반복되는 두통은 신경과에서 진료합니다.,,draft
+cervical_spondylosis,Cervical spondylosis,경추증,05,06|21,목뼈의 퇴행성 변화는 정형외과에서 진료합니다.,,draft
+paralysis_brain_hemorrhage,Paralysis (brain hemorrhage),뇌출혈로 인한 마비,24,06|02,갑작스러운 마비는 응급 상황입니다. 응급실로 가야 합니다.,,draft
+jaundice,Jaundice,황달,01,,피부·눈이 노래지는 증상은 내과(소화기)에서 진료합니다.,,draft
+malaria,Malaria,말라리아,01,,감염 질환은 내과(감염)에서 진료합니다.,,draft
+chicken_pox,Chicken pox,수두,14,11|01,"물집이 생기는 발진은 피부과, 어린이는 소아청소년과에서 진료합니다.",,draft
+dengue,Dengue,뎅기열,01,,감염 질환은 내과(감염)에서 진료합니다.,,draft
+typhoid,Typhoid,장티푸스,01,,고열과 복부 증상이 있는 감염 질환은 내과(감염)에서 진료합니다.,,draft
+hepatitis_a,hepatitis A,A형 간염,01,,간염은 내과(소화기)에서 진료합니다.,,draft
+hepatitis_b,Hepatitis B,B형 간염,01,,간염은 내과(소화기)에서 진료합니다.,,draft
+hepatitis_c,Hepatitis C,C형 간염,01,,간염은 내과(소화기)에서 진료합니다.,,draft
+hepatitis_d,Hepatitis D,D형 간염,01,,간염은 내과(소화기)에서 진료합니다.,,draft
+hepatitis_e,Hepatitis E,E형 간염,01,,간염은 내과(소화기)에서 진료합니다.,,draft
+alcoholic_hepatitis,Alcoholic hepatitis,알코올성 간염,01,,간염은 내과(소화기)에서 진료합니다.,,draft
+tuberculosis,Tuberculosis,결핵,01,20,오래가는 기침과 체중 감소는 내과(호흡기)에서 진료합니다.,,draft
+common_cold,Common Cold,감기,01,23|13,콧물·기침·미열은 내과나 가정의학과에서 진료합니다.,,draft
+pneumonia,Pneumonia,폐렴,01,,"고열과 기침, 가래는 내과(호흡기)에서 진료합니다.",,draft
+hemorrhoids,Dimorphic hemmorhoids(piles),치핵(치질),04,,항문 질환은 외과(대장항문)에서 진료합니다.,,draft
+heart_attack,Heart attack,심근경색,24,01,가슴 통증과 호흡곤란은 응급 상황입니다. 응급실로 가야 합니다.,,draft
+varicose_veins,Varicose veins,하지정맥류,04,07,다리 정맥 질환은 외과(혈관)에서 진료합니다.,,draft
+hypothyroidism,Hypothyroidism,갑상선기능저하증,01,,갑상선 질환은 내과(내분비)에서 진료합니다.,,draft
+hyperthyroidism,Hyperthyroidism,갑상선기능항진증,01,,갑상선 질환은 내과(내분비)에서 진료합니다.,,draft
+hypoglycemia,Hypoglycemia,저혈당,01,24,저혈당은 내과(내분비)에서 진료합니다. 의식이 흐려지면 응급실로 가야 합니다.,,draft
+osteoarthritis,Osteoarthristis,골관절염,05,21,관절의 퇴행성 질환은 정형외과에서 진료합니다.,,draft
+arthritis,Arthritis,관절염,05,01,"관절 통증과 부기는 정형외과, 여러 관절의 염증이면 내과(류마티스)에서 진료합니다.",,draft
+bppv,(vertigo) Paroymsal  Positional Vertigo,양성 돌발성 두위 현훈(이석증),13,02,자세를 바꿀 때 빙빙 도는 어지럼은 이비인후과에서 진료합니다.,,draft
+acne,Acne,여드름,14,,피부 질환은 피부과에서 진료합니다.,,draft
+urinary_tract_infection,Urinary tract infection,요로감염,15,01,배뇨 시 통증과 잔뇨감은 비뇨의학과에서 진료합니다.,,draft
+psoriasis,Psoriasis,건선,14,,피부 질환은 피부과에서 진료합니다.,,draft
+impetigo,Impetigo,농가진,14,11,"피부 감염은 피부과, 어린이는 소아청소년과에서 진료합니다.",,draft
