@@ -13,7 +13,7 @@
 | 학습 환경 | Colab, SSAFY 강의장 RTX 5060, 팀원 RTX 3080 Ti(12GB) |
 | 저장소 | 아직 없음. **1주차 첫 태스크(T00)에서 GitHub 저장소를 만듭니다.** 이유는 plan.md "리스크" 참고 |
 | 배포 | 공개 URL을 목표로 합니다(클라우드 VM 1대 + docker compose). 6절 참고 |
-| 병원 검색(MVP) | **Kakao 로컬 API** (2026-11-11 변경). 백엔드 `GET /api/hospitals`가 Kakao 키워드·카테고리 검색을 감싸고, 키는 서버에만 둡니다. Elasticsearch와 심평원 데이터는 T60(4~5주차)으로 옮깁니다 |
+| 병원 검색(MVP) | **국립중앙의료원 전국 병·의원 찾기 서비스**(공공데이터포털, `B552657/HsptlAsembySearchService/getHsptlMdcncListInfoInqire`) (2026-11-11 확정). Kakao 로컬 키워드 검색은 쓰지 않습니다. Kakao는 프론트 지도 SDK와 서버의 좌표 → 시도·시군구 변환(`coord2regioncode`)에만 씁니다. 공공데이터는 시도+시군구+진료과 단위로 6시간 캐시하고, Kakao 결과는 저장·캐시하지 않습니다(정책). 좌표는 캐시 키에도 넣지 않습니다. 진료과 코드는 서비스 전체에서 심평원 코드를 쓰고, NMC 코드(D001~D029) 변환은 `backend/hospitals/` 안에서만 합니다. Elasticsearch와 심평원 데이터는 T60(4~5주차) |
 
 ---
 
@@ -45,7 +45,7 @@
 2. LLM이 증상을 구조화하고, 필요하면 추가 질문을 1~3개 합니다(발생 시점, 부위, 동반 증상 등).
 3. ML 모델이 **확률이 높은 질환 Top-3와 각 확률**을 계산합니다.
 4. 질환을 진료과로 매핑해 **권장 진료과**와 그 이유를 보여 줍니다.
-5. 사용자 위치를 기준으로 해당 진료과가 있는 **주변 병원**을 지도와 목록으로 보여 줍니다(거리, 진료 여부 등).
+5. 사용자 위치를 기준으로 해당 진료과가 있는 **주변 병원**을 지도와 목록으로 보여 줍니다(거리, 진료 시간). 진료과는 권장 진료과가 기본값이고 사용자가 바꿀 수 있습니다. **지금 진료 중**, **야간 진료**(평일 20시 이후), **주말 진료** 필터를 제공합니다. 전문의 필터와 "전문의" 표기는 하지 않습니다.
 6. **위급 신호**(흉통+호흡곤란, 의식 저하 등)가 감지되면 다른 결과보다 먼저 119 및 응급실 안내를 띄웁니다.
 
 **성공 기준(측정 가능)**: 수치는 팀에서 조정합니다.
@@ -56,7 +56,7 @@
 - **최종 지표**는 자연어 증상 문장 → LLM 구조화(T13) → 분류 모델의 end-to-end Top-3 정확도와 진료과 추천 정확도(목표 ≥ 0.85)로 보고합니다.
 - 위급 신호 테스트 케이스 재현율(recall) 100%. 놓치는 것보다 과잉 경고가 낫습니다.
 - 증상 입력부터 결과 화면까지 p95 < 5초 (LLM 호출 포함)
-- 주변 병원 검색 p95 < 300ms (Kakao 로컬 API 호출 포함. 외부 API라 목표치는 T21에서 재검토)
+- 주변 병원 검색 p95 < 300ms (캐시 적중 기준. 캐시가 비었을 때 NMC API 페이지 반복 조회 지연은 T21에서 측정 후 목표치 재검토)
 - `docker compose up` 한 번으로 전체 데모가 로컬에서 실행됩니다.
 
 ---
@@ -72,7 +72,7 @@ agent-skills 기준으로 이 요청은 독립적으로 테스트할 수 있는 
 | `data-foundation` | 증상·질환·진료과 데이터 수집, 정제, EDA, 질환→진료과 매핑 테이블 | — | B |
 | `triage-model` | 증상→질환 분류 모델(베이스라인 → 파인튜닝), 추론 서비스(ml-service) | `data-foundation`, `api-contract` | B |
 | `llm-assistant` | 자연어 증상 구조화, 추가 질문 생성, 결과 설명문, 위급 신호 1차 감지 | `api-contract` | B |
-| `hospital-search` | MVP: Kakao 로컬 API로 주변 병원 검색(팀원 프로토타입 기반). 4~5주차: 심평원 데이터 적재 + Elasticsearch geo 검색(T60과 함께) | `api-contract` | A |
+| `hospital-search` | MVP: 국립중앙의료원 병·의원 공공데이터 + 카카오맵(팀원 @ley-21, T21). 4~5주차: 심평원 데이터 적재 + Elasticsearch geo 검색(T60과 함께) | `api-contract` | @ley-21 |
 | `backend-api` | 위 모듈을 엮는 메인 API(세션, 오케스트레이션, 로깅) | `api-contract`, `triage-model`, `llm-assistant`, `hospital-search` | A |
 | `web-frontend` | Vue 3 UI(증상 입력/대화, 결과, 지도) | `api-contract` (개발 중에는 Mock 사용) | A |
 | `data-pipeline` | 실시간: Kafka/Flink 응급실 병상 수집(A). 배치: Spark/Airflow 재학습(B) | `data-foundation`, `hospital-search`, `triage-model` | A + B |
@@ -97,7 +97,8 @@ api-contract, platform, data-foundation
 [Vue 3 SPA] ──REST──> [backend-api (Django + DRF)]
                           ├──> [ml-service (FastAPI)]  triage-model 추론
                           ├──> [LLM API]               llm-assistant
-                          ├──> [Kakao 로컬 API]        hospital-search (MVP)
+                          ├──> [NMC 병·의원 API]       hospital-search (MVP, 6시간 캐시)
+                          ├──> [Kakao coord2regioncode] 좌표 → 시도·시군구 (저장·캐시 안 함)
                           ├──> [Elasticsearch]         병원 geo·응급실 병상 (4~5주차, pipeline)
                           ├──> [PostgreSQL]            세션, 익명 로그, 매핑 테이블
                           └──> [Kafka] 익명화된 증상 이벤트 발행
@@ -116,7 +117,7 @@ api-contract, platform, data-foundation
 | 프론트 | Vue 3 + Vite + TypeScript + Pinia, 지도는 Kakao Maps JS SDK | 권고 스택을 따르고, 국내 주소와 좌표에 강합니다. |
 | 모델 | 베이스라인: TF-IDF/원핫 + LogisticRegression·LightGBM → 파인튜닝: 한국어 BERT 계열(KM-BERT, KLUE-RoBERTa 등) 다중 클래스 분류 | 베이스라인을 먼저 만들어야 파인튜닝 효과를 숫자로 증명할 수 있습니다. |
 | LLM | `LLMProvider` 인터페이스 뒤에 Gemini API / HF 오픈 모델(LoRA) 구현체를 둠 | 3.1절. 어떤 모델을 쓰든 출력은 JSON 스키마로 강제해 분류 모델 입력과 연결합니다. |
-| 검색 | MVP: Kakao 로컬 API. 4~5주차: Elasticsearch (geo_distance + 진료과 필터 + 한글 nori 분석기) | Kakao는 팀원 프로토타입이 이미 동작해 MVP 일정이 줄어듭니다. ES는 과제 권고사항이라 응급실 실시간 병상(T60)과 함께 붙입니다. |
+| 검색 | MVP: 국립중앙의료원 병·의원 공공데이터를 시군구 단위로 조회 후 서버에서 거리·진료시간 필터. 4~5주차: Elasticsearch (geo_distance + 진료과 필터 + 한글 nori 분석기) | 공공데이터라 진료시간·진료과 정보가 있고 저장(캐시)이 허용됩니다. 팀원 프로토타입이 이미 동작합니다. ES는 과제 권고사항이라 응급실 실시간 병상(T60)과 함께 붙입니다. |
 | 파이프라인 | Kafka, Flink(PyFlink), Spark(PySpark), Airflow | 과제 권고사항입니다. 아래 5절에서 각 도구에 실제 쓰임을 붙였습니다. |
 | 실험 관리 | MLflow (선택) | 재학습한 모델의 버전 관리와 비교에 씁니다. |
 
@@ -150,13 +151,20 @@ api-contract, platform, data-foundation
 | 증상→질환 학습 | AI Hub 의료·헬스케어 계열 한국어 데이터(예: 헬스케어 질의응답, 의학 지식 데이터) | 한국어 자연어입니다. 신청과 승인이 필요할 수 있습니다. |
 | 증상→질환 베이스라인 | Kaggle "Disease Symptom Prediction" 계열(질환 약 40종 × 증상 약 130개) | 영어 데이터입니다. 증상 사전을 번역하고 매핑해서 씁니다. |
 | 질환→진료과 매핑 | 직접 구축(질병관리청·서울대병원 의학정보 등 참고) + 팀 검수 | 작은 테이블이지만 서비스 품질을 좌우합니다. |
-| 병원 정보 | 건강보험심사평가원 병원정보서비스(공공데이터포털) | 진료과목, 좌표, 주소를 제공합니다. 매일 배치로 갱신합니다. |
+| 병원 검색(MVP) | 국립중앙의료원 전국 병·의원 찾기 서비스(공공데이터포털) | 시도·시군구·진료과로 조회. 좌표, 요일별 진료시간을 제공합니다. 6시간 캐시 |
+| 병원 정보(4~5주차) | 건강보험심사평가원 병원정보서비스(공공데이터포털) | 진료과목, 좌표, 주소를 제공합니다. 매일 배치로 갱신합니다(T60, T62). |
 | 실시간 데이터 | 국립중앙의료원 응급의료기관 정보 조회(실시간 가용 병상) | 실제로 실시간인 공공 데이터라서 Kafka 수집 대상으로 적합합니다. |
 | 사용자 이벤트 | 서비스 로그(익명) + 시뮬레이터로 만든 더미 트래픽 | Flink 트렌드 집계에 씁니다. |
 
 **EDA 산출물**: 질환별 클래스 불균형, 증상 빈도, 질환 간 증상 동시출현(co-occurrence) 히트맵, 진료과별 분포. 결과는 `data/notebooks/`에 둡니다.
 
 ---
+
+### 4.1 병원 검색의 알려진 한계 (MVP)
+- **구 경계**: 시군구 단위로 조회하므로 경계 근처에서는 옆 구의 더 가까운 병원이 빠질 수 있습니다.
+- **공휴일 미처리**: 진료시간은 요일 기준이라 공휴일 휴진을 반영하지 못합니다.
+- **신고 기준 진료시간**: 기관이 신고한 시간이라 실제와 다를 수 있습니다. 화면에 "방문 전 전화 확인"을 안내합니다.
+- **두 단어 시군구 형식 미확인**: `수원시 장안구`처럼 두 단어인 시군구에서 Kakao 지역 변환 결과와 NMC `Q1` 표기가 맞는지 아직 확인하지 않았습니다(T21 PR 3에서 fixture로 확인).
 
 ## 5. 데이터 파이프라인 (`data-pipeline`, MVP 이후)
 

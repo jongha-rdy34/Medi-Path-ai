@@ -12,7 +12,7 @@ MediPath: AI-Powered Symptom Triage & Hospital Navigation.
 
 ```bash
 cp .env.example .env
-docker compose -f infra/docker-compose.yml --profile core up --build
+docker compose --env-file .env -f infra/docker-compose.yml --profile core up --build
 ```
 
 - 프론트엔드: http://localhost:5173

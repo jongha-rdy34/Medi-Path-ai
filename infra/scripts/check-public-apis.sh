@@ -32,6 +32,7 @@ read_env() {
 read_env DATA_GO_KR_SERVICE_KEY
 read_env HIRA_HOSP_LIST_URL
 read_env NMC_ER_BEDS_URL
+read_env NMC_CLINIC_LIST_URL
 
 if [[ -z "${DATA_GO_KR_SERVICE_KEY:-}" ]]; then
   echo "DATA_GO_KR_SERVICE_KEY가 없습니다. .env에 공공데이터포털 일반 인증키(Decoding)를 넣으세요. 절차: docs/api-keys.md" >&2
@@ -40,6 +41,7 @@ fi
 
 HIRA_HOSP_LIST_URL="${HIRA_HOSP_LIST_URL:-https://apis.data.go.kr/B551182/hospInfoServicev2/getHospBasisList}"
 NMC_ER_BEDS_URL="${NMC_ER_BEDS_URL:-https://apis.data.go.kr/B552657/ErmctInfoInqireService/getEmrrmRltmUsefulSckbdInfoInqire}"
+NMC_CLINIC_LIST_URL="${NMC_CLINIC_LIST_URL:-https://apis.data.go.kr/B552657/HsptlAsembySearchService/getHsptlMdcncListInfoInqire}"
 
 failures=0
 
@@ -82,6 +84,7 @@ check() {
   rm -f "$body" "$err"
 }
 
+check "국립중앙의료원 전국 병·의원 찾기 (T21 MVP)" "$NMC_CLINIC_LIST_URL" "Q0=서울특별시" "Q1=강남구"
 check "건강보험심사평가원 병원정보서비스 (병원 목록)" "$HIRA_HOSP_LIST_URL" "_type=json"
 check "국립중앙의료원 응급실 실시간 가용병상" "$NMC_ER_BEDS_URL" "STAGE1=서울특별시" "STAGE2=강남구"
 
