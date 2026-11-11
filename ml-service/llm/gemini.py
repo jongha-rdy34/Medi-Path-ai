@@ -70,11 +70,15 @@ class GeminiProvider:
         self.retry_sleep = retry_sleep
 
     def _generate(self, contents: str, config: types.GenerateContentConfig):
+        """Returns the response; self.last_latency_s is the successful attempt only."""
         for attempt in range(self.max_retries + 1):
+            start = time.perf_counter()
             try:
-                return self.client.models.generate_content(
+                response = self.client.models.generate_content(
                     model=self.model, contents=contents, config=config
                 )
+                self.last_latency_s = time.perf_counter() - start
+                return response
             except errors.APIError as exc:
                 # 429 quota and 5xx gateway/overload errors are temporary; others are real.
                 if exc.code not in (429, 500, 502, 503, 504) or attempt == self.max_retries:
@@ -112,9 +116,8 @@ class GeminiProvider:
             response_json_schema=self._extract_schema(),
             temperature=0,
         )
-        start = time.perf_counter()
         response = self._generate(text, config)
-        latency = time.perf_counter() - start
+        latency = self.last_latency_s  # excludes retry waits
         usage = getattr(response, "usage_metadata", None)
         tokens = {
             "prompt_tokens": getattr(usage, "prompt_token_count", 0) or 0,

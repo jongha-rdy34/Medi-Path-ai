@@ -171,3 +171,16 @@ def test_rate_limit_backoff_is_exponential(monkeypatch):
     p.extract_symptoms("text")
 
     assert sleeps == [1.0, 2.0, 4.0]
+
+
+def test_latency_excludes_retry_waits(monkeypatch):
+    monkeypatch.setattr("llm.gemini.time.sleep", lambda s: None)
+    # attempt 1 starts at 0 s and fails; attempt 2 runs from 100 s to 101.5 s
+    clock = iter([0.0, 100.0, 101.5])
+    monkeypatch.setattr("llm.gemini.time.perf_counter", lambda: next(clock))
+    overloaded = errors.ServerError(
+        503, {"error": {"code": 503, "message": "x", "status": "UNAVAILABLE"}}
+    )
+    p, _ = provider(overloaded, json.dumps({"symptoms": [], "emergency_suspected": False}))
+
+    assert p.extract_symptoms("text").latency_s == 1.5
