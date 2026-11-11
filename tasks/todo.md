@@ -30,17 +30,18 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: T00
 
 ### T02 [A] docker compose와 CI 뼈대 · M
-- [x] `infra/docker-compose.yml`: `core` 프로필(frontend, backend, ml-service, postgres, elasticsearch), `pipeline` 프로필은 자리만 확보
+- [x] `infra/docker-compose.yml`: `core` 프로필(frontend, backend, ml-service, postgres), `pipeline` 프로필은 자리만 확보(Elasticsearch는 2026-11-11에 `pipeline`으로 이동)
 - [x] 각 서비스 Hello 수준 실행(Django health, FastAPI health, Vite 기본 페이지)
 - [x] GitHub Actions: 바뀐 경로별로 lint와 테스트 실행(backend, ml-service: pytest / frontend: vitest·eslint) · _원격 저장소가 생기면 첫 실행 확인 필요_
 - **검증**: `docker compose -f infra/docker-compose.yml --profile core up`을 실행하면 세 health 엔드포인트가 모두 200을 반환
 - **의존**: T00
 
-### T03 [A] 공공 API 활용신청 · S (첫날 처리)
-- [ ] 공공데이터포털에서 건강보험심사평가원 병원정보서비스, 국립중앙의료원 응급의료기관 정보 조회 서비스를 활용신청
-- [ ] Kakao Developers 앱 등록(지도 JS 키, 로컬 API 키)
+### T03 [A] 공공 API 활용신청 · S (범위 축소, 2026-11-11)
+Kakao 키는 팀원이 보유하고 있어 이 태스크에서 뺍니다. 공공데이터포털만 다룹니다(4~5주차 T60에서 사용).
+- [ ] `docs/api-keys.md`: 공공데이터포털에서 건강보험심사평가원 병원정보서비스, 국립중앙의료원 응급의료기관 정보 조회 서비스 활용신청 절차
+- [ ] 키를 받은 뒤 바로 실행할 curl 확인 스크립트
 - [ ] 키는 `.env`에만 보관하고, 키 이름은 `.env.example`에 기록
-- **검증**: 각 API를 curl로 1회 호출해 응답을 확인
+- **검증**: 키 발급 후 스크립트로 각 API를 1회 호출해 응답을 확인(사람이 실행)
 - **의존**: 없음
 
 ### T10 [B] 학습 데이터 확보 · S (첫날 신청)
@@ -75,11 +76,13 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **검증**: `npm run test`, 모바일 폭(375px)에서 수동 확인
 - **의존**: T01
 
-### T21 [A] 병원 데이터 → Elasticsearch geo 검색 · M
-- [ ] 심평원 데이터 적재 스크립트(진료과 코드, 좌표 포함), ES 인덱스 매핑(`geo_point`, nori)
-- [ ] 진료과 필터 + `geo_distance` 정렬 쿼리
-- **검증**: 서울 특정 좌표에서 반경 3km 내과 검색 시 결과가 거리순으로 나오고, p95 < 300ms
-- **의존**: T02, T03
+### T21 [A] Kakao 로컬 API 병원 검색 연동 · M (팀원 담당, 2026-11-11 변경)
+팀원이 현재 위치 기준 "내과" 검색 프로토타입을 만들었습니다. 이를 백엔드로 옮깁니다. 엔지니어링 에이전트는 구현하지 않고, 팀원 코드를 받으면 연동만 합니다.
+- [ ] 백엔드 `GET /api/hospitals`가 Kakao 로컬 키워드·카테고리 검색을 감쌈. 진료과 이름(`data/mappings/departments.csv`)을 검색어로 사용
+- [ ] Kakao REST 키는 서버(`.env`)에만 둠. 프론트로 보내지 않음
+- [ ] Kakao 응답에 맞춰 `contracts/openapi.yaml`의 `Hospital` 스키마를 고칠 필요가 있으면 계약 변경 PR로 처리(상대방 리뷰)
+- **검증**: 서울 특정 좌표에서 반경 3km 내과 검색 시 결과가 거리순으로 나옴. 지연 p95를 측정해 기록(목표치는 측정 후 재검토)
+- **의존**: T01, T02
 
 ### T22 [A] 백엔드: 세션·오케스트레이션(stub) · M
 - [ ] Django + DRF로 T01의 엔드포인트 구현. ml-service와 LLM은 stub 클라이언트로 대체
@@ -124,7 +127,7 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 ## Phase 2 — 통합과 첫 배포 (W3: 11/25–12/01)
 
 ### T30 [A] 실제 연동과 지도 · M
-- [ ] 백엔드의 stub을 실제 ml-service, LLMProvider, ES로 교체. 위급 판정은 규칙 OR LLM
+- [ ] 백엔드의 stub을 실제 ml-service, LLMProvider, Kakao 병원 검색으로 교체. 위급 판정은 규칙 OR LLM
 - [ ] 프론트의 Mock을 끄고 실제 API에 연결, 카카오맵에 병원 마커 표시, 브라우저 위치 권한(거부 시 주소 입력)
 - **검증**: "열이 나고 기침과 가래가 나와요"를 입력하면 결과(폐렴 가능성), 진료과(내과·호흡기), 병원 목록·지도까지 전부 뜨고 p95 < 5s. "가슴이 아프고 식은땀이 나요"를 입력하면 응급 안내(119)가 결과보다 먼저 뜸. Playwright E2E 1개 통과
 - **의존**: T13, T14, T15, T20, T21, T22
@@ -170,12 +173,14 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **검증**: `pipeline` 프로필에서 DAG를 수동 실행해 성공, 새 모델 버전 파일이 생성됨
 - **의존**: T50, T61
 
-### T60 [A] Kafka·Flink 응급실 실시간 병상 · M
+### T60 [A] Kafka·Flink 응급실 실시간 병상 + 심평원·ES 병원 검색 · M
+- [ ] 심평원 병원정보 적재 스크립트(진료과 코드, 좌표 포함), ES 인덱스 매핑(`geo_point`, nori), 진료과 필터 + `geo_distance` 쿼리 (기존 T21에서 이동)
+- [ ] ES를 compose `pipeline` 프로필에서 켬
 - [ ] Producer: 국립중앙의료원 API를 1~5분마다 폴링해 Kafka `er-beds` 토픽으로 보냄
 - [ ] Flink(PyFlink) 잡: 정제 후 ES 병원 문서의 `er_available_beds` 필드 갱신
 - [ ] 프론트 병원 목록에 응급실 가용 병상과 갱신 시각 표시
 - **검증**: `pipeline` 프로필 실행 5분 안에 ES 값이 바뀌고 화면에 반영됨
-- **의존**: T21, T30
+- **의존**: T03, T21, T30
 
 ### T61 [A] 증상 이벤트 스트림과 트렌드 대시보드 · M
 - [ ] 백엔드가 익명 증상 이벤트를 Kafka `symptom-events`로 발행
@@ -185,9 +190,9 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: T30
 
 ### T62 [A] Airflow 병원정보 일일 갱신 DAG · S
-- [ ] T21의 적재 스크립트를 매일 실행하는 DAG
+- [ ] T60의 심평원 적재 스크립트를 매일 실행하는 DAG
 - **검증**: DAG를 수동 실행해 성공, 문서 수와 갱신 시각 로그 확인
-- **의존**: T21, T53(Airflow 설치)
+- **의존**: T60, T53(Airflow 설치)
 
 ### ✅ Checkpoint 3 (12/15)
 - [ ] 파인튜닝 모델이 서비스에 적용되고 비교표 작성 완료

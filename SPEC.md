@@ -13,6 +13,7 @@
 | 학습 환경 | Colab, SSAFY 강의장 RTX 5060, 팀원 RTX 3080 Ti(12GB) |
 | 저장소 | 아직 없음. **1주차 첫 태스크(T00)에서 GitHub 저장소를 만듭니다.** 이유는 plan.md "리스크" 참고 |
 | 배포 | 공개 URL을 목표로 합니다(클라우드 VM 1대 + docker compose). 6절 참고 |
+| 병원 검색(MVP) | **Kakao 로컬 API** (2026-11-11 변경). 백엔드 `GET /api/hospitals`가 Kakao 키워드·카테고리 검색을 감싸고, 키는 서버에만 둡니다. Elasticsearch와 심평원 데이터는 T60(4~5주차)으로 옮깁니다 |
 
 ---
 
@@ -55,7 +56,7 @@
 - **최종 지표**는 자연어 증상 문장 → LLM 구조화(T13) → 분류 모델의 end-to-end Top-3 정확도와 진료과 추천 정확도(목표 ≥ 0.85)로 보고합니다.
 - 위급 신호 테스트 케이스 재현율(recall) 100%. 놓치는 것보다 과잉 경고가 낫습니다.
 - 증상 입력부터 결과 화면까지 p95 < 5초 (LLM 호출 포함)
-- 주변 병원 검색 p95 < 300ms (Elasticsearch geo 쿼리)
+- 주변 병원 검색 p95 < 300ms (Kakao 로컬 API 호출 포함. 외부 API라 목표치는 T21에서 재검토)
 - `docker compose up` 한 번으로 전체 데모가 로컬에서 실행됩니다.
 
 ---
@@ -71,7 +72,7 @@ agent-skills 기준으로 이 요청은 독립적으로 테스트할 수 있는 
 | `data-foundation` | 증상·질환·진료과 데이터 수집, 정제, EDA, 질환→진료과 매핑 테이블 | — | B |
 | `triage-model` | 증상→질환 분류 모델(베이스라인 → 파인튜닝), 추론 서비스(ml-service) | `data-foundation`, `api-contract` | B |
 | `llm-assistant` | 자연어 증상 구조화, 추가 질문 생성, 결과 설명문, 위급 신호 1차 감지 | `api-contract` | B |
-| `hospital-search` | 병원·응급실 데이터 적재, Elasticsearch geo 검색 | `api-contract` | A |
+| `hospital-search` | MVP: Kakao 로컬 API로 주변 병원 검색(팀원 프로토타입 기반). 4~5주차: 심평원 데이터 적재 + Elasticsearch geo 검색(T60과 함께) | `api-contract` | A |
 | `backend-api` | 위 모듈을 엮는 메인 API(세션, 오케스트레이션, 로깅) | `api-contract`, `triage-model`, `llm-assistant`, `hospital-search` | A |
 | `web-frontend` | Vue 3 UI(증상 입력/대화, 결과, 지도) | `api-contract` (개발 중에는 Mock 사용) | A |
 | `data-pipeline` | 실시간: Kafka/Flink 응급실 병상 수집(A). 배치: Spark/Airflow 재학습(B) | `data-foundation`, `hospital-search`, `triage-model` | A + B |
@@ -96,7 +97,8 @@ api-contract, platform, data-foundation
 [Vue 3 SPA] ──REST──> [backend-api (Django + DRF)]
                           ├──> [ml-service (FastAPI)]  triage-model 추론
                           ├──> [LLM API]               llm-assistant
-                          ├──> [Elasticsearch]         hospital-search (geo_point)
+                          ├──> [Kakao 로컬 API]        hospital-search (MVP)
+                          ├──> [Elasticsearch]         병원 geo·응급실 병상 (4~5주차, pipeline)
                           ├──> [PostgreSQL]            세션, 익명 로그, 매핑 테이블
                           └──> [Kafka] 익명화된 증상 이벤트 발행
 
@@ -114,7 +116,7 @@ api-contract, platform, data-foundation
 | 프론트 | Vue 3 + Vite + TypeScript + Pinia, 지도는 Kakao Maps JS SDK | 권고 스택을 따르고, 국내 주소와 좌표에 강합니다. |
 | 모델 | 베이스라인: TF-IDF/원핫 + LogisticRegression·LightGBM → 파인튜닝: 한국어 BERT 계열(KM-BERT, KLUE-RoBERTa 등) 다중 클래스 분류 | 베이스라인을 먼저 만들어야 파인튜닝 효과를 숫자로 증명할 수 있습니다. |
 | LLM | `LLMProvider` 인터페이스 뒤에 Gemini API / HF 오픈 모델(LoRA) 구현체를 둠 | 3.1절. 어떤 모델을 쓰든 출력은 JSON 스키마로 강제해 분류 모델 입력과 연결합니다. |
-| 검색 | Elasticsearch (geo_distance + 진료과 필터 + 한글 nori 분석기) | 과제 권고사항이고, "주변 병원" 기능에 바로 쓰입니다. |
+| 검색 | MVP: Kakao 로컬 API. 4~5주차: Elasticsearch (geo_distance + 진료과 필터 + 한글 nori 분석기) | Kakao는 팀원 프로토타입이 이미 동작해 MVP 일정이 줄어듭니다. ES는 과제 권고사항이라 응급실 실시간 병상(T60)과 함께 붙입니다. |
 | 파이프라인 | Kafka, Flink(PyFlink), Spark(PySpark), Airflow | 과제 권고사항입니다. 아래 5절에서 각 도구에 실제 쓰임을 붙였습니다. |
 | 실험 관리 | MLflow (선택) | 재학습한 모델의 버전 관리와 비교에 씁니다. |
 
@@ -164,7 +166,7 @@ api-contract, platform, data-foundation
 | Flink | 응급실 병상 스트림을 ES에 반영하고, 지역×증상 10분 윈도로 집계합니다(유행 신호 대시보드). |
 | Spark | 쌓인 로그와 데이터셋으로 배치 EDA, 학습셋 재생성, 피처를 집계합니다. |
 | Airflow | DAG ① 병원 정보 일일 갱신, ② 주간 재학습(Spark → 학습 → 평가 → 기준을 넘으면 교체) |
-| Elasticsearch | 병원 geo 검색, 증상 키워드 자동완성(nori) |
+| Elasticsearch | 심평원 병원 geo 검색, 응급실 가용 병상, 증상 트렌드 집계 (4~5주차) |
 
 ---
 
@@ -172,7 +174,7 @@ api-contract, platform, data-foundation
 
 - **구성**: 클라우드 VM 1대 + `docker compose` + Caddy(자동 HTTPS) + 도메인(무료 DuckDNS 또는 저가 도메인)
 - **VM 후보**: 크레딧이나 무료 등급이 있는 클라우드(GCP 신규 크레딧, AWS 프리티어, Oracle Cloud Always Free ARM 등). 어느 곳을 쓸지는 T40에서 비교해 정하고, 처음 쓰는 사람도 따라 할 수 있는 단계별 가이드(`docs/deploy.md`)를 함께 작성합니다.
-- **compose 프로필 분리**: 상시 공개용 `core`(frontend, backend, ml-service, postgres, elasticsearch)는 RAM 4~8GB면 돌아갑니다. 반면 Kafka/Flink/Spark/Airflow를 담은 `pipeline` 프로필까지 띄우면 16GB 이상이 필요합니다. 그래서 `pipeline`은 로컬이나 발표 시연 때만 켜는 것을 기본으로 하고, VM 여유가 있으면 상시로 올립니다.
+- **compose 프로필 분리**: 상시 공개용 `core`(frontend, backend, ml-service, postgres)는 RAM 4~8GB면 돌아갑니다. 반면 Elasticsearch와 Kafka/Flink/Spark/Airflow를 담은 `pipeline` 프로필까지 띄우면 16GB 이상이 필요합니다. 그래서 `pipeline`은 로컬이나 발표 시연 때만 켜는 것을 기본으로 하고, VM 여유가 있으면 상시로 올립니다.
 
 ## 6. 안전·법적 경계 (필수)
 
