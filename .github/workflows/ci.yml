@@ -48,6 +48,9 @@ jobs:
             ml_service:
               - *workflow
               - 'ml-service/**'
+              - 'data/mappings/**'
+              - 'data/scripts/download.py'
+              - 'contracts/**'
             frontend:
               - *workflow
               - 'frontend/**'
@@ -109,6 +112,9 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
       - run: ruff format --check .
+      - name: Download Kaggle data for the T14 acceptance tests (public, no key)
+        working-directory: .
+        run: pip install -r data/requirements.txt && python data/scripts/download.py
       - run: pytest
 
   frontend:
