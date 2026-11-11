@@ -5,7 +5,7 @@
 
 ## 1. 프로젝트 한 줄 요약
 사용자가 증상을 자연어로 입력하면 가능성 높은 질환 Top-3, 권장 진료과, 주변 병원을 **안내**하는 웹 서비스입니다.
-스택: Django + DRF(backend), FastAPI(ml-service), Vue 3 + Vite + TS(frontend), Elasticsearch, PostgreSQL, docker compose.
+스택: Django + DRF(backend), FastAPI(ml-service), Vue 3 + Vite + TS(frontend), PostgreSQL, docker compose. 병원 검색은 Kakao 로컬 API(MVP), Elasticsearch는 4~5주차.
 
 ## 2. 모듈 경계: 자기 모듈 폴더만 수정합니다
 
@@ -16,7 +16,7 @@
 | `data-foundation` | `data/` | B |
 | `triage-model` | `ml-service/` (모델·추론) | B |
 | `llm-assistant` | `ml-service/llm/`, `ml-service/safety/` | B |
-| `hospital-search` | `backend/` 내 병원 검색 앱, `infra/elasticsearch/` | A |
+| `hospital-search` | `backend/` 내 병원 검색 앱(Kakao 로컬 API, 팀원 담당), `infra/elasticsearch/`(4~5주차) | A |
 | `backend-api` | `backend/` | A |
 | `web-frontend` | `frontend/` | A |
 | `data-pipeline` | `pipeline/` (kafka·flink: A / spark·airflow: B) | A + B |
@@ -28,7 +28,7 @@
 ## 3. Git 규칙
 - 트렁크 기반: `main`은 항상 실행 가능한 상태입니다. 브랜치는 1~3일 안에 머지합니다.
 - **태스크 1개 = 브랜치 1개 = PR 1개.** 브랜치 이름: `feat/<module-id>/T<번호>-<짧은-설명>`
-  - 예: `feat/hospital-search/T21-es-geo-query`
+  - 예: `feat/hospital-search/T21-kakao-local-search`
 - 커밋: Conventional Commits(`feat:`, `fix:`, `docs:`, `test:`, `chore:`, `refactor:`). 한 커밋에는 논리적 변경 하나만 담습니다.
 - PR: CI 통과 + 리뷰어 1명 승인 후 머지합니다. PR 전에 에이전트 리뷰(`/review`)를 한 번 돌립니다.
 - 태스크를 끝내면 `tasks/todo.md`의 체크박스를 같은 PR에서 갱신합니다.
@@ -41,6 +41,7 @@
 - **"진단" 표현 금지.** 결과는 "가능성 있는 질환", "권장 진료과", "안내"로 표현합니다.
   예외: 의료 고지 문구("의학적 진단이 아니며 정확한 판단은 의료진에게 받아야 합니다")
 - LLM API에 개인 식별 정보(이름, 연락처, 정확한 주소·좌표 등)를 보내지 않습니다.
+- 위험 요인(성 접촉 이력, 비위생적 주사 이력, 가족력)은 결정이 날 때까지 묻지도 추출하지도 않고, 모델 입력에서 항상 0으로 둡니다(SPEC 6절).
 - 위급 신호 판정을 LLM에만 맡기지 않습니다. 규칙 기반 체크와 OR로 묶습니다.
 
 ## 5. 먼저 물어볼 것

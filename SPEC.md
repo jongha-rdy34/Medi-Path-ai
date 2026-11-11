@@ -13,6 +13,7 @@
 | 학습 환경 | Colab, SSAFY 강의장 RTX 5060, 팀원 RTX 3080 Ti(12GB) |
 | 저장소 | 아직 없음. **1주차 첫 태스크(T00)에서 GitHub 저장소를 만듭니다.** 이유는 plan.md "리스크" 참고 |
 | 배포 | 공개 URL을 목표로 합니다(클라우드 VM 1대 + docker compose). 6절 참고 |
+| 병원 검색(MVP) | **Kakao 로컬 API** (2026-11-11 변경). 백엔드 `GET /api/hospitals`가 Kakao 키워드·카테고리 검색을 감싸고, 키는 서버에만 둡니다. Elasticsearch와 심평원 데이터는 T60(4~5주차)으로 옮깁니다 |
 
 ---
 
@@ -40,7 +41,7 @@
 **사용자**: 증상이 있는 일반인과 그 보호자
 
 **핵심 사용자 흐름**
-1. 사용자가 자연어로 증상을 입력합니다. 예: "어제부터 열이 나고 오른쪽 아랫배가 아파요"
+1. 사용자가 자연어로 증상을 입력합니다. 예: "어제부터 열이 나고 기침과 누런 가래가 나와요"
 2. LLM이 증상을 구조화하고, 필요하면 추가 질문을 1~3개 합니다(발생 시점, 부위, 동반 증상 등).
 3. ML 모델이 **확률이 높은 질환 Top-3와 각 확률**을 계산합니다.
 4. 질환을 진료과로 매핑해 **권장 진료과**와 그 이유를 보여 줍니다.
@@ -48,10 +49,14 @@
 6. **위급 신호**(흉통+호흡곤란, 의식 저하 등)가 감지되면 다른 결과보다 먼저 119 및 응급실 안내를 띄웁니다.
 
 **성공 기준(측정 가능)**: 수치는 팀에서 조정합니다.
-- 질환 예측 Top-3 정확도 ≥ 0.80 (홀드아웃 테스트셋 기준), 진료과 추천 정확도 ≥ 0.85
+- 질환 예측 Top-3 정확도 ≥ 0.80을 두 테스트셋에서 모두 만족합니다(2026-11-11 평가 방식 변경).
+  - **그룹 분할 테스트셋**: Kaggle `Training.csv`의 중복을 제거한 뒤 고유 증상 조합 단위로 train/val/test를 나눕니다. 같은 조합은 두 셋에 동시에 들어가지 않습니다.
+  - **노이즈 테스트셋**: 그룹 분할 테스트셋에서 증상 일부를 지우고(dropout) 관련 없는 증상을 더합니다. 시드를 고정해 재현할 수 있게 합니다.
+  - Kaggle `Testing.csv`는 42행 중 41행이 `Training.csv`와 겹쳐 평가에 쓰지 않습니다(`data/README.md`).
+- **최종 지표**는 자연어 증상 문장 → LLM 구조화(T13) → 분류 모델의 end-to-end Top-3 정확도와 진료과 추천 정확도(목표 ≥ 0.85)로 보고합니다.
 - 위급 신호 테스트 케이스 재현율(recall) 100%. 놓치는 것보다 과잉 경고가 낫습니다.
 - 증상 입력부터 결과 화면까지 p95 < 5초 (LLM 호출 포함)
-- 주변 병원 검색 p95 < 300ms (Elasticsearch geo 쿼리)
+- 주변 병원 검색 p95 < 300ms (Kakao 로컬 API 호출 포함. 외부 API라 목표치는 T21에서 재검토)
 - `docker compose up` 한 번으로 전체 데모가 로컬에서 실행됩니다.
 
 ---
@@ -67,7 +72,7 @@ agent-skills 기준으로 이 요청은 독립적으로 테스트할 수 있는 
 | `data-foundation` | 증상·질환·진료과 데이터 수집, 정제, EDA, 질환→진료과 매핑 테이블 | — | B |
 | `triage-model` | 증상→질환 분류 모델(베이스라인 → 파인튜닝), 추론 서비스(ml-service) | `data-foundation`, `api-contract` | B |
 | `llm-assistant` | 자연어 증상 구조화, 추가 질문 생성, 결과 설명문, 위급 신호 1차 감지 | `api-contract` | B |
-| `hospital-search` | 병원·응급실 데이터 적재, Elasticsearch geo 검색 | `api-contract` | A |
+| `hospital-search` | MVP: Kakao 로컬 API로 주변 병원 검색(팀원 프로토타입 기반). 4~5주차: 심평원 데이터 적재 + Elasticsearch geo 검색(T60과 함께) | `api-contract` | A |
 | `backend-api` | 위 모듈을 엮는 메인 API(세션, 오케스트레이션, 로깅) | `api-contract`, `triage-model`, `llm-assistant`, `hospital-search` | A |
 | `web-frontend` | Vue 3 UI(증상 입력/대화, 결과, 지도) | `api-contract` (개발 중에는 Mock 사용) | A |
 | `data-pipeline` | 실시간: Kafka/Flink 응급실 병상 수집(A). 배치: Spark/Airflow 재학습(B) | `data-foundation`, `hospital-search`, `triage-model` | A + B |
@@ -92,7 +97,8 @@ api-contract, platform, data-foundation
 [Vue 3 SPA] ──REST──> [backend-api (Django + DRF)]
                           ├──> [ml-service (FastAPI)]  triage-model 추론
                           ├──> [LLM API]               llm-assistant
-                          ├──> [Elasticsearch]         hospital-search (geo_point)
+                          ├──> [Kakao 로컬 API]        hospital-search (MVP)
+                          ├──> [Elasticsearch]         병원 geo·응급실 병상 (4~5주차, pipeline)
                           ├──> [PostgreSQL]            세션, 익명 로그, 매핑 테이블
                           └──> [Kafka] 익명화된 증상 이벤트 발행
 
@@ -110,7 +116,7 @@ api-contract, platform, data-foundation
 | 프론트 | Vue 3 + Vite + TypeScript + Pinia, 지도는 Kakao Maps JS SDK | 권고 스택을 따르고, 국내 주소와 좌표에 강합니다. |
 | 모델 | 베이스라인: TF-IDF/원핫 + LogisticRegression·LightGBM → 파인튜닝: 한국어 BERT 계열(KM-BERT, KLUE-RoBERTa 등) 다중 클래스 분류 | 베이스라인을 먼저 만들어야 파인튜닝 효과를 숫자로 증명할 수 있습니다. |
 | LLM | `LLMProvider` 인터페이스 뒤에 Gemini API / HF 오픈 모델(LoRA) 구현체를 둠 | 3.1절. 어떤 모델을 쓰든 출력은 JSON 스키마로 강제해 분류 모델 입력과 연결합니다. |
-| 검색 | Elasticsearch (geo_distance + 진료과 필터 + 한글 nori 분석기) | 과제 권고사항이고, "주변 병원" 기능에 바로 쓰입니다. |
+| 검색 | MVP: Kakao 로컬 API. 4~5주차: Elasticsearch (geo_distance + 진료과 필터 + 한글 nori 분석기) | Kakao는 팀원 프로토타입이 이미 동작해 MVP 일정이 줄어듭니다. ES는 과제 권고사항이라 응급실 실시간 병상(T60)과 함께 붙입니다. |
 | 파이프라인 | Kafka, Flink(PyFlink), Spark(PySpark), Airflow | 과제 권고사항입니다. 아래 5절에서 각 도구에 실제 쓰임을 붙였습니다. |
 | 실험 관리 | MLflow (선택) | 재학습한 모델의 버전 관리와 비교에 씁니다. |
 
@@ -160,7 +166,7 @@ api-contract, platform, data-foundation
 | Flink | 응급실 병상 스트림을 ES에 반영하고, 지역×증상 10분 윈도로 집계합니다(유행 신호 대시보드). |
 | Spark | 쌓인 로그와 데이터셋으로 배치 EDA, 학습셋 재생성, 피처를 집계합니다. |
 | Airflow | DAG ① 병원 정보 일일 갱신, ② 주간 재학습(Spark → 학습 → 평가 → 기준을 넘으면 교체) |
-| Elasticsearch | 병원 geo 검색, 증상 키워드 자동완성(nori) |
+| Elasticsearch | 심평원 병원 geo 검색, 응급실 가용 병상, 증상 트렌드 집계 (4~5주차) |
 
 ---
 
@@ -168,7 +174,7 @@ api-contract, platform, data-foundation
 
 - **구성**: 클라우드 VM 1대 + `docker compose` + Caddy(자동 HTTPS) + 도메인(무료 DuckDNS 또는 저가 도메인)
 - **VM 후보**: 크레딧이나 무료 등급이 있는 클라우드(GCP 신규 크레딧, AWS 프리티어, Oracle Cloud Always Free ARM 등). 어느 곳을 쓸지는 T40에서 비교해 정하고, 처음 쓰는 사람도 따라 할 수 있는 단계별 가이드(`docs/deploy.md`)를 함께 작성합니다.
-- **compose 프로필 분리**: 상시 공개용 `core`(frontend, backend, ml-service, postgres, elasticsearch)는 RAM 4~8GB면 돌아갑니다. 반면 Kafka/Flink/Spark/Airflow를 담은 `pipeline` 프로필까지 띄우면 16GB 이상이 필요합니다. 그래서 `pipeline`은 로컬이나 발표 시연 때만 켜는 것을 기본으로 하고, VM 여유가 있으면 상시로 올립니다.
+- **compose 프로필 분리**: 상시 공개용 `core`(frontend, backend, ml-service, postgres)는 RAM 4~8GB면 돌아갑니다. 반면 Elasticsearch와 Kafka/Flink/Spark/Airflow를 담은 `pipeline` 프로필까지 띄우면 16GB 이상이 필요합니다. 그래서 `pipeline`은 로컬이나 발표 시연 때만 켜는 것을 기본으로 하고, VM 여유가 있으면 상시로 올립니다.
 
 ## 6. 안전·법적 경계 (필수)
 
@@ -176,6 +182,7 @@ api-contract, platform, data-foundation
 - 위급 신호 규칙은 **LLM에만 맡기지 않습니다**. 규칙 기반 체크리스트를 함께 써서 둘 중 하나라도 걸리면 응급 안내를 띄웁니다.
 - 건강 정보는 개인정보보호법상 민감정보입니다. 따라서 **로그인 없이 쓰고, 원문 증상은 저장하지 않으며**, 익명화한 구조화 증상과 대략적 지역(시군구 단위)만 저장합니다.
 - LLM API에 개인 식별 정보를 보내지 않습니다.
+- **위험 요인(보류)**: 성 접촉 이력, 비위생적 주사 이력, 가족력은 수집 여부가 정해질 때까지 LLM이 묻지도 추출하지도 않습니다. 모델 입력에서 해당 증상 ID(`extra_marital_contacts`, `receiving_unsterile_injections`, `family_history`)는 항상 0(모름)으로 둡니다.
 
 ---
 
@@ -218,7 +225,7 @@ ML 테스트:    cd ml-service && pytest
 
 ## 9. 테스트 전략
 
-- 백엔드와 ML: pytest. 모델은 "고정 평가셋 Top-3 정확도 ≥ 기준"을 테스트로 고정해 성능이 떨어지는 것을 막습니다.
+- 백엔드와 ML: pytest. 모델은 "그룹 분할·노이즈 테스트셋 Top-3 정확도 ≥ 기준"을 테스트로 고정해 성능이 떨어지는 것을 막습니다(1절 성공 기준).
 - 위급 신호: 케이스 테이블(입력 → 반드시 응급 안내)을 회귀 테스트로 둡니다.
 - 계약 테스트: OpenAPI 스키마로 백엔드 응답을 검증합니다(schemathesis 등).
 - 프론트: Vitest(컴포넌트), Playwright(핵심 흐름 E2E 1~2개).
@@ -237,3 +244,5 @@ ML 테스트:    cd ml-service && pytest
 2. **학습 데이터 확보 가능 여부**: AI Hub 신청 승인 여부에 따라 한국어 데이터와 영어 데이터(번역) 중 무엇을 주력으로 쓸지 정합니다(T10).
 3. **클라우드 계정**: 누구 명의로, 어느 클라우드를 쓸지 정합니다(T40).
 4. **A/B 배정**: 두 분 중 누가 A(서비스 트랙)이고 누가 B(데이터·AI 트랙)인지 정해 주세요.
+5. **데이터 확장 시 질환 범위 확대**: 지금은 Kaggle 41종으로 진행합니다. AI Hub 데이터가 확보되면 충수염처럼 빠진 질환을 넣을지 정합니다.
+6. **위험 요인 수집 여부**: 6절의 위험 요인 3종을 묻거나 저장해도 되는지(민감정보) 정합니다. 정해질 때까지 수집하지 않습니다.

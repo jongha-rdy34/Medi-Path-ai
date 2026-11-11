@@ -30,17 +30,18 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: T00
 
 ### T02 [A] docker compose와 CI 뼈대 · M
-- [x] `infra/docker-compose.yml`: `core` 프로필(frontend, backend, ml-service, postgres, elasticsearch), `pipeline` 프로필은 자리만 확보
+- [x] `infra/docker-compose.yml`: `core` 프로필(frontend, backend, ml-service, postgres), `pipeline` 프로필은 자리만 확보(Elasticsearch는 2026-11-11에 `pipeline`으로 이동)
 - [x] 각 서비스 Hello 수준 실행(Django health, FastAPI health, Vite 기본 페이지)
 - [x] GitHub Actions: 바뀐 경로별로 lint와 테스트 실행(backend, ml-service: pytest / frontend: vitest·eslint) · _원격 저장소가 생기면 첫 실행 확인 필요_
 - **검증**: `docker compose -f infra/docker-compose.yml --profile core up`을 실행하면 세 health 엔드포인트가 모두 200을 반환
 - **의존**: T00
 
-### T03 [A] 공공 API 활용신청 · S (첫날 처리)
-- [ ] 공공데이터포털에서 건강보험심사평가원 병원정보서비스, 국립중앙의료원 응급의료기관 정보 조회 서비스를 활용신청
-- [ ] Kakao Developers 앱 등록(지도 JS 키, 로컬 API 키)
+### T03 [A] 공공 API 활용신청 · S (범위 축소, 2026-11-11)
+Kakao 키는 팀원이 보유하고 있어 이 태스크에서 뺍니다. 공공데이터포털만 다룹니다(4~5주차 T60에서 사용).
+- [ ] `docs/api-keys.md`: 공공데이터포털에서 건강보험심사평가원 병원정보서비스, 국립중앙의료원 응급의료기관 정보 조회 서비스 활용신청 절차
+- [ ] 키를 받은 뒤 바로 실행할 curl 확인 스크립트
 - [ ] 키는 `.env`에만 보관하고, 키 이름은 `.env.example`에 기록
-- **검증**: 각 API를 curl로 1회 호출해 응답을 확인
+- **검증**: 키 발급 후 스크립트로 각 API를 1회 호출해 응답을 확인(사람이 실행)
 - **의존**: 없음
 
 ### T10 [B] 학습 데이터 확보 · S (첫날 신청)
@@ -75,11 +76,13 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **검증**: `npm run test`, 모바일 폭(375px)에서 수동 확인
 - **의존**: T01
 
-### T21 [A] 병원 데이터 → Elasticsearch geo 검색 · M
-- [ ] 심평원 데이터 적재 스크립트(진료과 코드, 좌표 포함), ES 인덱스 매핑(`geo_point`, nori)
-- [ ] 진료과 필터 + `geo_distance` 정렬 쿼리
-- **검증**: 서울 특정 좌표에서 반경 3km 내과 검색 시 결과가 거리순으로 나오고, p95 < 300ms
-- **의존**: T02, T03
+### T21 [A] Kakao 로컬 API 병원 검색 연동 · M (팀원 담당, 2026-11-11 변경)
+팀원이 현재 위치 기준 "내과" 검색 프로토타입을 만들었습니다. 이를 백엔드로 옮깁니다. 엔지니어링 에이전트는 구현하지 않고, 팀원 코드를 받으면 연동만 합니다.
+- [ ] 백엔드 `GET /api/hospitals`가 Kakao 로컬 키워드·카테고리 검색을 감쌈. 진료과 이름(`data/mappings/departments.csv`)을 검색어로 사용
+- [ ] Kakao REST 키는 서버(`.env`)에만 둠. 프론트로 보내지 않음
+- [ ] Kakao 응답에 맞춰 `contracts/openapi.yaml`의 `Hospital` 스키마를 고칠 필요가 있으면 계약 변경 PR로 처리(상대방 리뷰)
+- **검증**: 서울 특정 좌표에서 반경 3km 내과 검색 시 결과가 거리순으로 나옴. 지연 p95를 측정해 기록(목표치는 측정 후 재검토)
+- **의존**: T01, T02
 
 ### T22 [A] 백엔드: 세션·오케스트레이션(stub) · M
 - [ ] Django + DRF로 T01의 엔드포인트 구현. ml-service와 LLM은 stub 클라이언트로 대체
@@ -90,22 +93,28 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 
 ### T12 [B] EDA 노트북 · S
 - [ ] 클래스 불균형, 증상 빈도, 증상 동시출현 히트맵, 진료과 분포 → `data/notebooks/eda.ipynb`
+- [ ] 중복 행과 고유 증상 조합 수(304개), `Testing.csv`가 `Training.csv`와 겹치는 정도(42행 중 41행)를 노트북에 보여 줍니다. 평가 방식 변경의 근거입니다
 - [ ] 발표용 핵심 그래프 3~5개를 `docs/figures/`에 저장
 - **검증**: 노트북을 처음부터 끝까지 실행했을 때 오류 없음
 - **의존**: T10, T11
 
 ### T13 [B] LLM 평가셋과 Gemini 구현 · M
-- [ ] `ml-service/llm/eval/cases.jsonl`: 증상 문장 50~100개 → 정답 구조화 JSON(T11 증상 ID)
+- [ ] `ml-service/llm/eval/cases.jsonl`: 증상 문장 50~100개 → 정답 구조화 JSON(T11 증상 ID)과 **정답 질환 ID**. 질환 라벨은 T14의 end-to-end 평가에 씁니다
 - [ ] `LLMProvider` 인터페이스(`extract_symptoms`, `next_questions`, `explain`)와 `GeminiProvider` 구현(JSON 스키마 강제)
 - [ ] 평가 스크립트: 증상 추출 F1, JSON 파싱 성공률, 평균 지연, 1천 건당 비용
+- [ ] 위험 요인 3종(`extra_marital_contacts`, `receiving_unsterile_injections`, `family_history`)은 묻지도 추출하지도 않음(SPEC 6절). 프롬프트와 출력 필터로 막고 테스트로 확인
 - **검증**: `python -m llm.eval --provider gemini` 실행 시 결과표 출력. 그 결과를 `docs/adr/0001-llm-choice.md`에 기록
 - **의존**: T01, T11
 
 ### T14 [B] 베이스라인 분류 모델 + ml-service `/predict` · M
 - [ ] 원핫 또는 TF-IDF + LogisticRegression/LightGBM, 학습·평가 스크립트
+- [ ] 분할: `Training.csv` 중복 제거 → 고유 증상 조합 단위 그룹 분할(train/val/test). 같은 조합이 두 셋에 겹치지 않는지 테스트로 확인. `Testing.csv`는 쓰지 않음
+- [ ] 위험 요인 3종은 학습·추론 입력에서 항상 0(SPEC 6절)
+- [ ] 노이즈 테스트셋: 시드 고정, 증상 일부 제거(dropout) + 관련 없는 증상 추가
+- [ ] end-to-end 평가: T13 평가셋 문장 → LLM 구조화 → `/predict` Top-3 정확도와 진료과 추천 정확도
 - [ ] FastAPI `/predict`(T01 계약), 모델 파일은 버전 이름으로 저장
-- **검증**: `cd ml-service && pytest`. Top-3 정확도를 기록(이후 T50의 비교 기준)
-- **의존**: T01, T10, T11
+- **검증**: `cd ml-service && pytest`. 그룹 분할 테스트셋과 노이즈 테스트셋 모두 Top-3 ≥ 0.80. end-to-end 지표를 기록(이후 T50의 비교 기준)
+- **의존**: T01, T10, T11 (end-to-end 평가는 T13)
 
 ### T15 [B] 위급 신호 규칙과 회귀 테스트 · S
 - [ ] `ml-service/safety/red_flags.yaml`: 규칙(증상 조합 → 응급) 과 출처
@@ -118,9 +127,9 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 ## Phase 2 — 통합과 첫 배포 (W3: 11/25–12/01)
 
 ### T30 [A] 실제 연동과 지도 · M
-- [ ] 백엔드의 stub을 실제 ml-service, LLMProvider, ES로 교체. 위급 판정은 규칙 OR LLM
+- [ ] 백엔드의 stub을 실제 ml-service, LLMProvider, Kakao 병원 검색으로 교체. 위급 판정은 규칙 OR LLM
 - [ ] 프론트의 Mock을 끄고 실제 API에 연결, 카카오맵에 병원 마커 표시, 브라우저 위치 권한(거부 시 주소 입력)
-- **검증**: "열나고 오른쪽 아랫배가 아파요"를 입력하면 결과, 진료과, 지도까지 전부 뜨고 p95 < 5s. Playwright E2E 1개 통과
+- **검증**: "열이 나고 기침과 가래가 나와요"를 입력하면 결과(폐렴 가능성), 진료과(내과·호흡기), 병원 목록·지도까지 전부 뜨고 p95 < 5s. "가슴이 아프고 식은땀이 나요"를 입력하면 응급 안내(119)가 결과보다 먼저 뜸. Playwright E2E 1개 통과
 - **의존**: T13, T14, T15, T20, T21, T22
 
 ### T31 [A] 클라우드 배포 + 가이드 · M
@@ -144,7 +153,7 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - [ ] KLUE-RoBERTa-base 또는 KM-BERT로 증상→질환 분류 학습(Colab, 5060, 3080 Ti 중 하나)
 - [ ] RTX 5060을 쓰면 `cu128` PyTorch에서 `torch.cuda.is_available()`부터 확인
 - [ ] 베이스라인(T14)과 Top-1·Top-3 정확도, 추론 지연(CPU)을 비교하는 표
-- **검증**: 고정 테스트셋 Top-3 ≥ 0.80이고 베이스라인보다 높음. CPU 추론 p95 < 300ms
+- **검증**: 그룹 분할 테스트셋과 노이즈 테스트셋 모두 Top-3 ≥ 0.80이고 베이스라인보다 높음. end-to-end 지표도 베이스라인과 비교. CPU 추론 p95 < 300ms
 - **의존**: T14
 
 ### T51 [B] ml-service 모델 교체 · S
@@ -164,12 +173,14 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **검증**: `pipeline` 프로필에서 DAG를 수동 실행해 성공, 새 모델 버전 파일이 생성됨
 - **의존**: T50, T61
 
-### T60 [A] Kafka·Flink 응급실 실시간 병상 · M
+### T60 [A] Kafka·Flink 응급실 실시간 병상 + 심평원·ES 병원 검색 · M
+- [ ] 심평원 병원정보 적재 스크립트(진료과 코드, 좌표 포함), ES 인덱스 매핑(`geo_point`, nori), 진료과 필터 + `geo_distance` 쿼리 (기존 T21에서 이동)
+- [ ] ES를 compose `pipeline` 프로필에서 켬
 - [ ] Producer: 국립중앙의료원 API를 1~5분마다 폴링해 Kafka `er-beds` 토픽으로 보냄
 - [ ] Flink(PyFlink) 잡: 정제 후 ES 병원 문서의 `er_available_beds` 필드 갱신
 - [ ] 프론트 병원 목록에 응급실 가용 병상과 갱신 시각 표시
 - **검증**: `pipeline` 프로필 실행 5분 안에 ES 값이 바뀌고 화면에 반영됨
-- **의존**: T21, T30
+- **의존**: T03, T21, T30
 
 ### T61 [A] 증상 이벤트 스트림과 트렌드 대시보드 · M
 - [ ] 백엔드가 익명 증상 이벤트를 Kafka `symptom-events`로 발행
@@ -179,9 +190,9 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: T30
 
 ### T62 [A] Airflow 병원정보 일일 갱신 DAG · S
-- [ ] T21의 적재 스크립트를 매일 실행하는 DAG
+- [ ] T60의 심평원 적재 스크립트를 매일 실행하는 DAG
 - **검증**: DAG를 수동 실행해 성공, 문서 수와 갱신 시각 로그 확인
-- **의존**: T21, T53(Airflow 설치)
+- **의존**: T60, T53(Airflow 설치)
 
 ### ✅ Checkpoint 3 (12/15)
 - [ ] 파인튜닝 모델이 서비스에 적용되고 비교표 작성 완료
