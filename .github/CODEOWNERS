@@ -13,6 +13,7 @@
 /.github/                       @A_GITHUB_ID
 /docs/github-setup.md           @A_GITHUB_ID
 /docs/api-keys.md               @A_GITHUB_ID
+/prototypes/                    @A_GITHUB_ID
 
 # B: 데이터·AI 트랙 (data-foundation, triage-model, llm-assistant)
 /data/                          @B_GITHUB_ID

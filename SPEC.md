@@ -199,6 +199,7 @@ symptom-care/
 ├── data/                       # 수집 스크립트, notebooks(EDA), 매핑 테이블
 ├── pipeline/                   # kafka producers, flink jobs, spark jobs, airflow dags
 ├── infra/                      # docker-compose.yml, ES 매핑, 초기화 스크립트
+├── prototypes/                 # 팀원 프로토타입(본 코드로 옮기기 전 임시 자리)
 ├── docs/specs/                 # SPEC-<module-id>.md
 ├── docs/adr/                   # 아키텍처 결정 기록
 └── tasks/                      # plan.md, todo.md
