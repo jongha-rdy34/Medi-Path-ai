@@ -1,20 +1,20 @@
 {
  "provider": "gemini",
  "model": "gemini-3.5-flash-lite",
- "run_at": "2026-11-11T08:00:54+00:00",
+ "run_at": "2026-11-11T14:50:04+00:00",
  "summary": {
   "cases": 59,
-  "precision": 0.9722,
-  "recall": 0.9459,
-  "f1": 0.9589,
+  "precision": 0.9816,
+  "recall": 0.9552,
+  "f1": 0.9682,
   "json_parse_rate": 1.0,
-  "latency_avg_s": 2.344,
-  "latency_p95_s": 8.412,
+  "latency_avg_s": 3.42,
+  "latency_p95_s": 10.563,
   "avg_prompt_tokens": 2683.7,
-  "avg_output_tokens": 102.7,
+  "avg_output_tokens": 102.9,
   "cost_per_1k_calls_usd": null,
   "risk_factor_ids_in_raw_output": 0,
-  "emergency_suspected_cases": 6
+  "emergency_suspected_cases": 7
  },
  "cases": [
   {
@@ -46,7 +46,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.2000270309999905,
+    "latency_s": 3.657382197000061,
     "prompt_tokens": 2685,
     "output_tokens": 83
    }
@@ -80,7 +80,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.8913302969999677,
+    "latency_s": 1.8010094329999902,
     "prompt_tokens": 2683,
     "output_tokens": 94
    }
@@ -121,7 +121,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.8937469210000017,
+    "latency_s": 2.334770983999988,
     "prompt_tokens": 2690,
     "output_tokens": 106
    }
@@ -156,7 +156,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.8722603610001443,
+    "latency_s": 9.184984748000034,
     "prompt_tokens": 2689,
     "output_tokens": 84
    }
@@ -202,7 +202,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.0471329500001048,
+    "latency_s": 1.0167959619999465,
     "prompt_tokens": 2693,
     "output_tokens": 127
    }
@@ -242,7 +242,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.9636937020000005,
+    "latency_s": 1.2446195979999857,
     "prompt_tokens": 2685,
     "output_tokens": 103
    }
@@ -282,9 +282,9 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.8958185649998995,
+    "latency_s": 10.209896292000053,
     "prompt_tokens": 2683,
-    "output_tokens": 102
+    "output_tokens": 60
    }
   },
   {
@@ -322,7 +322,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.1257144420001168,
+    "latency_s": 0.8723379539999314,
     "prompt_tokens": 2687,
     "output_tokens": 106
    }
@@ -368,7 +368,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.0418037849999564,
+    "latency_s": 1.6427296239999123,
     "prompt_tokens": 2691,
     "output_tokens": 128
    }
@@ -414,7 +414,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.7608880249999856,
+    "latency_s": 22.24252881999996,
     "prompt_tokens": 2687,
     "output_tokens": 123
    }
@@ -460,7 +460,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.1333838820000892,
+    "latency_s": 1.4321894969998539,
     "prompt_tokens": 2688,
     "output_tokens": 125
    }
@@ -506,7 +506,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.9308392380000896,
+    "latency_s": 1.244484238000041,
     "prompt_tokens": 2693,
     "output_tokens": 124
    }
@@ -546,7 +546,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 2.622604729999921,
+    "latency_s": 1.0405478489999496,
     "prompt_tokens": 2684,
     "output_tokens": 107
    }
@@ -586,7 +586,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.1424914639999315,
+    "latency_s": 10.035225201000003,
     "prompt_tokens": 2690,
     "output_tokens": 104
    }
@@ -621,7 +621,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.270694069000001,
+    "latency_s": 0.9203979419999087,
     "prompt_tokens": 2687,
     "output_tokens": 86
    }
@@ -661,7 +661,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.0660811749999084,
+    "latency_s": 1.9028467830000864,
     "prompt_tokens": 2684,
     "output_tokens": 153
    }
@@ -701,7 +701,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 2.3473898610000106,
+    "latency_s": 1.1973028100001102,
     "prompt_tokens": 2682,
     "output_tokens": 104
    }
@@ -724,26 +724,26 @@
      },
      {
       "symptom_id": "sweating",
-      "severity": null,
+      "severity": "severe",
       "duration_days": null
      },
      {
       "symptom_id": "breathlessness",
-      "severity": null,
+      "severity": "severe",
       "duration_days": null
      },
      {
       "symptom_id": "nausea",
-      "severity": null,
+      "severity": "severe",
       "duration_days": null
      }
     ],
     "emergency_suspected": true,
-    "emergency_reason": "가슴 통증과 호흡곤란은 심혈관 질환 등 위급 상황일 수 있습니다.",
+    "emergency_reason": "가슴 통증, 호흡곤란",
     "parsed": true,
-    "latency_s": 1.2258651530000861,
+    "latency_s": 1.7835246989998268,
     "prompt_tokens": 2684,
-    "output_tokens": 139
+    "output_tokens": 150
    }
   },
   {
@@ -782,7 +782,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.0798584799999844,
+    "latency_s": 1.3994772849998753,
     "prompt_tokens": 2690,
     "output_tokens": 119
    }
@@ -828,7 +828,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 2.8681675699999687,
+    "latency_s": 1.1130709589999697,
     "prompt_tokens": 2688,
     "output_tokens": 130
    }
@@ -868,7 +868,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.2658691900001031,
+    "latency_s": 1.624295634999953,
     "prompt_tokens": 2681,
     "output_tokens": 108
    }
@@ -914,7 +914,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 22.0558924190002,
+    "latency_s": 10.245973124999864,
     "prompt_tokens": 2685,
     "output_tokens": 128
    }
@@ -960,7 +960,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.2486183619998883,
+    "latency_s": 1.131373066000151,
     "prompt_tokens": 2684,
     "output_tokens": 124
    }
@@ -1006,7 +1006,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.685025171999996,
+    "latency_s": 2.78047160899996,
     "prompt_tokens": 2688,
     "output_tokens": 128
    }
@@ -1046,7 +1046,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.541388674000018,
+    "latency_s": 10.56279960500001,
     "prompt_tokens": 2684,
     "output_tokens": 104
    }
@@ -1092,7 +1092,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 8.412337198999921,
+    "latency_s": 1.0754328840000653,
     "prompt_tokens": 2689,
     "output_tokens": 123
    }
@@ -1137,9 +1137,9 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.1258479159998842,
+    "latency_s": 9.706850079000105,
     "prompt_tokens": 2690,
-    "output_tokens": 120
+    "output_tokens": 71
    }
   },
   {
@@ -1183,7 +1183,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.07083446799993,
+    "latency_s": 1.467046038000035,
     "prompt_tokens": 2688,
     "output_tokens": 128
    }
@@ -1223,7 +1223,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.0551440870001443,
+    "latency_s": 3.2167888599999515,
     "prompt_tokens": 2687,
     "output_tokens": 111
    }
@@ -1257,7 +1257,7 @@
      },
      {
       "symptom_id": "high_fever",
-      "severity": "severe",
+      "severity": null,
       "duration_days": null
      },
      {
@@ -1269,9 +1269,9 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.0799000360000264,
+    "latency_s": 0.9244852929998615,
     "prompt_tokens": 2684,
-    "output_tokens": 130
+    "output_tokens": 122
    }
   },
   {
@@ -1321,7 +1321,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.4888411530000667,
+    "latency_s": 2.3139340230000016,
     "prompt_tokens": 2695,
     "output_tokens": 139
    }
@@ -1361,7 +1361,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.156830981999974,
+    "latency_s": 0.9474749739999879,
     "prompt_tokens": 2688,
     "output_tokens": 106
    }
@@ -1401,7 +1401,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.2686859810000897,
+    "latency_s": 1.5686788410000645,
     "prompt_tokens": 2684,
     "output_tokens": 106
    }
@@ -1433,9 +1433,9 @@
      }
     ],
     "emergency_suspected": true,
-    "emergency_reason": "한쪽 팔다리 힘 빠짐과 심한 두통 등 뇌졸중 의심 증상이 있어 위급할 수 있습니다.",
+    "emergency_reason": "한쪽 팔다리에 힘이 안 들어가는 증상은 응급 상황(뇌졸중 등)을 시사할 수 있습니다.",
     "parsed": true,
-    "latency_s": 1.3507885900000929,
+    "latency_s": 8.517060827000023,
     "prompt_tokens": 2682,
     "output_tokens": 160
    }
@@ -1475,7 +1475,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.9104203780000262,
+    "latency_s": 1.881027850999999,
     "prompt_tokens": 2681,
     "output_tokens": 109
    }
@@ -1519,11 +1519,11 @@
      }
     ],
     "emergency_suspected": true,
-    "emergency_reason": "가슴 통증과 호흡곤란이 동반되어 응급 상황일 가능성이 있습니다.",
+    "emergency_reason": "가슴 통증과 호흡곤란이 동반되어 위급할 수 있습니다.",
     "parsed": true,
-    "latency_s": 1.072177259,
+    "latency_s": 8.029557189000116,
     "prompt_tokens": 2685,
-    "output_tokens": 152
+    "output_tokens": 150
    }
   },
   {
@@ -1556,7 +1556,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.9598365960000592,
+    "latency_s": 1.3976712200001202,
     "prompt_tokens": 2684,
     "output_tokens": 90
    }
@@ -1564,6 +1564,7 @@
   {
    "id": "c038",
    "expected": [
+    "cough",
     "blood_in_sputum",
     "mild_fever",
     "loss_of_appetite",
@@ -1579,7 +1580,7 @@
      },
      {
       "symptom_id": "blood_in_sputum",
-      "severity": "severe",
+      "severity": null,
       "duration_days": null
      },
      {
@@ -1596,9 +1597,9 @@
     "emergency_suspected": true,
     "emergency_reason": "가래에 피가 섞여 나옴",
     "parsed": true,
-    "latency_s": 0.9746622879999904,
+    "latency_s": 8.021309685000006,
     "prompt_tokens": 2688,
-    "output_tokens": 137
+    "output_tokens": 129
    }
   },
   {
@@ -1642,7 +1643,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.5954494679999698,
+    "latency_s": 1.478115101999947,
     "prompt_tokens": 2690,
     "output_tokens": 137
    }
@@ -1682,7 +1683,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 7.450075249000065,
+    "latency_s": 6.954941137000105,
     "prompt_tokens": 2688,
     "output_tokens": 116
    }
@@ -1722,7 +1723,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 2.525681286000008,
+    "latency_s": 1.7168003870001485,
     "prompt_tokens": 2690,
     "output_tokens": 108
    }
@@ -1748,7 +1749,7 @@
       "duration_days": 1
      },
      {
-      "symptom_id": "mucoid_sputum",
+      "symptom_id": "phlegm",
       "severity": null,
       "duration_days": 1
      }
@@ -1756,9 +1757,9 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 2.573833951000097,
+    "latency_s": 1.2809291779999512,
     "prompt_tokens": 2677,
-    "output_tokens": 111
+    "output_tokens": 108
    }
   },
   {
@@ -1782,11 +1783,11 @@
      }
     ],
     "emergency_suspected": true,
-    "emergency_reason": "가슴 통증과 식은땀은 심근경색 등 응급 심장 질환의 신호일 수 있습니다.",
+    "emergency_reason": "가슴 통증은 심혈관 질환 등 응급 상황일 수 있습니다.",
     "parsed": true,
-    "latency_s": 0.9555154639999728,
+    "latency_s": 1.701977448999969,
     "prompt_tokens": 2672,
-    "output_tokens": 97
+    "output_tokens": 88
    }
   },
   {
@@ -1812,7 +1813,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.387093971000013,
+    "latency_s": 1.0949433460000364,
     "prompt_tokens": 2675,
     "output_tokens": 61
    }
@@ -1840,7 +1841,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.3565438390000963,
+    "latency_s": 12.056504304999862,
     "prompt_tokens": 2677,
     "output_tokens": 64
    }
@@ -1874,7 +1875,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.6978057480000643,
+    "latency_s": 1.4739353530001154,
     "prompt_tokens": 2677,
     "output_tokens": 80
    }
@@ -1890,21 +1891,21 @@
     "symptoms": [
      {
       "symptom_id": "continuous_feel_of_urine",
-      "severity": "moderate",
-      "duration_days": null
+      "severity": null,
+      "duration_days": 0
      },
      {
       "symptom_id": "burning_micturition",
       "severity": "severe",
-      "duration_days": null
+      "duration_days": 0
      }
     ],
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.3242298889999802,
+    "latency_s": 1.364702558999852,
     "prompt_tokens": 2676,
-    "output_tokens": 85
+    "output_tokens": 95
    }
   },
   {
@@ -1936,7 +1937,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 2.10511918300017,
+    "latency_s": 2.8468360889999076,
     "prompt_tokens": 2675,
     "output_tokens": 54
    }
@@ -1970,7 +1971,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.3392087450001782,
+    "latency_s": 1.2672721750000164,
     "prompt_tokens": 2679,
     "output_tokens": 54
    }
@@ -2004,7 +2005,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 3.104755348000026,
+    "latency_s": 1.113634286999968,
     "prompt_tokens": 2678,
     "output_tokens": 85
    }
@@ -2032,7 +2033,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.2329794549998496,
+    "latency_s": 1.181263448999971,
     "prompt_tokens": 2675,
     "output_tokens": 62
    }
@@ -2060,7 +2061,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 1.5300585600000431,
+    "latency_s": 1.7678573799998958,
     "prompt_tokens": 2678,
     "output_tokens": 67
    }
@@ -2086,11 +2087,11 @@
      }
     ],
     "emergency_suspected": true,
-    "emergency_reason": "말이 어눌해지고 의식이 흐려지는 증상은 뇌졸중 등 응급 상황을 의심할 수 있습니다.",
+    "emergency_reason": "말이 어눌해지고 의식이 흐려지는 증상은 응급 상황일 수 있습니다.",
     "parsed": true,
-    "latency_s": 1.8511871140001404,
+    "latency_s": 1.1762991370001146,
     "prompt_tokens": 2671,
-    "output_tokens": 102
+    "output_tokens": 93
    }
   },
   {
@@ -2104,21 +2105,21 @@
     "symptoms": [
      {
       "symptom_id": "knee_pain",
-      "severity": null,
+      "severity": "moderate",
       "duration_days": null
      },
      {
       "symptom_id": "painful_walking",
-      "severity": null,
+      "severity": "moderate",
       "duration_days": null
      }
     ],
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 5.326690734000067,
+    "latency_s": 1.6201638570000796,
     "prompt_tokens": 2681,
-    "output_tokens": 63
+    "output_tokens": 79
    }
   },
   {
@@ -2150,7 +2151,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 5.7405968999999,
+    "latency_s": 0.8270220769998105,
     "prompt_tokens": 2679,
     "output_tokens": 80
    }
@@ -2178,7 +2179,7 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 2.7927028569999948,
+    "latency_s": 1.0296515019999788,
     "prompt_tokens": 2680,
     "output_tokens": 59
    }
@@ -2194,12 +2195,12 @@
    "extraction": {
     "symptoms": [
      {
-      "symptom_id": "fatigue",
+      "symptom_id": "yellowing_of_eyes",
       "severity": null,
       "duration_days": null
      },
      {
-      "symptom_id": "yellowing_of_eyes",
+      "symptom_id": "fatigue",
       "severity": null,
       "duration_days": null
      }
@@ -2207,9 +2208,9 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 0.8177375110001321,
+    "latency_s": 0.9318157640000209,
     "prompt_tokens": 2676,
-    "output_tokens": 39
+    "output_tokens": 64
    }
   },
   {
@@ -2222,6 +2223,11 @@
    "extraction": {
     "symptoms": [
      {
+      "symptom_id": "high_fever",
+      "severity": null,
+      "duration_days": null
+     },
+     {
       "symptom_id": "patches_in_throat",
       "severity": null,
       "duration_days": null
@@ -2230,9 +2236,9 @@
     "emergency_suspected": false,
     "emergency_reason": null,
     "parsed": true,
-    "latency_s": 5.794463929999893,
+    "latency_s": 5.948550791999878,
     "prompt_tokens": 2680,
-    "output_tokens": 44
+    "output_tokens": 65
    }
   },
   {
@@ -2255,12 +2261,12 @@
       "duration_days": null
      }
     ],
-    "emergency_suspected": false,
-    "emergency_reason": null,
+    "emergency_suspected": true,
+    "emergency_reason": "눈 흰자가 노랗게 변하는 황달 증상은 간 질환 등의 응급 상황을 시사할 수 있습니다.",
     "parsed": true,
-    "latency_s": 9.69047664499999,
+    "latency_s": 1.2778527200000553,
     "prompt_tokens": 2677,
-    "output_tokens": 39
+    "output_tokens": 99
    }
   }
  ]
