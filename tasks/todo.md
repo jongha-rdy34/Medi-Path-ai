@@ -30,9 +30,9 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: T00
 
 ### T02 [A] docker compose와 CI 뼈대 · M
-- [ ] `infra/docker-compose.yml`: `core` 프로필(frontend, backend, ml-service, postgres, elasticsearch), `pipeline` 프로필은 자리만 확보
-- [ ] 각 서비스 Hello 수준 실행(Django health, FastAPI health, Vite 기본 페이지)
-- [ ] GitHub Actions: 바뀐 경로별로 lint와 테스트 실행(backend, ml-service: pytest / frontend: vitest·eslint)
+- [x] `infra/docker-compose.yml`: `core` 프로필(frontend, backend, ml-service, postgres, elasticsearch), `pipeline` 프로필은 자리만 확보
+- [x] 각 서비스 Hello 수준 실행(Django health, FastAPI health, Vite 기본 페이지)
+- [x] GitHub Actions: 바뀐 경로별로 lint와 테스트 실행(backend, ml-service: pytest / frontend: vitest·eslint) · _원격 저장소가 생기면 첫 실행 확인 필요_
 - **검증**: `docker compose -f infra/docker-compose.yml --profile core up`을 실행하면 세 health 엔드포인트가 모두 200을 반환
 - **의존**: T00
 

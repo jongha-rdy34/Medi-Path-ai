@@ -1,0 +1,109 @@
+# symptom-care docker compose (공동 소유 파일: 바꾸면 상대방 리뷰 필수)
+#
+# 실행 (저장소 루트에서):
+#   cp .env.example .env
+#   docker compose -f infra/docker-compose.yml --profile core up --build
+#
+# 프로필
+#   core     : 상시 공개용(frontend, backend, ml-service, postgres, elasticsearch). RAM 4~8GB.
+#   pipeline : Kafka/Flink/Spark/Airflow. 자리만 확보했습니다. T53, T60~T62에서 이 파일 아래쪽에 추가합니다.
+#
+# 참고
+#   - 프로필: https://github.com/compose-spec/compose-spec/blob/main/15-profiles.md
+#   - Elasticsearch Docker 설정(환경변수, ES_JAVA_OPTS):
+#     https://github.com/elastic/docs-content/blob/main/deploy-manage/deploy/self-managed/install-elasticsearch-docker-configure.md
+
+name: symptom-care
+
+x-env: &env
+  env_file: ../.env
+
+services:
+  frontend:
+    profiles: [core]
+    build: ../frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:5173/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  backend:
+    profiles: [core]
+    build: ../backend
+    <<: *env
+    environment:
+      POSTGRES_HOST: postgres
+      ML_SERVICE_URL: http://ml-service:8001
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  ml-service:
+    profiles: [core]
+    build: ../ml-service
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  postgres:
+    profiles: [core]
+    image: postgres:17.11-alpine
+    <<: *env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  elasticsearch:
+    profiles: [core]
+    image: elasticsearch:9.4.8
+    environment:
+      discovery.type: single-node
+      # 로컬 개발 전용. 배포(T31)에서는 포트를 외부에 열지 않고 내부 네트워크로만 접근합니다.
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      # 단일 노드 개발용: 호스트 디스크 사용률이 90%를 넘으면 샤드가 배정되지 않아 클러스터가 red가 됩니다.
+      # 디스크가 작은 배포 VM에서는 T31에서 이 값을 다시 판단합니다.
+      cluster.routing.allocation.disk.threshold_enabled: "false"
+    ports:
+      - "127.0.0.1:9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs 'http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow&timeout=5s' >/dev/null"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+
+  # --- pipeline 프로필 (자리 확보) ---------------------------------------------
+  # kafka, flink-jobmanager, flink-taskmanager, spark, airflow 서비스를 여기에 추가하고
+  # 각 서비스에 `profiles: [pipeline]`을 붙입니다. (T53, T60, T61, T62)
+
+volumes:
+  postgres-data:
+  es-data:

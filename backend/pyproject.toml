@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+# pytest-django: https://github.com/pytest-dev/pytest-django/blob/main/docs/configuring_django.rst
+DJANGO_SETTINGS_MODULE = "config.settings"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
