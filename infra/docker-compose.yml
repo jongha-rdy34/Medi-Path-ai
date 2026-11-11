@@ -48,6 +48,10 @@ services:
     environment:
       POSTGRES_HOST: postgres
       ML_SERVICE_URL: http://ml-service:8001
+      MAPPINGS_DIR: /app/data/mappings
+    volumes:
+      # 질환·진료과 매핑(T11). 결과의 질환명·권장 진료과에 씁니다.
+      - ../data/mappings:/app/data/mappings:ro
     ports:
       - "8000:8000"
     depends_on:

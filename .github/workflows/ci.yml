@@ -45,6 +45,8 @@ jobs:
             backend:
               - *workflow
               - 'backend/**'
+              - 'data/mappings/**'
+              - 'contracts/**'
             ml_service:
               - *workflow
               - 'ml-service/**'
