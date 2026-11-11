@@ -1,8 +1,10 @@
 """GeminiProvider (T13). SDK: google-genai, https://github.com/googleapis/python-genai
 
 - Structured output: response_mime_type="application/json" + response_json_schema
-  (README "Pydantic Model Schema support"). The symptom_id enum excludes the
-  risk factors, so the model cannot return them.
+  (README "Pydantic Model Schema support"). A symptom_id enum of all 128 ids is
+  rejected by the API (400 INVALID_ARGUMENT; 100 ids pass, anyOf split also
+  fails, checked 2026-11-11), so ids are enforced by the prompt dictionary
+  (risk factors excluded) and sanitize_symptoms() after parsing.
 - Auth: GEMINI_API_KEY. In the cloud session a dummy value is enough; the
   network proxy injects the real key header.
 - Free-tier data may be used by Google (SPEC 3.1): send no personal data.
@@ -74,7 +76,8 @@ class GeminiProvider:
                     model=self.model, contents=contents, config=config
                 )
             except errors.APIError as exc:
-                if exc.code != 429 or attempt == self.max_retries:
+                # 429 quota and 503 overload are temporary; anything else is a real error.
+                if exc.code not in (429, 503) or attempt == self.max_retries:
                     raise
                 time.sleep(self.retry_sleep * (attempt + 1))
         raise RuntimeError("unreachable")
@@ -88,7 +91,7 @@ class GeminiProvider:
                     "items": {
                         "type": "object",
                         "properties": {
-                            "symptom_id": {"type": "string", "enum": sorted(self.vocab)},
+                            "symptom_id": {"type": "string"},
                             "severity": {"type": "string", "enum": ["mild", "moderate", "severe"]},
                             "duration_days": {"type": "integer", "minimum": 0},
                         },

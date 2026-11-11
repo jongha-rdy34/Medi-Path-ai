@@ -63,16 +63,19 @@ def test_extract_parses_json_and_drops_unknown_and_risk_factor_ids():
     assert result.prompt_tokens == 100 and result.output_tokens == 20
 
 
-def test_schema_enum_excludes_risk_factors_and_prompt_forbids_them():
+def test_prompt_dictionary_excludes_risk_factors_and_forbids_them():
     p, client = provider(json.dumps({"symptoms": [], "emergency_suspected": False}))
     p.extract_symptoms("text")
 
     config = client.models.calls[0]["config"]
-    enum = config.response_json_schema["properties"]["symptoms"]["items"]["properties"][
-        "symptom_id"
-    ]["enum"]
-    assert set(enum) == {"high_fever", "cough", "chest_pain"}
+    lines = config.system_instruction.splitlines()
+    listed = {line.split(":")[0] for line in lines if ":" in line}
+    assert {"high_fever", "cough", "chest_pain"} <= listed
+    assert not listed & set(RISK_FACTORS)
     assert config.response_mime_type == "application/json"
+    # Gemini rejects a symptom_id enum this large (400), so the dictionary + sanitizer enforce ids.
+    props = config.response_json_schema["properties"]["symptoms"]["items"]["properties"]
+    assert props["symptom_id"] == {"type": "string"}
     assert "성 접촉" in config.system_instruction and "가족력" in config.system_instruction
 
 
@@ -140,3 +143,12 @@ def test_explain_falls_back_when_empty(bad):
     p, _ = provider(bad)
 
     assert p.explain(["pneumonia"], ["high_fever"]).strip()
+
+
+def test_temporary_overload_is_retried():
+    overloaded = errors.ServerError(
+        503, {"error": {"code": 503, "message": "high demand", "status": "UNAVAILABLE"}}
+    )
+    p, client = provider(overloaded, json.dumps({"symptoms": [], "emergency_suspected": False}))
+
+    assert p.extract_symptoms("text").parsed and len(client.models.calls) == 2

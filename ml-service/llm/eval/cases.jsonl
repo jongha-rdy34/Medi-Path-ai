@@ -1,0 +1,59 @@
+{"id": "c001", "text": "얼굴에 고름 찬 여드름이랑 블랙헤드가 잔뜩 났고 흉터도 생기고 있어요", "expected_symptoms": ["pus_filled_pimples", "blackheads", "scurring"], "disease_id": "acne"}
+{"id": "c002", "text": "목 안에 하얀 반점이 생기고 열이 높고, 몇 달 사이에 근육이 많이 빠졌어요", "expected_symptoms": ["patches_in_throat", "high_fever", "muscle_wasting"], "disease_id": "aids"}
+{"id": "c003", "text": "술을 자주 마시는데 요즘 배가 빵빵하게 부풀고 피부가 노래졌어요. 토하기도 하고 배가 아파요", "expected_symptoms": ["history_of_alcohol_consumption", "distention_of_abdomen", "yellowish_skin", "vomiting", "abdominal_pain"], "disease_id": "alcoholic_hepatitis"}
+{"id": "c004", "text": "아침마다 재채기가 멈추지 않고 눈물이 줄줄 나요. 몸이 으슬으슬 떨리기도 해요", "expected_symptoms": ["continuous_sneezing", "watering_from_eyes", "chills", "shivering"], "disease_id": "allergy"}
+{"id": "c005", "text": "관절이 부어서 걸을 때 아프고 아침에 몸이 굳어요. 목도 뻣뻣하고 근육에 힘이 없어요", "expected_symptoms": ["swelling_joints", "painful_walking", "movement_stiffness", "stiff_neck", "muscle_weakness"], "disease_id": "arthritis"}
+{"id": "c006", "text": "고개를 돌리면 세상이 빙빙 돌고 중심을 못 잡겠어요. 메스껍고 토할 것 같아요", "expected_symptoms": ["spinning_movements", "loss_of_balance", "nausea", "vomiting"], "disease_id": "bppv"}
+{"id": "c007", "text": "기침이 계속 나고 숨이 차요. 끈적한 가래도 나오고 많이 피곤해요", "expected_symptoms": ["cough", "breathlessness", "mucoid_sputum", "fatigue"], "disease_id": "bronchial_asthma"}
+{"id": "c008", "text": "뒷목이 아프고 허리도 아파요. 팔다리에 힘이 빠지고 가끔 어지러워요", "expected_symptoms": ["neck_pain", "back_pain", "weakness_in_limbs", "dizziness"], "disease_id": "cervical_spondylosis"}
+{"id": "c009", "text": "몸 여기저기에 붉은 반점이 올라오고 가려워요. 열이 나고 입맛이 없고 몸살 기운이 있어요", "expected_symptoms": ["red_spots_over_body", "itching", "high_fever", "loss_of_appetite", "malaise"], "disease_id": "chicken_pox"}
+{"id": "c010", "text": "눈 흰자랑 피부가 노래지고 온몸이 가려워요. 속이 메스껍고 배가 아파요", "expected_symptoms": ["yellowing_of_eyes", "yellowish_skin", "itching", "nausea", "abdominal_pain"], "disease_id": "chronic_cholestasis"}
+{"id": "c011", "text": "콧물이 나고 코가 막혀요. 목이 칼칼하고 가래가 있고 냄새를 잘 못 맡겠어요", "expected_symptoms": ["runny_nose", "congestion", "throat_irritation", "phlegm", "loss_of_smell"], "disease_id": "common_cold"}
+{"id": "c012", "text": "동남아 다녀온 뒤로 머리가 아프고 눈 뒤가 아파요. 관절이랑 근육이 쑤시고 오한이 있어요", "expected_symptoms": ["headache", "pain_behind_the_eyes", "joint_pain", "muscle_pain", "chills"], "disease_id": "dengue"}
+{"id": "c013", "text": "요즘 소변을 너무 자주 보고 배가 자주 고파요. 살이 빠지고 눈이 침침해요", "expected_symptoms": ["polyuria", "excessive_hunger", "weight_loss", "blurred_and_distorted_vision"], "disease_id": "diabetes"}
+{"id": "c014", "text": "약을 먹고 나서 피부에 발진이 생기고 가려워요. 소변볼 때 따갑고 윗배도 아파요", "expected_symptoms": ["skin_rash", "itching", "burning_micturition", "stomach_pain"], "disease_id": "drug_reaction"}
+{"id": "c015", "text": "피부가 가렵고 오돌토돌한 발진이 생겼어요. 피부색이 얼룩덜룩하게 변했어요", "expected_symptoms": ["itching", "nodal_skin_eruptions", "skin_rash", "dischromic_patches"], "disease_id": "fungal_infection"}
+{"id": "c016", "text": "어제부터 토하고 설사를 계속해요. 눈이 퀭하고 탈수 증상이 있는 것 같아요", "expected_symptoms": ["vomiting", "diarrhoea", "sunken_eyes", "dehydration"], "disease_id": "gastroenteritis"}
+{"id": "c017", "text": "신물이 올라오고 명치가 아파요. 기침도 나고 혀가 헐었어요", "expected_symptoms": ["acidity", "stomach_pain", "cough", "ulcers_on_tongue"], "disease_id": "gerd"}
+{"id": "c018", "text": "가슴이 조이듯 아프고 식은땀이 나요. 숨이 차고 토할 것 같아요", "expected_symptoms": ["chest_pain", "sweating", "breathlessness", "vomiting"], "disease_id": "heart_attack"}
+{"id": "c019", "text": "변비가 심하고 변 볼 때 항문이 아파요. 변에 피가 섞여 나오고 항문이 가려워요", "expected_symptoms": ["constipation", "pain_during_bowel_movements", "bloody_stool", "irritation_in_anus", "pain_in_anal_region"], "disease_id": "hemorrhoids"}
+{"id": "c020", "text": "열이 조금 나고 눈이 노래졌어요. 소변 색이 진하고 근육이 쑤시고 입맛이 없어요", "expected_symptoms": ["mild_fever", "yellowing_of_eyes", "dark_urine", "muscle_pain", "loss_of_appetite"], "disease_id": "hepatitis_a"}
+{"id": "c021", "text": "피부가 노랗고 소변이 노래요. 몸이 너무 피곤하고 가려워요", "expected_symptoms": ["yellowish_skin", "yellow_urine", "fatigue", "itching"], "disease_id": "hepatitis_b"}
+{"id": "c022", "text": "요즘 쉽게 피곤하고 입맛이 없어요. 피부랑 눈이 노래지고 속이 울렁거려요", "expected_symptoms": ["fatigue", "loss_of_appetite", "yellowish_skin", "yellowing_of_eyes", "nausea"], "disease_id": "hepatitis_c"}
+{"id": "c023", "text": "관절이 아프고 토했어요. 눈이 노래지고 소변 색이 진하고 배가 아파요", "expected_symptoms": ["joint_pain", "vomiting", "yellowing_of_eyes", "dark_urine", "abdominal_pain"], "disease_id": "hepatitis_d"}
+{"id": "c024", "text": "눈이 노래지고 배가 아프고 입맛이 전혀 없어요. 관절도 아프고 몹시 피곤해요", "expected_symptoms": ["yellowing_of_eyes", "abdominal_pain", "loss_of_appetite", "joint_pain", "fatigue"], "disease_id": "hepatitis_e"}
+{"id": "c025", "text": "머리가 아프고 어지러워요. 집중이 잘 안 되고 몸의 중심을 잡기가 힘들어요", "expected_symptoms": ["headache", "dizziness", "lack_of_concentration", "loss_of_balance"], "disease_id": "hypertension"}
+{"id": "c026", "text": "살이 빠지는데 배는 자주 고프고 맥박이 빨라요. 땀이 많이 나고 예민해졌어요", "expected_symptoms": ["weight_loss", "excessive_hunger", "fast_heart_rate", "sweating", "irritability"], "disease_id": "hyperthyroidism"}
+{"id": "c027", "text": "갑자기 손이 떨리고 가슴이 두근거려요. 식은땀이 나고 배가 너무 고파요. 불안해요", "expected_symptoms": ["palpitations", "sweating", "excessive_hunger", "anxiety"], "disease_id": "hypoglycemia"}
+{"id": "c028", "text": "손발이 차고 손톱이 잘 부러져요. 목 앞이 부은 것 같고 우울하고 피곤해요", "expected_symptoms": ["cold_hands_and_feets", "brittle_nails", "enlarged_thyroid", "depression", "fatigue"], "disease_id": "hypothyroidism"}
+{"id": "c029", "text": "코 주변에 진물 나는 상처가 생기고 노란 딱지가 앉았어요. 물집도 있고 열이 나요", "expected_symptoms": ["red_sore_around_nose", "yellow_crust_ooze", "blister", "high_fever"], "disease_id": "impetigo"}
+{"id": "c030", "text": "피부가 노래지고 가려워요. 소변 색이 진하고 열이 높고 살이 빠졌어요", "expected_symptoms": ["yellowish_skin", "itching", "dark_urine", "high_fever", "weight_loss"], "disease_id": "jaundice"}
+{"id": "c031", "text": "열이 높았다가 오한이 들고 땀이 쏟아져요. 머리가 아프고 근육이 쑤시고 메스꺼워요", "expected_symptoms": ["high_fever", "chills", "sweating", "headache", "muscle_pain", "nausea"], "disease_id": "malaria"}
+{"id": "c032", "text": "머리가 지끈지끈 아프고 앞이 흐릿하게 보여요. 목이 뻣뻣하고 신경이 예민해요", "expected_symptoms": ["headache", "blurred_and_distorted_vision", "stiff_neck", "irritability"], "disease_id": "migraine"}
+{"id": "c033", "text": "무릎이랑 엉덩이 관절이 아파서 걸을 때 힘들어요. 관절이 부었어요", "expected_symptoms": ["knee_pain", "hip_joint_pain", "painful_walking", "swelling_joints"], "disease_id": "osteoarthritis"}
+{"id": "c034", "text": "갑자기 머리가 심하게 아프고 한쪽 팔다리에 힘이 안 들어가요. 토했어요", "expected_symptoms": ["headache", "weakness_of_one_body_side", "vomiting"], "disease_id": "paralysis_brain_hemorrhage"}
+{"id": "c035", "text": "소화가 안 되고 배가 아파요. 가스가 많이 차고 입맛이 없어요", "expected_symptoms": ["indigestion", "abdominal_pain", "passage_of_gases", "loss_of_appetite"], "disease_id": "peptic_ulcer"}
+{"id": "c036", "text": "열이 나고 기침과 갈색 가래가 나와요. 숨이 차고 가슴이 아파요", "expected_symptoms": ["high_fever", "cough", "rusty_sputum", "breathlessness", "chest_pain"], "disease_id": "pneumonia"}
+{"id": "c037", "text": "피부에 하얀 비늘 같은 각질이 일어나요. 손톱이 패이고 관절도 아파요", "expected_symptoms": ["silver_like_dusting", "skin_peeling", "small_dents_in_nails", "joint_pain"], "disease_id": "psoriasis"}
+{"id": "c038", "text": "기침이 몇 주째 계속되고 가래에 피가 섞여 나와요. 미열이 있고 입맛이 없어요", "expected_symptoms": ["blood_in_sputum", "mild_fever", "loss_of_appetite", "phlegm"], "disease_id": "tuberculosis"}
+{"id": "c039", "text": "열이 펄펄 나고 오한이 있어요. 배꼽 주위가 아프고 설사를 해요. 몹시 피곤해요", "expected_symptoms": ["high_fever", "chills", "belly_pain", "diarrhoea", "fatigue"], "disease_id": "typhoid"}
+{"id": "c040", "text": "소변볼 때 따갑고 봐도 시원하지 않아요. 소변 냄새가 심하고 방광이 불편해요", "expected_symptoms": ["burning_micturition", "continuous_feel_of_urine", "foul_smell_of_urine", "bladder_discomfort"], "disease_id": "urinary_tract_infection"}
+{"id": "c041", "text": "종아리 핏줄이 튀어나오고 다리가 부어요. 멍이 잘 들고 다리에 쥐가 나요", "expected_symptoms": ["prominent_veins_on_calf", "swollen_legs", "bruising", "cramps"], "disease_id": "varicose_veins"}
+{"id": "c042", "text": "어제부터 열이 나고 기침과 누런 가래가 나와요", "expected_symptoms": ["high_fever", "cough", "phlegm"], "disease_id": "pneumonia"}
+{"id": "c043", "text": "가슴이 아프고 식은땀이 나요", "expected_symptoms": ["chest_pain", "sweating"], "disease_id": "heart_attack"}
+{"id": "c044", "text": "배탈이 났는지 설사만 계속하고 토도 했어요", "expected_symptoms": ["diarrhoea", "vomiting"], "disease_id": "gastroenteritis"}
+{"id": "c045", "text": "감기 걸린 것 같아요. 콧물 나고 목이 따끔해요", "expected_symptoms": ["runny_nose", "throat_irritation"], "disease_id": "common_cold"}
+{"id": "c046", "text": "한쪽 머리가 욱신거리고 속이 쓰리고 체한 것 같아요", "expected_symptoms": ["headache", "acidity", "indigestion"], "disease_id": "migraine"}
+{"id": "c047", "text": "화장실을 자주 가는데 소변볼 때 너무 따가워요", "expected_symptoms": ["burning_micturition", "continuous_feel_of_urine"], "disease_id": "urinary_tract_infection"}
+{"id": "c048", "text": "콧물이랑 재채기가 계속 나고 눈이 빨개졌어요", "expected_symptoms": ["runny_nose", "continuous_sneezing", "redness_of_eyes"], "disease_id": "allergy"}
+{"id": "c049", "text": "열이 나면서 눈알 뒤쪽이 아프고 온몸이 쑤셔요", "expected_symptoms": ["high_fever", "pain_behind_the_eyes", "muscle_pain"], "disease_id": "dengue"}
+{"id": "c050", "text": "아이 몸에 빨간 점이 생기고 가렵대요. 열도 조금 있어요", "expected_symptoms": ["red_spots_over_body", "itching", "mild_fever"], "disease_id": "chicken_pox"}
+{"id": "c051", "text": "누웠다 일어나면 어지럽고 빙글빙글 돌아요", "expected_symptoms": ["dizziness", "spinning_movements"], "disease_id": "bppv"}
+{"id": "c052", "text": "대변 볼 때 피가 묻어나요. 항문 쪽이 아파요", "expected_symptoms": ["bloody_stool", "pain_in_anal_region"], "disease_id": "hemorrhoids"}
+{"id": "c053", "text": "말이 어눌해지고 정신이 멍해요", "expected_symptoms": ["slurred_speech", "altered_sensorium"], "disease_id": "paralysis_brain_hemorrhage"}
+{"id": "c054", "text": "나이 들어서 그런지 무릎이 시큰거리고 계단 오를 때 아파요", "expected_symptoms": ["knee_pain", "painful_walking"], "disease_id": "osteoarthritis"}
+{"id": "c055", "text": "물을 많이 마시고 소변을 자주 봐요. 피곤하고 살이 빠졌어요", "expected_symptoms": ["polyuria", "fatigue", "weight_loss"], "disease_id": "diabetes"}
+{"id": "c056", "text": "가족 중에 천식 있는 사람이 있어요. 저도 숨이 차고 기침이 나요", "expected_symptoms": ["breathlessness", "cough"], "disease_id": "bronchial_asthma"}
+{"id": "c057", "text": "예전에 수혈을 받은 적 있는데 요즘 눈이 노래지고 피곤해요", "expected_symptoms": ["receiving_blood_transfusion", "yellowing_of_eyes", "fatigue"], "disease_id": "hepatitis_b"}
+{"id": "c058", "text": "열이 계속 나고 목 안에 하얀 게 생겼어요. 성관계 이후로 그래요", "expected_symptoms": ["high_fever", "patches_in_throat"], "disease_id": "aids"}
+{"id": "c059", "text": "문신을 비위생적으로 받은 뒤로 피곤하고 눈이 노래요", "expected_symptoms": ["fatigue", "yellowing_of_eyes"], "disease_id": "hepatitis_c"}
