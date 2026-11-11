@@ -1,0 +1,33 @@
+# 경로별 담당자. 마지막으로 일치한 규칙이 우선합니다.
+# @A_GITHUB_ID / @B_GITHUB_ID 는 자리표시자입니다(밑줄은 GitHub 아이디에 쓸 수 없어 실제 사용자와 겹치지 않음).
+# 저장소를 만든 뒤 실제 아이디로 바꾸세요: docs/github-setup.md 3단계.
+# 주의: GitHub Free에서는 공개 저장소에서만 CODEOWNERS가 리뷰어 지정에 쓰입니다(docs/github-setup.md 0단계).
+
+# 기본값: 두 사람 모두
+*                               @A_GITHUB_ID @B_GITHUB_ID
+
+# A: 서비스 트랙 (platform, backend-api, web-frontend, hospital-search)
+/backend/                       @A_GITHUB_ID
+/frontend/                      @A_GITHUB_ID
+/infra/                         @A_GITHUB_ID
+/.github/                       @A_GITHUB_ID
+/docs/github-setup.md           @A_GITHUB_ID
+/docs/api-keys.md               @A_GITHUB_ID
+
+# B: 데이터·AI 트랙 (data-foundation, triage-model, llm-assistant)
+/data/                          @B_GITHUB_ID
+/ml-service/                    @B_GITHUB_ID
+
+# data-pipeline: 실시간(Kafka/Flink)은 A, 배치(Spark/Airflow)는 B
+/pipeline/                      @A_GITHUB_ID @B_GITHUB_ID
+/pipeline/kafka/                @A_GITHUB_ID
+/pipeline/flink/                @A_GITHUB_ID
+/pipeline/spark/                @B_GITHUB_ID
+/pipeline/airflow/              @B_GITHUB_ID
+
+# 공동 소유: 바꾸면 반드시 상대방 리뷰 (SPEC 2절, plan.md 병렬 작업 규칙 4)
+/contracts/                     @A_GITHUB_ID @B_GITHUB_ID
+/infra/docker-compose.yml       @A_GITHUB_ID @B_GITHUB_ID
+/SPEC.md                        @A_GITHUB_ID @B_GITHUB_ID
+/AGENTS.md                      @A_GITHUB_ID @B_GITHUB_ID
+/tasks/                         @A_GITHUB_ID @B_GITHUB_ID

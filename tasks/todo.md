@@ -10,10 +10,10 @@
 
 ### T00 [A] 저장소와 협업 규칙 · S
 GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 7절의 폴더 뼈대를 만들고, AI 에이전트용 규칙 파일을 작성합니다.
-- [ ] 저장소 생성, B를 collaborator로 초대, `main` 브랜치 보호(PR + 리뷰 1명 필수)
-- [ ] 폴더 뼈대, `.gitignore`, `.env.example`, `CODEOWNERS`, `.github/pull_request_template.md`
-- [ ] `AGENTS.md`(+ `CLAUDE.md`에서 참조): 모듈 경계, 브랜치·커밋 규칙, "자기 모듈 폴더만 수정", "원문 증상 저장 금지"
-- [ ] 두 사람 모두 Claude Code에 agent-skills 플러그인을 설치하고, 저장소 `.claude/settings.json`에 플러그인을 등록
+- [ ] 저장소 생성, B를 collaborator로 초대, `main` 브랜치 보호(PR + 리뷰 1명 필수) · _사람 작업 대기: 절차는 `docs/github-setup.md`. Free 플랜 비공개 저장소는 브랜치 보호 불가(0단계)_
+- [x] 폴더 뼈대, `.gitignore`, `.env.example`, `CODEOWNERS`, `.github/pull_request_template.md`
+- [x] `AGENTS.md`(+ `CLAUDE.md`에서 참조): 모듈 경계, 브랜치·커밋 규칙, "자기 모듈 폴더만 수정", "원문 증상 저장 금지"
+- [ ] 두 사람 모두 Claude Code에 agent-skills 플러그인을 설치하고, 저장소 `.claude/settings.json`에 플러그인을 등록 · _등록 완료, 각자 설치는 사람 작업(`docs/github-setup.md` 6단계)_
 - **검증**: B가 clone한 뒤 테스트 PR을 올리고, 리뷰 없이는 머지가 막히는지 확인
 - **의존**: 없음
 

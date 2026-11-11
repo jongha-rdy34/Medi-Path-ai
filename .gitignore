@@ -1,0 +1,46 @@
+# --- Secrets: never commit (keep only .env.example) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+kaggle.json
+.claude/settings.local.json
+CLAUDE.local.md
+
+# --- Raw / derived data and model artifacts (download with scripts instead) ---
+data/raw/
+data/processed/
+ml-service/models/*
+!ml-service/models/.gitkeep
+*.joblib
+*.pkl
+*.pt
+*.safetensors
+mlruns/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- Node / frontend ---
+node_modules/
+dist/
+coverage/
+*.log
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
