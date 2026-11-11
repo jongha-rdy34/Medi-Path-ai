@@ -24,8 +24,8 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - `GET /api/triage/sessions/{id}/result` → 질환 Top-3(확률), 권장 진료과, 설명, `emergency` 플래그
 - `GET /api/hospitals?lat=&lng=&department=&radius=` → 주변 병원 목록
 - 내부 계약 `ml-service POST /predict`: 입력은 구조화 증상, 출력은 질환·확률
-- [ ] 각 응답의 예시(example)를 포함합니다. Mock 서버가 이 예시를 그대로 씁니다.
-- [ ] B가 `/predict` 입출력과 구조화 증상 스키마를 리뷰하고 승인
+- [x] 각 응답의 예시(example)를 포함합니다. Mock 서버가 이 예시를 그대로 씁니다.
+- [ ] B가 `/predict` 입출력과 구조화 증상 스키마를 리뷰하고 승인 · _사람 작업 대기: `contracts/ml-service.openapi.yaml`, `openapi.yaml#/components/schemas/StructuredSymptoms`_
 - **검증**: `npx @redocly/cli lint contracts/openapi.yaml` 통과
 - **의존**: T00
 
