@@ -16,12 +16,19 @@
 | `data-foundation` | `data/` | B |
 | `triage-model` | `ml-service/` (모델·추론) | B |
 | `llm-assistant` | `ml-service/llm/`, `ml-service/safety/` | B |
-| `hospital-search` | `backend/` 내 병원 검색 앱(Kakao 로컬 API, 팀원 담당), `infra/elasticsearch/`(4~5주차) | A |
+| `hospital-search` | `prototypes/kakao-hospital-search/`, `backend/hospitals/`, `frontend/src/features/hospitals/` (Kakao 로컬 API, T21) / `infra/elasticsearch/`(4~5주차) | **@ley-21** (hospital-search agent) |
 | `backend-api` | `backend/` | A |
 | `web-frontend` | `frontend/` | A |
 | `data-pipeline` | `pipeline/` (kafka·flink: A / spark·airflow: B) | A + B |
 
-- `prototypes/`는 팀원의 프로토타입 자리입니다. 에이전트는 이 폴더를 수정하지 않습니다(옮기는 태스크 제외).
+- **팀원 전용 폴더(@ley-21)**: `prototypes/kakao-hospital-search/`, `backend/hospitals/`, `frontend/src/features/hospitals/`.
+  **엔지니어링 agent와 hospital-search agent는 서로의 전용 폴더를 수정하지 않습니다.** 필요한 변경은 GitHub Issue로 요청합니다.
+- **연결 지점**: 팀원 PR이 아래만 최소로 고칩니다. 엔지니어링 agent는 이 줄들과 충돌하지 않게 작업하고, 리뷰 요청이 오면 확인합니다.
+  - `backend/config/settings.py`의 `INSTALLED_APPS` 한 줄, `backend/config/urls.py`의 `include` 한 줄
+  - `.env.example`의 `KAKAO_REST_API_KEY`, `VITE_KAKAO_MAP_JS_KEY`, 이 키를 넘기는 `infra/docker-compose.yml` 환경변수
+  - `docs/api-keys.md`의 Kakao 절
+- **계약 변경 예고**: 팀원이 `contracts/openapi.yaml`의 `Hospital` 스키마를 Kakao 기준으로 바꿉니다(`place_id`, `category`, `place_url`, `matched_department` 추가, `has_emergency_room` null 허용). 그 PR이 머지되기 전에는 다른 사람이 `Hospital` 관련 스키마를 고치지 않습니다.
+- **병원 검색 접점(W2)**: 결과 화면(T20)에는 `<HospitalFinder :department="권장 진료과 코드" />` 자리만 둡니다. 컴포넌트가 아직 없으면 같은 props의 임시 컴포넌트를 `frontend/src/features/hospitals/` **밖**에 두고 나중에 import 경로만 바꿉니다. 백엔드(T22)도 병원 검색을 직접 구현하지 않고, stub은 `backend/hospitals/` 밖에 둡니다.
 - 태스크가 지정한 모듈 폴더 밖의 파일은 수정하지 않습니다. 꼭 필요하면 PR 설명에 이유를 적고 해당 담당자에게 리뷰를 받습니다.
 - **공동 소유 파일**: `contracts/*`, `infra/docker-compose.yml`. 바꾸는 PR은 반드시 상대방이 리뷰합니다.
 - 다른 모듈은 `contracts/`의 계약만 보고 연동합니다. 상대 모듈 내부 구현에 의존하지 않습니다.

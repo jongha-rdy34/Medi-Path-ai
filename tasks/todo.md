@@ -78,6 +78,11 @@ Kakao 키는 팀원이 보유하고 있어 이 태스크에서 뺍니다. 공공
 - **의존**: T01
 
 ### T21 [A] Kakao 로컬 API 병원 검색 연동 · M (팀원 담당, 2026-11-11 변경)
+**담당: @ley-21** (hospital-search agent). 전용 폴더와 연결 지점은 `AGENTS.md` 2절. PR 4개를 이 순서로 올립니다.
+1. 프로토타입 업로드 → `prototypes/kakao-hospital-search/` (키 제외)
+2. 계약 변경 → `contracts/openapi.yaml` `Hospital` 스키마(`place_id`, `category`, `place_url`, `matched_department`, `has_emergency_room` null 허용). 공동 소유라 상대 리뷰 필수
+3. 백엔드 → `backend/hospitals/` 앱과 `GET /api/hospitals`(연결 지점: `INSTALLED_APPS`, `urls.py` 각 한 줄)
+4. 프론트 컴포넌트 → `frontend/src/features/hospitals/`의 `<HospitalFinder :department="..." />`(위치 권한, API 호출, 목록·카카오맵 포함)
 팀원이 현재 위치 기준 "내과" 검색 프로토타입을 만들었습니다. 이를 백엔드로 옮깁니다. 엔지니어링 에이전트는 구현하지 않고, 팀원 코드를 받으면 연동만 합니다.
 - [ ] 백엔드 `GET /api/hospitals`가 Kakao 로컬 키워드·카테고리 검색을 감쌈. 진료과 이름(`data/mappings/departments.csv`)을 검색어로 사용
 - [ ] Kakao REST 키는 서버(`.env`)에만 둠. 프론트로 보내지 않음

@@ -13,7 +13,6 @@
 /.github/                       @A_GITHUB_ID
 /docs/github-setup.md           @A_GITHUB_ID
 /docs/api-keys.md               @A_GITHUB_ID
-/prototypes/                    @A_GITHUB_ID
 
 # B: 데이터·AI 트랙 (data-foundation, triage-model, llm-assistant)
 /data/                          @B_GITHUB_ID
@@ -27,8 +26,13 @@
 /pipeline/airflow/              @B_GITHUB_ID
 
 # 공동 소유: 바꾸면 반드시 상대방 리뷰 (SPEC 2절, plan.md 병렬 작업 규칙 4)
-/contracts/                     @A_GITHUB_ID @B_GITHUB_ID
-/infra/docker-compose.yml       @A_GITHUB_ID @B_GITHUB_ID
-/SPEC.md                        @A_GITHUB_ID @B_GITHUB_ID
-/AGENTS.md                      @A_GITHUB_ID @B_GITHUB_ID
-/tasks/                         @A_GITHUB_ID @B_GITHUB_ID
+/contracts/                     @jongha-rdy34 @ley-21
+/infra/docker-compose.yml       @jongha-rdy34 @ley-21
+/SPEC.md                        @jongha-rdy34 @ley-21
+/AGENTS.md                      @jongha-rdy34 @ley-21
+/tasks/                         @jongha-rdy34 @ley-21
+
+# hospital-search 전용 폴더(@ley-21, T21). 위 /backend/, /frontend/ 규칙보다 뒤에 있어야 우선합니다.
+/prototypes/                    @ley-21
+/backend/hospitals/             @ley-21
+/frontend/src/features/hospitals/ @ley-21
