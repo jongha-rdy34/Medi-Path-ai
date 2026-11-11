@@ -1,0 +1,159 @@
+# 위급 신호 회귀 테스트 케이스 (T15). 가상의 증상 조합이며 실제 환자 정보가 아닙니다.
+# expect_emergency: true는 반드시 응급으로 판정돼야 합니다(재현율 100%).
+- name: coma_alone
+  expect_emergency: true
+  symptoms:
+  - symptom_id: coma
+- name: confusion_with_fever
+  expect_emergency: true
+  symptoms:
+  - symptom_id: altered_sensorium
+  - symptom_id: high_fever
+- name: one_side_weakness
+  expect_emergency: true
+  symptoms:
+  - symptom_id: weakness_of_one_body_side
+- name: slurred_speech_headache
+  expect_emergency: true
+  symptoms:
+  - symptom_id: slurred_speech
+  - symptom_id: headache
+- name: chest_pain_breathless
+  expect_emergency: true
+  symptoms:
+  - symptom_id: chest_pain
+  - symptom_id: breathlessness
+- name: chest_pain_cold_sweat
+  expect_emergency: true
+  symptoms:
+  - symptom_id: chest_pain
+  - symptom_id: sweating
+- name: chest_pain_palpitations
+  expect_emergency: true
+  symptoms:
+  - symptom_id: chest_pain
+  - symptom_id: palpitations
+- name: chest_pain_dizzy_vomit
+  expect_emergency: true
+  symptoms:
+  - symptom_id: chest_pain
+  - symptom_id: dizziness
+  - symptom_id: vomiting
+- name: severe_chest_pain_alone
+  expect_emergency: true
+  symptoms:
+  - symptom_id: chest_pain
+    severity: severe
+- name: severe_breathlessness
+  expect_emergency: true
+  symptoms:
+  - symptom_id: breathlessness
+    severity: severe
+- name: severe_breathless_cough
+  expect_emergency: true
+  symptoms:
+  - symptom_id: breathlessness
+    severity: severe
+  - symptom_id: cough
+- name: blood_in_sputum
+  expect_emergency: true
+  symptoms:
+  - symptom_id: blood_in_sputum
+  - symptom_id: cough
+- name: hematemesis
+  expect_emergency: true
+  symptoms:
+  - symptom_id: stomach_bleeding
+- name: bloody_stool_dizzy
+  expect_emergency: true
+  symptoms:
+  - symptom_id: bloody_stool
+  - symptom_id: dizziness
+- name: bloody_stool_tachycardia
+  expect_emergency: true
+  symptoms:
+  - symptom_id: bloody_stool
+  - symptom_id: fast_heart_rate
+- name: severe_dehydration
+  expect_emergency: true
+  symptoms:
+  - symptom_id: dehydration
+    severity: severe
+  - symptom_id: diarrhoea
+- name: acute_liver_failure
+  expect_emergency: true
+  symptoms:
+  - symptom_id: acute_liver_failure
+  - symptom_id: yellowish_skin
+- name: face_swelling_rash
+  expect_emergency: true
+  symptoms:
+  - symptom_id: puffy_face_and_eyes
+  - symptom_id: skin_rash
+- name: face_swelling_breathless
+  expect_emergency: true
+  symptoms:
+  - symptom_id: puffy_face_and_eyes
+  - symptom_id: breathlessness
+- name: sudden_vision_loss
+  expect_emergency: true
+  symptoms:
+  - symptom_id: visual_disturbances
+    severity: severe
+- name: sudden_blur
+  expect_emergency: true
+  symptoms:
+  - symptom_id: blurred_and_distorted_vision
+    severity: severe
+  - symptom_id: headache
+- name: severe_abdominal_pain
+  expect_emergency: true
+  symptoms:
+  - symptom_id: abdominal_pain
+    severity: severe
+  - symptom_id: vomiting
+- name: severe_epigastric_pain
+  expect_emergency: true
+  symptoms:
+  - symptom_id: stomach_pain
+    severity: severe
+- name: severe_belly_pain_fever
+  expect_emergency: true
+  symptoms:
+  - symptom_id: belly_pain
+    severity: severe
+  - symptom_id: high_fever
+- name: common_cold
+  expect_emergency: false
+  symptoms:
+  - symptom_id: continuous_sneezing
+  - symptom_id: runny_nose
+  - symptom_id: mild_fever
+- name: chest_pain_with_acidity
+  expect_emergency: true
+  symptoms:
+  - symptom_id: chest_pain
+  - symptom_id: acidity
+- name: gastroenteritis_mild
+  expect_emergency: false
+  symptoms:
+  - symptom_id: vomiting
+  - symptom_id: diarrhoea
+  - symptom_id: abdominal_pain
+    severity: mild
+- name: acne
+  expect_emergency: false
+  symptoms:
+  - symptom_id: pus_filled_pimples
+  - symptom_id: blackheads
+- name: hemorrhoids
+  expect_emergency: false
+  symptoms:
+  - symptom_id: bloody_stool
+  - symptom_id: pain_in_anal_region
+- name: mild_breathless_with_cough
+  expect_emergency: false
+  symptoms:
+  - symptom_id: breathlessness
+    severity: mild
+  - symptom_id: cough
