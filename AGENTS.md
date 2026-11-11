@@ -54,10 +54,12 @@ DB 스키마 변경, 새 외부 의존성 추가, 모델 교체 기준 변경, `
 
 ## 7. 명령어
 ```
-전체 실행:     docker compose -f infra/docker-compose.yml --profile core up --build
-백엔드 테스트: cd backend && pytest
-ML 테스트:     cd ml-service && pytest
-프론트:        cd frontend && npm run dev / npm run test / npm run lint
-계약 검사:     npx @redocly/cli lint contracts/openapi.yaml
+전체 실행:     cp .env.example .env   # 최초 1회
+               docker compose -f infra/docker-compose.yml --profile core up --build
+               # health: http://localhost:8000/api/health, http://localhost:8001/health, http://localhost:5173/
+백엔드 테스트: cd backend && pip install -r requirements-dev.txt && pytest && ruff check .
+ML 테스트:     cd ml-service && pip install -r requirements-dev.txt && pytest && ruff check .
+프론트:        cd frontend && npm ci && npm run dev / npm run test / npm run check:lint / npm run build
+계약 검사:     npx @redocly/cli lint contracts/openapi.yaml contracts/ml-service.openapi.yaml
 ```
-(명령은 각 태스크가 끝날 때 실제 동작하는 것으로 갱신합니다.)
+CI(`.github/workflows/ci.yml`)가 바뀐 경로별로 같은 명령을 실행합니다. 의존성은 정확한 버전으로 고정합니다.
