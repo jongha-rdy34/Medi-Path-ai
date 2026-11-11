@@ -99,9 +99,9 @@ PR 4개를 이 순서로 올립니다.
 - **의존**: T01, T02, T03(NMC 병·의원 API 키)
 
 ### T22 [A] 백엔드: 세션·오케스트레이션(stub) · M
-- [ ] Django + DRF로 T01의 엔드포인트 구현. ml-service와 LLM은 stub 클라이언트로 대체
-- [ ] 저장 정책: 원문 증상은 저장하지 않고, 구조화 증상과 시군구만 저장
-- [ ] OpenAPI 계약 테스트(schemathesis 또는 스키마 검증)
+- [x] Django + DRF로 T01의 엔드포인트 구현. ml-service와 LLM은 stub 클라이언트로 대체 · _세션·메시지·결과. `/api/hospitals`는 T21(@ley-21) 담당이라 제외_
+- [x] 저장 정책: 원문 증상은 저장하지 않고, 구조화 증상과 시군구만 저장 · _DB·로그에 원문이 없는지 테스트_
+- [x] OpenAPI 계약 테스트(schemathesis 또는 스키마 검증) · _jsonschema로 `contracts/openapi.yaml` 스키마 검증_
 - **검증**: `cd backend && pytest` 통과
 - **의존**: T01, T02
 
