@@ -1,0 +1,13 @@
+# Redocly 린터가 아래 위치에서만 해당 규칙을 건너뜁니다. 새 항목을 추가할 때는 이유를 주석으로 남기세요.
+# 형식: https://github.com/Redocly/redocly-cli/blob/main/docs/@v2/commands/lint.md (--generate-ignore-file)
+contracts/openapi.yaml:
+  # 로컬 개발 서버 주소입니다. 배포 주소는 T31에서 추가합니다.
+  no-server-example.com:
+    - '#/servers/0/url'
+  # health는 입력이 없어 4xx가 생기지 않습니다.
+  operation-4xx-response:
+    - '#/paths/~1api~1health/get/responses'
+contracts/ml-service.openapi.yaml:
+  # health는 입력이 없어 4xx가 생기지 않습니다.
+  operation-4xx-response:
+    - '#/paths/~1health/get/responses'
