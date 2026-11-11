@@ -37,8 +37,10 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: T00
 
 ### T03 [A] 공공 API 활용신청 · S (범위 축소, 2026-11-11)
-Kakao 키는 팀원이 보유하고 있어 이 태스크에서 뺍니다. 공공데이터포털만 다룹니다(4~5주차 T60에서 사용).
+Kakao 키 발급은 팀원이 이미 했습니다(설정 절차만 문서화). 공공데이터포털 API 3개를 다룹니다.
 - [x] `docs/api-keys.md`: 공공데이터포털에서 건강보험심사평가원 병원정보서비스, 국립중앙의료원 응급의료기관 정보 조회 서비스 활용신청 절차
+- [x] **국립중앙의료원 전국 병·의원 찾기 서비스**(T21 MVP용) 신청 절차와 확인 스크립트 추가 (2026-11-11)
+- [x] Kakao 앱 설정 절차(카카오맵 사용 설정, Web 플랫폼 도메인) 문서화
 - [x] 키를 받은 뒤 바로 실행할 curl 확인 스크립트 · _`infra/scripts/check-public-apis.sh`. 요청 주소는 미검증_
 - [x] 키는 `.env`에만 보관하고, 키 이름은 `.env.example`에 기록
 - [ ] 활용신청과 키 발급 · _사람 작업 대기_
@@ -77,18 +79,24 @@ Kakao 키는 팀원이 보유하고 있어 이 태스크에서 뺍니다. 공공
 - **검증**: `npm run test`, 모바일 폭(375px)에서 수동 확인
 - **의존**: T01
 
-### T21 [A] Kakao 로컬 API 병원 검색 연동 · M (팀원 담당, 2026-11-11 변경)
-**담당: @ley-21** (hospital-search agent). 전용 폴더와 연결 지점은 `AGENTS.md` 2절. PR 4개를 이 순서로 올립니다.
-1. 프로토타입 업로드 → `prototypes/kakao-hospital-search/` (키 제외)
-2. 계약 변경 → `contracts/openapi.yaml` `Hospital` 스키마(`place_id`, `category`, `place_url`, `matched_department`, `has_emergency_room` null 허용). 공동 소유라 상대 리뷰 필수
-3. 백엔드 → `backend/hospitals/` 앱과 `GET /api/hospitals`(연결 지점: `INSTALLED_APPS`, `urls.py` 각 한 줄)
-4. 프론트 컴포넌트 → `frontend/src/features/hospitals/`의 `<HospitalFinder :department="..." />`(위치 권한, API 호출, 목록·카카오맵 포함)
-팀원이 현재 위치 기준 "내과" 검색 프로토타입을 만들었습니다. 이를 백엔드로 옮깁니다. 엔지니어링 에이전트는 구현하지 않고, 팀원 코드를 받으면 연동만 합니다.
-- [ ] 백엔드 `GET /api/hospitals`가 Kakao 로컬 키워드·카테고리 검색을 감쌈. 진료과 이름(`data/mappings/departments.csv`)을 검색어로 사용
-- [ ] Kakao REST 키는 서버(`.env`)에만 둠. 프론트로 보내지 않음
-- [ ] Kakao 응답에 맞춰 `contracts/openapi.yaml`의 `Hospital` 스키마를 고칠 필요가 있으면 계약 변경 PR로 처리(상대방 리뷰)
-- **검증**: 서울 특정 좌표에서 반경 3km 내과 검색 시 결과가 거리순으로 나옴. 지연 p95를 측정해 기록(목표치는 측정 후 재검토)
-- **의존**: T01, T02
+### T21 [A] 공공데이터(NMC) 병원 검색 + 카카오맵 · M (팀원 담당, 2026-11-11 확정)
+**담당: @ley-21** (hospital-search agent). 트래킹: GitHub Issue #1. 전용 폴더와 연결 지점은 `AGENTS.md` 2절. 엔지니어링 agent는 구현하지 않고, 리뷰와 연동만 합니다.
+결정(SPEC 결정 표): 병원 데이터는 국립중앙의료원 전국 병·의원 찾기 서비스, Kakao는 지도 SDK와 좌표 → 시도·시군구 변환에만 사용.
+
+PR 4개를 이 순서로 올립니다.
+1. **[진행 중]** 프로토타입과 `nmc_department_codes.csv`(`nmc_code,name_ko`) 업로드 → `prototypes/kakao-hospital-search/` (키 제외). 프로토타입 업로드 완료(PR #2), 코드표 추가 대기
+2. 계약 → `contracts/openapi.yaml`의 `Hospital`·`HospitalSearchResponse`·`/api/hospitals`를 NMC 기준으로 변경. 공동 소유라 상대 리뷰 필수
+3. Django 이식 → `backend/hospitals/` 앱과 `GET /api/hospitals`(연결 지점: `INSTALLED_APPS`, `urls.py` 각 한 줄), NMC 응답 fixture 테스트
+4. HospitalFinder → `frontend/src/features/hospitals/`의 `<HospitalFinder :department="..." />`(위치 권한, 위치 실패 시 지도 클릭, API 호출, 목록·카카오맵)
+
+- [ ] 진료과 필터: 권장 진료과(심평원 코드)가 초기값, 사용자가 변경 가능. 심평원 → NMC 코드 변환은 `backend/hospitals/` 안에서만
+- [ ] 지금 진료 중(KST, 자정 넘김·전날 심야 연장 포함), 야간 진료(평일 20시 이후), 주말 진료 필터. 전문의 필터·표기 없음
+- [ ] 공공데이터는 시도+시군구+진료과 단위 6시간 캐시. Kakao 결과는 저장·캐시 금지, 좌표는 캐시 키에 넣지 않음
+- [ ] 키: `DATA_GO_KR_SERVICE_KEY`, `KAKAO_REST_API_KEY`는 서버 전용. `VITE_KAKAO_MAP_JS_KEY`만 프론트(도메인 등록으로 보호)
+- [ ] PR 3 수락 기준에 포함: **Kakao 지역 변환 결과의 시군구 표기와 NMC `Q1` 표기가 맞는지 fixture로 확인**(두 단어 시군구, 예: 수원시 장안구)
+- 알려진 한계(SPEC 4.1절): 구 경계 근처 누락, 공휴일 미처리, 신고 기준 진료시간, 두 단어 시군구 형식 미확인
+- **검증**: 서울 특정 좌표에서 "내과"로 검색 시 결과가 거리순으로 나오고, 세 필터가 fixture 기준 기대 건수와 일치. 캐시 적중·미적중 지연을 측정해 기록
+- **의존**: T01, T02, T03(NMC 병·의원 API 키)
 
 ### T22 [A] 백엔드: 세션·오케스트레이션(stub) · M
 - [ ] Django + DRF로 T01의 엔드포인트 구현. ml-service와 LLM은 stub 클라이언트로 대체
@@ -180,6 +188,7 @@ Kakao 키는 팀원이 보유하고 있어 이 태스크에서 뺍니다. 공공
 - **의존**: T50, T61
 
 ### T60 [A] Kafka·Flink 응급실 실시간 병상 + 심평원·ES 병원 검색 · M
+(2026-11-11: MVP 병원 검색이 NMC 공공데이터로 확정됐지만, 이 태스크의 심평원 적재·ES·응급실 병상은 그대로 4~5주차입니다.)
 - [ ] 심평원 병원정보 적재 스크립트(진료과 코드, 좌표 포함), ES 인덱스 매핑(`geo_point`, nori), 진료과 필터 + `geo_distance` 쿼리 (기존 T21에서 이동)
 - [ ] ES를 compose `pipeline` 프로필에서 켬
 - [ ] Producer: 국립중앙의료원 API를 1~5분마다 폴링해 Kafka `er-beds` 토픽으로 보냄

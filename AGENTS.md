@@ -16,18 +16,19 @@
 | `data-foundation` | `data/` | B |
 | `triage-model` | `ml-service/` (모델·추론) | B |
 | `llm-assistant` | `ml-service/llm/`, `ml-service/safety/` | B |
-| `hospital-search` | `prototypes/kakao-hospital-search/`, `backend/hospitals/`, `frontend/src/features/hospitals/` (Kakao 로컬 API, T21) / `infra/elasticsearch/`(4~5주차) | **@ley-21** (hospital-search agent) |
+| `hospital-search` | `prototypes/kakao-hospital-search/`, `backend/hospitals/`, `frontend/src/features/hospitals/` (NMC 공공데이터 + 카카오맵, T21) / `infra/elasticsearch/`(4~5주차) | **@ley-21** (hospital-search agent) |
 | `backend-api` | `backend/` | A |
 | `web-frontend` | `frontend/` | A |
 | `data-pipeline` | `pipeline/` (kafka·flink: A / spark·airflow: B) | A + B |
 
 - **팀원 전용 폴더(@ley-21)**: `prototypes/kakao-hospital-search/`, `backend/hospitals/`, `frontend/src/features/hospitals/`.
   **엔지니어링 agent와 hospital-search agent는 서로의 전용 폴더를 수정하지 않습니다.** 필요한 변경은 GitHub Issue로 요청합니다.
-- **연결 지점**: 팀원 PR이 아래만 최소로 고칩니다. 엔지니어링 agent는 이 줄들과 충돌하지 않게 작업하고, 리뷰 요청이 오면 확인합니다.
-  - `backend/config/settings.py`의 `INSTALLED_APPS` 한 줄, `backend/config/urls.py`의 `include` 한 줄
-  - `.env.example`의 `KAKAO_REST_API_KEY`, `VITE_KAKAO_MAP_JS_KEY`, 이 키를 넘기는 `infra/docker-compose.yml` 환경변수
-  - `docs/api-keys.md`의 Kakao 절
-- **계약 변경 예고**: 팀원이 `contracts/openapi.yaml`의 `Hospital` 스키마를 Kakao 기준으로 바꿉니다(`place_id`, `category`, `place_url`, `matched_department` 추가, `has_emergency_room` null 허용). 그 PR이 머지되기 전에는 다른 사람이 `Hospital` 관련 스키마를 고치지 않습니다.
+- **연결 지점**
+  | 파일 | 담당 |
+  |---|---|
+  | `backend/config/settings.py`의 `INSTALLED_APPS` 한 줄, `backend/config/urls.py`의 `include` 한 줄 | 팀원(@ley-21). 이 두 줄만 고칩니다 |
+  | `.env.example`(`DATA_GO_KR_SERVICE_KEY`, `KAKAO_REST_API_KEY`, `VITE_KAKAO_MAP_JS_KEY`), `infra/docker-compose.yml`의 키 전달, `docs/api-keys.md` | 엔지니어링 agent. 팀원은 필요한 변경을 Issue로 요청합니다 |
+- **계약 변경 예고**: 팀원이 T21 PR 2에서 `contracts/openapi.yaml`의 `Hospital`·`HospitalSearchResponse`·`/api/hospitals`를 NMC 공공데이터 기준으로 바꿉니다(필드는 PR 2에서 확정). 그 PR이 머지되기 전에는 다른 사람이 이 스키마를 고치지 않습니다.
 - **병원 검색 접점(W2)**: 결과 화면(T20)에는 `<HospitalFinder :department="권장 진료과 코드" />` 자리만 둡니다. 컴포넌트가 아직 없으면 같은 props의 임시 컴포넌트를 `frontend/src/features/hospitals/` **밖**에 두고 나중에 import 경로만 바꿉니다. 백엔드(T22)도 병원 검색을 직접 구현하지 않고, stub은 `backend/hospitals/` 밖에 둡니다.
 - 태스크가 지정한 모듈 폴더 밖의 파일은 수정하지 않습니다. 꼭 필요하면 PR 설명에 이유를 적고 해당 담당자에게 리뷰를 받습니다.
 - **공동 소유 파일**: `contracts/*`, `infra/docker-compose.yml`. 바꾸는 PR은 반드시 상대방이 리뷰합니다.
@@ -36,7 +37,7 @@
 ## 3. Git 규칙
 - 트렁크 기반: `main`은 항상 실행 가능한 상태입니다. 브랜치는 1~3일 안에 머지합니다.
 - **태스크 1개 = 브랜치 1개 = PR 1개.** 브랜치 이름: `feat/<module-id>/T<번호>-<짧은-설명>`
-  - 예: `feat/hospital-search/T21-kakao-local-search`
+  - 예: `feat/hospital-search/T21-nmc-backend`
 - 커밋: Conventional Commits(`feat:`, `fix:`, `docs:`, `test:`, `chore:`, `refactor:`). 한 커밋에는 논리적 변경 하나만 담습니다.
 - PR: CI 통과 + 리뷰어 1명 승인 후 머지합니다. PR 전에 에이전트 리뷰(`/review`)를 한 번 돌립니다.
 - 태스크를 끝내면 `tasks/todo.md`의 체크박스를 같은 PR에서 갱신합니다.
