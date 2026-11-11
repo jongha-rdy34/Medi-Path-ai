@@ -46,14 +46,17 @@ sed -i 's/@A_GITHUB_ID/@<A_ID>/g; s/@B_GITHUB_ID/@<B_ID>/g' .github/CODEOWNERS
 
 (macOS는 `sed -i ''`를 씁니다.)
 
-## 4단계. `main` 룰셋 (PR 필수, 승인 1명, `ci-ok` 필수)
+## 4단계. `main` 룰셋 (PR 필수, 승인 0명, `ci-ok` 필수)
+
+**운영 방식(2026-11-11)**: 에이전트는 브랜치만 push하고 보고합니다. 사용자가 변경을 확인한 뒤 PR을 만들어 머지합니다(`AGENTS.md` 3절).
+두 명 팀이라 본인 PR을 스스로 승인할 수 없으므로 **필수 승인 수는 0**으로 두고, 사용자 확인이 리뷰 역할을 합니다. 직접 push, 강제 push, 삭제는 룰셋이 막습니다.
 
 웹: **Settings → Rules → Rulesets → New ruleset → New branch ruleset**
 - Ruleset name `main-protection`, Enforcement status **Active**
 - Target branches: **Include default branch**
 - [x] Restrict deletions
 - [x] Block force pushes
-- [x] Require a pull request before merging → Required approvals **1**, Dismiss stale pull request approvals when new commits are pushed
+- [x] Require a pull request before merging → Required approvals **0**
 - [x] Require status checks to pass → **Add checks** → `ci-ok`
 - Bypass list는 비워 둡니다(소유자도 규칙을 따름)
 
@@ -72,8 +75,8 @@ gh api -X POST repos/jongha-rdy34/Medi-Path-ai/rulesets --input - <<'JSON'
     {
       "type": "pull_request",
       "parameters": {
-        "required_approving_review_count": 1,
-        "dismiss_stale_reviews_on_push": true,
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": false,
         "require_code_owner_review": false,
         "require_last_push_approval": false,
         "required_review_thread_resolution": false
@@ -132,26 +135,24 @@ for m in api-contract platform data-foundation triage-model llm-assistant hospit
 
 (`enabledPlugins`는 켜기만 하고 설치는 하지 않으므로 각자 한 번 설치해야 합니다. 출처: https://code.claude.com/docs/en/settings-reference.md `enabledPlugins`)
 
-## 8단계. T00 검증 (팀원이 수행)
+## 8단계. 룰셋 검증 (4단계 설정 후)
+
+1. **직접 push가 거부되는지**: 아무 커밋이나 `main`에 바로 push해 봅니다.
 
 ```bash
-git clone https://github.com/jongha-rdy34/Medi-Path-ai.git
+git checkout main && git commit --allow-empty -m "chore: ruleset check" && git push origin main
 ```
+
+**기대 결과**: `GH013: Repository rule violations found` 등으로 거부됩니다. 확인 후 로컬 커밋을 되돌립니다.
 
 ```bash
-cd Medi-Path-ai && git checkout -b chore/platform/T00-protection-test && echo "test" > docs/protection-test.md && git add docs/protection-test.md && git commit -m "chore: test branch protection" && git push -u origin chore/platform/T00-protection-test
+git reset --hard origin/main
 ```
+
+2. **`ci-ok` 전에는 머지가 막히는지**: 아무 브랜치로 PR을 만들고, CI가 끝나기 전에 머지를 시도합니다.
 
 ```bash
-gh pr create --title "chore: branch protection test" --body "T00 verification" --base main
+gh pr merge <PR 번호> --merge
 ```
 
-```bash
-gh pr merge --merge
-```
-
-**기대 결과**: 승인 전에는 마지막 명령이 거절됩니다(“review required” / “base branch policy prohibits the merge”). 확인 후 PR은 머지하지 말고 닫습니다.
-
-```bash
-gh pr close --delete-branch
-```
+**기대 결과**: 필수 상태 체크 대기로 거절됩니다. CI가 통과한 뒤에는 승인 없이 머지됩니다(필수 승인 0).
