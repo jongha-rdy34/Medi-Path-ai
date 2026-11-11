@@ -64,6 +64,13 @@ services:
   ml-service:
     profiles: [core]
     build: ../ml-service
+    environment:
+      MODEL_DIR: /app/models
+      MODEL_VERSION: ${MODEL_VERSION:-baseline-2026.11.0}
+    volumes:
+      # 학습한 모델 파일(gitignore 대상). 만들기: cd ml-service && python -m triage.train
+      # 모델이 없으면 /health는 200, /predict는 503 model_not_loaded를 돌려줍니다.
+      - ../ml-service/models:/app/models:ro
     ports:
       - "8001:8001"
     healthcheck:
