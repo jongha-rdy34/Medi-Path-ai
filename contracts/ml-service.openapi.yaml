@@ -1,0 +1,136 @@
+openapi: 3.1.0
+info:
+  title: Symptom Care ml-service (internal)
+  version: 0.1.0
+  summary: 백엔드 → ml-service 내부 계약 (v0)
+  description: |
+    backend-api가 호출하는 triage-model 추론 서버(FastAPI)의 내부 계약입니다. 외부에 공개하지 않습니다.
+    구조화 증상 스키마는 공개 계약(`openapi.yaml`)의 것을 그대로 참조합니다. 둘이 어긋나지 않게 하기 위해서입니다.
+
+    - 입력은 구조화 증상(표준 증상 ID)뿐입니다. 원문 문장은 받지 않습니다.
+    - 출력 확률은 내림차순이며 `top_k`개입니다. 질환 이름과 진료과 매핑은 백엔드가 `data/mappings`로 붙입니다.
+servers:
+  - url: http://ml-service:8001
+    description: docker compose 내부 네트워크
+security: []
+tags:
+  - name: inference
+    description: 질환 확률 추론
+  - name: system
+    description: 상태 확인
+paths:
+  /health:
+    get:
+      tags: [system]
+      operationId: getMlHealth
+      summary: ml-service 상태 확인
+      responses:
+        '200':
+          description: 정상
+          content:
+            application/json:
+              schema:
+                $ref: './openapi.yaml#/components/schemas/Health'
+              example:
+                status: ok
+        '503':
+          description: 모델 로드 실패 등
+          content:
+            application/json:
+              schema:
+                $ref: './openapi.yaml#/components/schemas/Error'
+              example:
+                code: model_not_loaded
+                message: 모델이 아직 로드되지 않았습니다.
+
+  /predict:
+    post:
+      tags: [inference]
+      operationId: predict
+      summary: 구조화 증상 → 질환 확률
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictRequest'
+            example:
+              symptoms:
+                - symptom_id: high_fever
+                  duration_days: 1
+                - symptom_id: abdominal_pain
+                - symptom_id: diarrhoea
+              top_k: 3
+      responses:
+        '200':
+          description: 예측 결과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictResponse'
+              example:
+                model_version: baseline-2026.11.0
+                predictions:
+                  - disease_id: gastroenteritis
+                    probability: 0.52
+                  - disease_id: typhoid
+                    probability: 0.23
+                  - disease_id: hepatitis_a
+                    probability: 0.09
+                unknown_symptom_ids: []
+        '422':
+          description: 요청 값이 올바르지 않음(증상 없음, ID 형식 오류 등)
+          content:
+            application/json:
+              schema:
+                $ref: './openapi.yaml#/components/schemas/Error'
+              example:
+                code: validation_error
+                message: 증상이 1개 이상 필요합니다.
+
+components:
+  schemas:
+    PredictRequest:
+      type: object
+      required: [symptoms]
+      additionalProperties: false
+      properties:
+        symptoms:
+          type: array
+          minItems: 1
+          maxItems: 30
+          items:
+            $ref: './openapi.yaml#/components/schemas/SymptomObservation'
+        top_k:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 3
+
+    PredictResponse:
+      type: object
+      required: [model_version, predictions, unknown_symptom_ids]
+      properties:
+        model_version:
+          type: string
+          description: 예 `baseline-2026.11.0`, `klue-roberta-2026.12.1`
+        predictions:
+          type: array
+          minItems: 1
+          maxItems: 10
+          description: 확률 내림차순
+          items:
+            type: object
+            required: [disease_id, probability]
+            properties:
+              disease_id:
+                $ref: './openapi.yaml#/components/schemas/DiseaseId'
+              probability:
+                type: number
+                minimum: 0
+                maximum: 1
+        unknown_symptom_ids:
+          type: array
+          description: 모델이 모르는 증상 ID(예측에서 무시함). 사전 누락을 찾는 데 씁니다.
+          items:
+            $ref: './openapi.yaml#/components/schemas/SymptomId'
