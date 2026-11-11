@@ -35,7 +35,7 @@
 {"id": "c035", "text": "소화가 안 되고 배가 아파요. 가스가 많이 차고 입맛이 없어요", "expected_symptoms": ["indigestion", "abdominal_pain", "passage_of_gases", "loss_of_appetite"], "disease_id": "peptic_ulcer"}
 {"id": "c036", "text": "열이 나고 기침과 갈색 가래가 나와요. 숨이 차고 가슴이 아파요", "expected_symptoms": ["high_fever", "cough", "rusty_sputum", "breathlessness", "chest_pain"], "disease_id": "pneumonia"}
 {"id": "c037", "text": "피부에 하얀 비늘 같은 각질이 일어나요. 손톱이 패이고 관절도 아파요", "expected_symptoms": ["silver_like_dusting", "skin_peeling", "small_dents_in_nails", "joint_pain"], "disease_id": "psoriasis"}
-{"id": "c038", "text": "기침이 몇 주째 계속되고 가래에 피가 섞여 나와요. 미열이 있고 입맛이 없어요", "expected_symptoms": ["blood_in_sputum", "mild_fever", "loss_of_appetite", "phlegm"], "disease_id": "tuberculosis"}
+{"id": "c038", "text": "기침이 몇 주째 계속되고 가래에 피가 섞여 나와요. 미열이 있고 입맛이 없어요", "expected_symptoms": ["cough", "blood_in_sputum", "mild_fever", "loss_of_appetite", "phlegm"], "disease_id": "tuberculosis"}
 {"id": "c039", "text": "열이 펄펄 나고 오한이 있어요. 배꼽 주위가 아프고 설사를 해요. 몹시 피곤해요", "expected_symptoms": ["high_fever", "chills", "belly_pain", "diarrhoea", "fatigue"], "disease_id": "typhoid"}
 {"id": "c040", "text": "소변볼 때 따갑고 봐도 시원하지 않아요. 소변 냄새가 심하고 방광이 불편해요", "expected_symptoms": ["burning_micturition", "continuous_feel_of_urine", "foul_smell_of_urine", "bladder_discomfort"], "disease_id": "urinary_tract_infection"}
 {"id": "c041", "text": "종아리 핏줄이 튀어나오고 다리가 부어요. 멍이 잘 들고 다리에 쥐가 나요", "expected_symptoms": ["prominent_veins_on_calf", "swollen_legs", "bruising", "cramps"], "disease_id": "varicose_veins"}
