@@ -44,9 +44,9 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: 없음
 
 ### T10 [B] 학습 데이터 확보 · S (첫날 신청)
-- [ ] AI Hub 의료·헬스케어 데이터를 신청합니다. 어떤 데이터셋인지, 이용 조건과 필드는 무엇인지 `data/README.md`에 기록합니다.
-- [ ] Kaggle Disease Symptom 계열 데이터를 내려받습니다(대체안).
-- [ ] 원본 데이터는 git에 올리지 않습니다(`data/raw/`는 gitignore). 받는 스크립트만 커밋합니다.
+- [ ] AI Hub 의료·헬스케어 데이터를 신청합니다. 어떤 데이터셋인지, 이용 조건과 필드는 무엇인지 `data/README.md`에 기록합니다. · _후보·필요 필드·안심존 확인 항목 정리 완료(`data/README.md` 3절). 신청은 사람 작업 대기_
+- [x] Kaggle Disease Symptom 계열 데이터를 내려받습니다(대체안). · _라이선스는 사람이 Kaggle 페이지에서 확인 필요_
+- [x] 원본 데이터는 git에 올리지 않습니다(`data/raw/`는 gitignore). 받는 스크립트만 커밋합니다.
 - **검증**: `python data/scripts/download.py` 실행 후 `data/raw/`에 파일 생성
 - **의존**: 없음
 
