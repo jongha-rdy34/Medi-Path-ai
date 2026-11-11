@@ -90,12 +90,13 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 
 ### T12 [B] EDA 노트북 · S
 - [ ] 클래스 불균형, 증상 빈도, 증상 동시출현 히트맵, 진료과 분포 → `data/notebooks/eda.ipynb`
+- [ ] 중복 행과 고유 증상 조합 수(304개), `Testing.csv`가 `Training.csv`와 겹치는 정도(42행 중 41행)를 노트북에 보여 줍니다. 평가 방식 변경의 근거입니다
 - [ ] 발표용 핵심 그래프 3~5개를 `docs/figures/`에 저장
 - **검증**: 노트북을 처음부터 끝까지 실행했을 때 오류 없음
 - **의존**: T10, T11
 
 ### T13 [B] LLM 평가셋과 Gemini 구현 · M
-- [ ] `ml-service/llm/eval/cases.jsonl`: 증상 문장 50~100개 → 정답 구조화 JSON(T11 증상 ID)
+- [ ] `ml-service/llm/eval/cases.jsonl`: 증상 문장 50~100개 → 정답 구조화 JSON(T11 증상 ID)과 **정답 질환 ID**. 질환 라벨은 T14의 end-to-end 평가에 씁니다
 - [ ] `LLMProvider` 인터페이스(`extract_symptoms`, `next_questions`, `explain`)와 `GeminiProvider` 구현(JSON 스키마 강제)
 - [ ] 평가 스크립트: 증상 추출 F1, JSON 파싱 성공률, 평균 지연, 1천 건당 비용
 - **검증**: `python -m llm.eval --provider gemini` 실행 시 결과표 출력. 그 결과를 `docs/adr/0001-llm-choice.md`에 기록
@@ -103,9 +104,12 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 
 ### T14 [B] 베이스라인 분류 모델 + ml-service `/predict` · M
 - [ ] 원핫 또는 TF-IDF + LogisticRegression/LightGBM, 학습·평가 스크립트
+- [ ] 분할: `Training.csv` 중복 제거 → 고유 증상 조합 단위 그룹 분할(train/val/test). 같은 조합이 두 셋에 겹치지 않는지 테스트로 확인. `Testing.csv`는 쓰지 않음
+- [ ] 노이즈 테스트셋: 시드 고정, 증상 일부 제거(dropout) + 관련 없는 증상 추가
+- [ ] end-to-end 평가: T13 평가셋 문장 → LLM 구조화 → `/predict` Top-3 정확도와 진료과 추천 정확도
 - [ ] FastAPI `/predict`(T01 계약), 모델 파일은 버전 이름으로 저장
-- **검증**: `cd ml-service && pytest`. Top-3 정확도를 기록(이후 T50의 비교 기준)
-- **의존**: T01, T10, T11
+- **검증**: `cd ml-service && pytest`. 그룹 분할 테스트셋과 노이즈 테스트셋 모두 Top-3 ≥ 0.80. end-to-end 지표를 기록(이후 T50의 비교 기준)
+- **의존**: T01, T10, T11 (end-to-end 평가는 T13)
 
 ### T15 [B] 위급 신호 규칙과 회귀 테스트 · S
 - [ ] `ml-service/safety/red_flags.yaml`: 규칙(증상 조합 → 응급) 과 출처
@@ -144,7 +148,7 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - [ ] KLUE-RoBERTa-base 또는 KM-BERT로 증상→질환 분류 학습(Colab, 5060, 3080 Ti 중 하나)
 - [ ] RTX 5060을 쓰면 `cu128` PyTorch에서 `torch.cuda.is_available()`부터 확인
 - [ ] 베이스라인(T14)과 Top-1·Top-3 정확도, 추론 지연(CPU)을 비교하는 표
-- **검증**: 고정 테스트셋 Top-3 ≥ 0.80이고 베이스라인보다 높음. CPU 추론 p95 < 300ms
+- **검증**: 그룹 분할 테스트셋과 노이즈 테스트셋 모두 Top-3 ≥ 0.80이고 베이스라인보다 높음. end-to-end 지표도 베이스라인과 비교. CPU 추론 p95 < 300ms
 - **의존**: T14
 
 ### T51 [B] ml-service 모델 교체 · S
