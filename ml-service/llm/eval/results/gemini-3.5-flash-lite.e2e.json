@@ -1,0 +1,9 @@
+{
+  "llm_model": "gemini-3.5-flash-lite",
+  "classifier": "baseline-2026.11.0",
+  "cases": 59,
+  "no_symptoms_extracted": 0,
+  "top1": 0.8305,
+  "top3": 0.9322,
+  "department_top1": 0.9831
+}
