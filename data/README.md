@@ -30,7 +30,7 @@ python data/scripts/download.py
 | `kaggle_disease_prediction` | `kaushil268/disease-prediction-using-machine-learning/versions/1` | `Training.csv`(4,920행), `Testing.csv`(42행) | 증상 132열(원핫 0/1) + `prognosis`(질환 41종) |
 | `kaggle_symptom_description` | `itachi9604/disease-symptom-description-dataset/versions/2` | `dataset.csv`, `Symptom-severity.csv`, `symptom_Description.csv`, `symptom_precaution.csv` | 같은 41종 질환. 증상별 심각도 가중치(1~7) |
 
-**라이선스: 미확인.** Kaggle 페이지는 이 세션에서 열 수 없었고, 인증 없는 API로는 라이선스 필드를 받지 못했습니다.
+**라이선스: 미확인(사람이 확인할 일).** Kaggle 페이지는 이 세션에서 열 수 없었고, 인증 없는 API로는 라이선스 필드를 받지 못했습니다.
 사람이 두 페이지의 "License" 항목을 확인해 여기에 적어 주세요. 발표 자료에 데이터 출처를 밝힐 때도 필요합니다.
 - https://www.kaggle.com/datasets/kaushil268/disease-prediction-using-machine-learning
 - https://www.kaggle.com/datasets/itachi9604/disease-symptom-description-dataset
@@ -103,10 +103,8 @@ python data/scripts/check_mappings.py   # 오류가 있으면 exit 1
 
 **검수 상태(중요)**: `disease_department.csv`는 전부 `review_status=draft`이고 `source_url`이 비어 있습니다(검사 시 경고 41건).
 진료과 배정은 일반적인 진료 관행을 따른 초안입니다. 이 세션에서는 서울대병원 의학정보, 국가건강정보포털(질병관리청) 같은 근거 사이트에 접근할 수 없어서 출처를 확인하지 못했습니다.
-팀이 질환마다 근거 URL을 채우고 `review_status=reviewed`로 바꿔 주세요. 특히 다음 항목은 판단이 갈립니다.
-- `heart_attack`, `paralysis_brain_hemorrhage` → 응급의학과(24): 위급 신호(T15)와 함께 응급실 안내로 연결
-- `allergy`(이비인후과 vs 내과), `arthritis`(정형외과 vs 내과 류마티스), `chicken_pox`·`impetigo`(피부과 vs 소아청소년과)
-- `extra_marital_contacts`, `receiving_unsterile_injections`, `family_history` 등은 증상이 아니라 **위험 요인**입니다. LLM이 사용자에게 묻거나 추출해도 되는지 팀 결정이 필요합니다(민감정보).
+**사용자가 직접 검수합니다.** 검수 순서와 판단이 갈리는 항목은 [`mappings/REVIEW.md`](mappings/REVIEW.md)에 있습니다.
+위험 요인 3종(`extra_marital_contacts`, `receiving_unsterile_injections`, `family_history`)은 수집 보류 중입니다(SPEC 6절).
 
 ## 5. 규칙
 - `data/raw/`의 원본 파일은 커밋하지 않습니다. 매핑 CSV처럼 **직접 만든 작은 표**만 커밋합니다.
