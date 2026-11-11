@@ -51,9 +51,9 @@ GitHub 비공개 저장소를 만들고 SPEC.md와 tasks/를 올립니다. SPEC 
 - **의존**: 없음
 
 ### T11 [B] 질환→진료과 매핑, 증상 사전 · M
-- [ ] `data/mappings/disease_department.csv`: 질환, 진료과, 근거(출처 URL)
-- [ ] `data/mappings/symptoms.csv`: 표준 증상 ID, 한국어명, 동의어(LLM 구조화 결과가 이 ID를 씁니다)
-- [ ] 진료과 코드는 심평원 진료과목 코드와 맞춥니다(T21과 연결).
+- [x] `data/mappings/disease_department.csv`: 질환, 진료과, 근거(출처 URL) · _초안(draft). 출처 URL과 팀 검수는 사람 작업 대기(`data/README.md` 4절)_
+- [x] `data/mappings/symptoms.csv`: 표준 증상 ID, 한국어명, 동의어(LLM 구조화 결과가 이 ID를 씁니다)
+- [x] 진료과 코드는 심평원 진료과목 코드와 맞춥니다(T21과 연결). · _`data/mappings/departments.csv`_
 - **검증**: 매핑 누락 체크 스크립트 실행 시 학습 데이터의 모든 질환이 진료과를 가짐
 - **의존**: T10
 
