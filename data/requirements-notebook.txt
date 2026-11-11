@@ -1,0 +1,6 @@
+# EDA 노트북(T12) 실행용. 그래프 라벨은 한글 폰트 없이 그려지도록 영어·ID로 씁니다.
+pandas==3.1.1
+matplotlib==3.11.2
+nbformat==5.11.1
+nbclient==0.11.0
+ipykernel==7.4.0

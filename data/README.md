@@ -106,6 +106,16 @@ python data/scripts/check_mappings.py   # 오류가 있으면 exit 1
 **사용자가 직접 검수합니다.** 검수 순서와 판단이 갈리는 항목은 [`mappings/REVIEW.md`](mappings/REVIEW.md)에 있습니다.
 위험 요인 3종(`extra_marital_contacts`, `receiving_unsterile_injections`, `family_history`)은 수집 보류 중입니다(SPEC 6절).
 
-## 5. 규칙
+## 5. EDA (T12)
+
+```bash
+pip install -r data/requirements-notebook.txt
+python data/scripts/run_notebook.py data/notebooks/eda.ipynb
+```
+
+- `data/notebooks/eda.ipynb`를 처음부터 끝까지 실행하고(셀 오류 시 exit 1), 발표용 그래프 5개를 `docs/figures/`에 저장합니다. 노트북에는 그림을 넣지 않고 링크만 둡니다(용량).
+- 핵심 수치: 질환 41종 × 120행(균형), 고유 증상 조합 304개, 질환당 고유 조합 5~10개, `Testing.csv` 42행 중 41행 누수, 한 조합이 두 질환에 걸리는 경우 0, 1순위 진료과는 내과 24종.
+
+## 6. 규칙
 - `data/raw/`의 원본 파일은 커밋하지 않습니다. 매핑 CSV처럼 **직접 만든 작은 표**만 커밋합니다.
 - 원본에서 만든 파생 데이터(`data/processed/`)도 커밋하지 않습니다. 만드는 스크립트를 커밋합니다.
