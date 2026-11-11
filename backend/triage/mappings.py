@@ -19,5 +19,11 @@ def diseases() -> dict[str, dict]:
 
 
 @cache
+def sensitive_disease_ids() -> frozenset[str]:
+    """Diseases hidden from what users see (sensitive_diseases.csv, user-reviewed list)."""
+    return frozenset(r["disease_id"] for r in _rows("sensitive_diseases.csv"))
+
+
+@cache
 def departments() -> dict[str, str]:
     return {r["code"]: r["name_ko"] for r in _rows("departments.csv")}
