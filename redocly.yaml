@@ -1,0 +1,11 @@
+# Redocly CLI 설정. 권장 규칙(recommended)을 그대로 쓰고, 아직 정하지 않은 라이선스 규칙만 끕니다.
+# 규칙 목록: https://github.com/Redocly/redocly-cli/blob/main/docs/@v2/rules/recommended.md
+extends:
+  - recommended
+
+rules:
+  info-license: off # 저장소 라이선스 미정(포트폴리오). 정하면 info.license를 채우고 이 줄을 지웁니다.
+  # Mock 서버(MSW)가 응답 예시를 그대로 쓰므로, 스키마와 어긋난 예시는 경고가 아니라 오류로 막습니다.
+  no-invalid-media-type-examples: error
+  no-invalid-parameter-examples: error
+  no-invalid-schema-examples: error
