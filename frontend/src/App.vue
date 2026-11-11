@@ -1,5 +1,8 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>증상 기반 진료과·병원 안내</h1>
+  <header>
+    <h1>MediPath</h1>
+    <p>증상에서 진료까지, 더 나은 의료 선택의 시작</p>
+  </header>
 </template>
