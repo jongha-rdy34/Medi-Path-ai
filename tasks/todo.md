@@ -62,10 +62,10 @@ Kakao 키 발급은 팀원이 이미 했습니다(설정 절차만 문서화). �
 - **의존**: T10
 
 ### ✅ Checkpoint 1 (11/17)
-- [ ] 저장소, 브랜치 보호, AGENTS.md 적용
-- [ ] OpenAPI v0 머지
-- [ ] `compose --profile core up` 정상 동작
-- [ ] 데이터와 API 키 확보(또는 대체안 확정)
+- [ ] 저장소, 브랜치 보호, AGENTS.md 적용 · _저장소·AGENTS.md는 완료. `main` 룰셋이 아직 꺼져 있음(2026-11-11 직접 push가 거부되지 않음)_
+- [x] OpenAPI v0 머지
+- [x] `compose --profile core up` 정상 동작
+- [ ] 데이터와 API 키 확보(또는 대체안 확정) · _Kaggle 대체 데이터와 Gemini 키는 확보. AI Hub 신청·공공데이터포털 키 발급이 남음_
 
 ---
 
