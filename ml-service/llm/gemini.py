@@ -79,7 +79,7 @@ class GeminiProvider:
                 # 429 quota and 503 overload are temporary; anything else is a real error.
                 if exc.code not in (429, 503) or attempt == self.max_retries:
                     raise
-                time.sleep(self.retry_sleep * (attempt + 1))
+                time.sleep(self.retry_sleep * 2**attempt)  # exponential backoff
         raise RuntimeError("unreachable")
 
     def _extract_schema(self) -> dict:

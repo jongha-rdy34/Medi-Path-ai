@@ -6,11 +6,17 @@ Usage (from ml-service/):
 
 Writes llm/eval/results/<model>.json (per-case output + summary). Cases are
 fictional sentences (llm/eval/cases.jsonl); no personal data is sent.
+
+Free tier (AI Studio, 2026-11-11): 15 RPM, 500 RPD per model. The runner prints
+the planned call count first, refuses runs above the daily limit, waits at
+least 4 s between calls and caches responses in llm/eval/.cache/ (gitignored)
+so reruns only call the API for new or changed cases.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import time
@@ -18,11 +24,40 @@ from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
 
-from llm.provider import Extraction
+from llm.provider import Extraction, Symptom
 from triage.data import RISK_FACTORS
 
 CASES_PATH = Path(__file__).with_name("cases.jsonl")
 RESULTS_DIR = Path(__file__).with_name("results")
+CACHE_DIR = Path(__file__).with_name(".cache")
+DAILY_LIMIT = 500  # requests per day per model (free tier)
+MIN_SLEEP_S = 4.0  # 15 RPM
+
+
+class CachedExtractor:
+    """Caches extract_symptoms() on disk by (model, text hash)."""
+
+    def __init__(self, provider, cache_dir: Path = CACHE_DIR):
+        self.provider = provider
+        self.dir = cache_dir / str(getattr(provider, "model", "provider"))
+
+    def _path(self, text: str) -> Path:
+        return self.dir / (hashlib.sha256(text.encode("utf-8")).hexdigest() + ".json")
+
+    def planned_calls(self, cases: list[dict]) -> int:
+        return sum(not self._path(c["text"]).exists() for c in cases)
+
+    def extract(self, text: str) -> tuple[Extraction, bool]:
+        """Returns (extraction, called_api)."""
+        path = self._path(text)
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+            data["symptoms"] = [Symptom(**s) for s in data["symptoms"]]
+            return Extraction(**data), False
+        extraction = self.provider.extract_symptoms(text)
+        self.dir.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(asdict(extraction), ensure_ascii=False), encoding="utf-8")
+        return extraction, True
 
 
 def load_cases(path: Path = CASES_PATH) -> list[dict]:
@@ -94,7 +129,7 @@ def main() -> int:
     )
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument(
-        "--sleep", type=float, default=6.0, help="seconds between calls (free-tier RPM)"
+        "--sleep", type=float, default=4.5, help="seconds between API calls (min 4 for 15 RPM)"
     )
     parser.add_argument(
         "--price-in", type=float, default=None, help="USD per 1M input tokens (paid tier)"
@@ -105,17 +140,24 @@ def main() -> int:
     args = parser.parse_args()
 
     provider = make_provider(args.provider, args.model)
+    cached = CachedExtractor(provider)
     cases = load_cases()[: args.limit]
+    planned = cached.planned_calls(cases)
+    print(
+        f"planned API calls: {planned} (cached {len(cases) - planned}, daily limit {DAILY_LIMIT})"
+    )
+    if planned > DAILY_LIMIT:
+        raise SystemExit("planned calls exceed the free-tier daily limit; use --limit")
     rows = []
     for i, case in enumerate(cases, 1):
-        extraction = provider.extract_symptoms(case["text"])
+        extraction, called = cached.extract(case["text"])
         rows.append({"case": case, "extraction": extraction})
         print(
             f"[{i}/{len(cases)}] {case['id']} {score(case['expected_symptoms'], extraction)}",
             flush=True,
         )
-        if i < len(cases):
-            time.sleep(args.sleep)
+        if called and i < len(cases):
+            time.sleep(max(args.sleep, MIN_SLEEP_S))
 
     summary = summarize(rows, args.price_in, args.price_out)
     model = getattr(provider, "model", args.provider)

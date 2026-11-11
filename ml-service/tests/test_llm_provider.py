@@ -152,3 +152,21 @@ def test_temporary_overload_is_retried():
     p, client = provider(overloaded, json.dumps({"symptoms": [], "emergency_suspected": False}))
 
     assert p.extract_symptoms("text").parsed and len(client.models.calls) == 2
+
+
+def test_rate_limit_backoff_is_exponential(monkeypatch):
+    sleeps = []
+    monkeypatch.setattr("llm.gemini.time.sleep", sleeps.append)
+    limited = errors.ClientError(
+        429, {"error": {"code": 429, "message": "quota", "status": "RESOURCE_EXHAUSTED"}}
+    )
+    client = SimpleNamespace(
+        models=FakeModels(
+            [limited, limited, limited, json.dumps({"symptoms": [], "emergency_suspected": False})]
+        )
+    )
+    p = GeminiProvider(client=client, model="m", vocab=VOCAB, retry_sleep=1.0)
+
+    p.extract_symptoms("text")
+
+    assert sleeps == [1.0, 2.0, 4.0]

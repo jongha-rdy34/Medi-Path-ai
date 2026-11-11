@@ -45,3 +45,34 @@ def test_summary_without_prices_reports_unknown_cost():
     m = summarize([{"case": {"expected_symptoms": ["a"]}, "extraction": ext(["a"])}], None, None)
 
     assert m["cost_per_1k_calls_usd"] is None
+
+
+class CountingProvider:
+    model = "fake-model"
+
+    def __init__(self):
+        self.calls = 0
+
+    def extract_symptoms(self, text):
+        self.calls += 1
+        return ext(["a"])
+
+
+def test_cache_avoids_repeat_calls_and_reports_planned_calls(tmp_path):
+    from llm.eval.run import CachedExtractor
+
+    provider = CountingProvider()
+    cached = CachedExtractor(provider, tmp_path)
+    cases = [{"text": "열이 나요"}, {"text": "기침해요"}]
+
+    assert cached.planned_calls(cases) == 2
+    first, called = cached.extract("열이 나요")
+    assert called
+    assert cached.planned_calls(cases) == 1
+
+    again, called_again = CachedExtractor(provider, tmp_path).extract("열이 나요")
+
+    assert not called_again
+
+    assert provider.calls == 1
+    assert [s.symptom_id for s in again.symptoms] == [s.symptom_id for s in first.symptoms]
