@@ -87,6 +87,27 @@ AI Hub(https://aihub.or.kr)는 회원가입 → 데이터셋 상세 페이지에
 
 받은 데이터도 `data/raw/aihub_<이름>/`에 두고 커밋하지 않습니다. 받은 뒤 이 절에 실제 데이터셋 이름, 버전, 필드, 이용 조건을 적어 주세요.
 
-## 4. 규칙
+## 4. 매핑 테이블 (`data/mappings/`, T11)
+
+| 파일 | 열 | 내용 |
+|---|---|---|
+| `departments.csv` | `code`, `name_ko`, `source` | 심평원 진료과목 코드 중 환자 안내에 쓰는 28개(00~26, 49). 출처: HL7 Korea KR Core `HIRA_Medical_Department` v1.0.2 |
+| `disease_department.csv` | `disease_id`, `kaggle_label`, `disease_name_ko`, `department_code`, `alt_department_codes`, `reason_ko`, `source_url`, `review_status` | 질환 41종 → 1순위 진료과 + 대안 진료과(`\|` 구분). `reason_ko`는 API `recommended_departments[].reason`의 기본 문구 |
+| `symptoms.csv` | `symptom_id`, `name_ko`, `synonyms_ko` | 표준 증상 131개. `symptom_id`는 Kaggle 열 이름을 정규화한 것(`spotting_ urination` → `spotting_urination`). 동의어는 `\|` 구분 |
+
+```bash
+python data/scripts/check_mappings.py   # 오류가 있으면 exit 1
+```
+
+검사 항목: ID 형식·중복, 진료과 코드 존재, 두 증상에 같은 동의어가 들어갔는지, `data/raw/`의 모든 질환·증상이 매핑되는지, `contracts/*.yaml` 예시의 ID가 매핑에 있는지.
+
+**검수 상태(중요)**: `disease_department.csv`는 전부 `review_status=draft`이고 `source_url`이 비어 있습니다(검사 시 경고 41건).
+진료과 배정은 일반적인 진료 관행을 따른 초안입니다. 이 세션에서는 서울대병원 의학정보, 국가건강정보포털(질병관리청) 같은 근거 사이트에 접근할 수 없어서 출처를 확인하지 못했습니다.
+팀이 질환마다 근거 URL을 채우고 `review_status=reviewed`로 바꿔 주세요. 특히 다음 항목은 판단이 갈립니다.
+- `heart_attack`, `paralysis_brain_hemorrhage` → 응급의학과(24): 위급 신호(T15)와 함께 응급실 안내로 연결
+- `allergy`(이비인후과 vs 내과), `arthritis`(정형외과 vs 내과 류마티스), `chicken_pox`·`impetigo`(피부과 vs 소아청소년과)
+- `extra_marital_contacts`, `receiving_unsterile_injections`, `family_history` 등은 증상이 아니라 **위험 요인**입니다. LLM이 사용자에게 묻거나 추출해도 되는지 팀 결정이 필요합니다(민감정보).
+
+## 5. 규칙
 - `data/raw/`의 원본 파일은 커밋하지 않습니다. 매핑 CSV처럼 **직접 만든 작은 표**만 커밋합니다.
 - 원본에서 만든 파생 데이터(`data/processed/`)도 커밋하지 않습니다. 만드는 스크립트를 커밋합니다.
