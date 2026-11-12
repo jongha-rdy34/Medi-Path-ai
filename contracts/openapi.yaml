@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Symptom Care API
-  version: 0.1.0
+  version: 0.2.0
   summary: 증상 기반 진료과·병원 안내 서비스 공개 API (v0)
   description: |
     증상 기반 진료과·병원 안내 서비스의 공개 API 계약입니다.
@@ -268,10 +268,18 @@ paths:
     get:
       tags: [hospitals]
       operationId: searchHospitals
-      summary: 주변 병원 검색
+      summary: 주변 병원 검색 (진료과·진료시간 조건)
       description: |
-        좌표 기준 반경 안의 병원을 거리순으로 돌려줍니다. `department`를 주면 그 진료과가 있는 병원만 돌려줍니다.
-        좌표는 검색에만 쓰고 저장하지 않습니다.
+        좌표 주변에서 `department` 진료과가 있는 병원을 가까운 순으로 돌려줍니다(T21).
+
+        - **데이터 출처**: 국립중앙의료원 전국 병·의원 찾기 서비스(공공데이터포털). 좌표 → 시도·시군구 변환은 Kakao `coord2regioncode`.
+          서버는 좌표가 속한 **시군구 한 곳**의 병원을 받아 반경과 조건으로 거릅니다. 그래서 구 경계 근처에서는 옆 구 병원이 빠질 수 있습니다.
+        - **진료과 코드**: 심평원 코드를 받습니다. NMC 코드로 바꾸는 일은 서버 안에서만 합니다.
+          `data/mappings/departments.csv`에 있지만 NMC 진료과목에 대응하는 코드가 없는 과(예: `00` 일반의)는
+          진료과 조건 없이 검색하고 `department.filter_applied: false`와 `department.message`로 알립니다.
+          표에 없는 코드는 `422`입니다.
+        - **진료시간 조건**은 한국 시간(Asia/Seoul) 기준이며, 기관이 신고한 진료시간이라 실제와 다를 수 있습니다. 공휴일은 따로 판단하지 않습니다.
+        - 좌표는 검색에만 쓰고 저장하거나 로그로 남기지 않습니다.
       parameters:
         - name: lat
           in: query
@@ -291,8 +299,8 @@ paths:
           example: 127.0276
         - name: department
           in: query
-          required: false
-          description: 심평원 진료과목 코드. 생략하면 진료과 필터 없이 검색합니다.
+          required: true
+          description: 심평원 진료과목 코드(`data/mappings/departments.csv`). 보통 결과 화면의 권장 진료과가 들어옵니다.
           schema:
             $ref: '#/components/schemas/DepartmentCode'
           example: '01'
@@ -303,18 +311,42 @@ paths:
           schema:
             type: integer
             minimum: 100
-            maximum: 20000
+            maximum: 10000
             default: 3000
           example: 3000
+        - name: open_now
+          in: query
+          required: false
+          description: '`true`이면 지금 진료 중(`is_open_now: true`)인 병원만'
+          schema:
+            type: boolean
+            default: false
+          example: true
+        - name: night
+          in: query
+          required: false
+          description: '`true`이면 야간 진료(`has_night_hours: true`) 병원만'
+          schema:
+            type: boolean
+            default: false
+          example: false
+        - name: weekend
+          in: query
+          required: false
+          description: '`true`이면 주말 진료(`has_weekend_hours: true`) 병원만'
+          schema:
+            type: boolean
+            default: false
+          example: false
         - name: limit
           in: query
           required: false
           schema:
             type: integer
             minimum: 1
-            maximum: 50
-            default: 20
-          example: 20
+            maximum: 100
+            default: 30
+          example: 30
       responses:
         '200':
           description: 거리순 병원 목록
@@ -322,33 +354,125 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HospitalSearchResponse'
-              example:
-                total: 2
-                items:
-                  - hospital_id: EXAMPLE-0001
-                    name: 예시내과의원
-                    type: 의원
-                    address: 서울특별시 강남구 예시로 1
-                    phone: 02-000-0001
-                    location:
-                      lat: 37.4985
-                      lng: 127.0281
-                    distance_m: 78
-                    departments: ['01', '23']
-                    has_emergency_room: false
-                  - hospital_id: EXAMPLE-0002
-                    name: 예시종합병원
-                    type: 종합병원
-                    address: 서울특별시 강남구 예시로 2
-                    phone: null
-                    location:
-                      lat: 37.5021
-                      lng: 127.0352
-                    distance_m: 812
-                    departments: ['01', '04', '24']
-                    has_emergency_room: true
+              examples:
+                filtered:
+                  summary: 내과 + 지금 진료 중
+                  value:
+                    total: 2
+                    region:
+                      sido: 서울특별시
+                      sigungu: 강남구
+                    department:
+                      code: '01'
+                      name: 내과
+                      filter_applied: true
+                      message: null
+                    evaluated_at: '2026-11-12T14:20:00+09:00'
+                    notice: 진료시간은 병원 사정에 따라 바뀔 수 있으니 방문 전에 전화로 확인하세요. 응급 상황이면 119에 연락하세요.
+                    items:
+                      - hospital_id: A1100001
+                        name: 예시내과의원
+                        type: 의원
+                        address: 서울특별시 강남구 예시로 1
+                        phone: 02-000-0001
+                        location:
+                          lat: 37.4985
+                          lng: 127.0281
+                        distance_m: 78
+                        department: '01'
+                        opening_hours:
+                          - {day: mon, open: '09:00', close: '18:00', crosses_midnight: false}
+                          - {day: tue, open: '09:00', close: '18:00', crosses_midnight: false}
+                          - {day: wed, open: '09:00', close: '21:00', crosses_midnight: false}
+                          - {day: thu, open: '09:00', close: '18:00', crosses_midnight: false}
+                          - {day: fri, open: '09:00', close: '18:00', crosses_midnight: false}
+                          - {day: sat, open: '09:00', close: '13:00', crosses_midnight: false}
+                        is_open_now: true
+                        has_night_hours: true
+                        has_weekend_hours: true
+                        has_emergency_room: null
+                      - hospital_id: A1100002
+                        name: 예시365의원
+                        type: 의원
+                        address: 서울특별시 강남구 예시로 2
+                        phone: null
+                        location:
+                          lat: 37.5021
+                          lng: 127.0352
+                        distance_m: 812
+                        department: '01'
+                        opening_hours:
+                          - {day: mon, open: '10:00', close: '02:00', crosses_midnight: true}
+                          - {day: tue, open: '10:00', close: '02:00', crosses_midnight: true}
+                          - {day: wed, open: '10:00', close: '02:00', crosses_midnight: true}
+                          - {day: thu, open: '10:00', close: '02:00', crosses_midnight: true}
+                          - {day: fri, open: '10:00', close: '02:00', crosses_midnight: true}
+                          - {day: sat, open: '10:00', close: '18:00', crosses_midnight: false}
+                          - {day: sun, open: '10:00', close: '18:00', crosses_midnight: false}
+                          - {day: holiday, open: '10:00', close: '18:00', crosses_midnight: false}
+                        is_open_now: true
+                        has_night_hours: true
+                        has_weekend_hours: true
+                        has_emergency_room: null
+                department_not_mapped:
+                  summary: NMC 대응 코드가 없는 진료과(일반의) → 전체 병원
+                  value:
+                    total: 1
+                    region:
+                      sido: 서울특별시
+                      sigungu: 강남구
+                    department:
+                      code: '00'
+                      name: 일반의
+                      filter_applied: false
+                      message: 일반의는 병원 정보에서 진료과로 구분되지 않아 근처 병원 전체를 보여 드려요.
+                    evaluated_at: '2026-11-12T14:20:00+09:00'
+                    notice: 진료시간은 병원 사정에 따라 바뀔 수 있으니 방문 전에 전화로 확인하세요. 응급 상황이면 119에 연락하세요.
+                    items:
+                      - hospital_id: A1100003
+                        name: 예시의원
+                        type: 의원
+                        address: 서울특별시 강남구 예시로 3
+                        phone: 02-000-0003
+                        location:
+                          lat: 37.4990
+                          lng: 127.0290
+                        distance_m: 160
+                        department: null
+                        opening_hours: []
+                        is_open_now: null
+                        has_night_hours: false
+                        has_weekend_hours: false
+                        has_emergency_room: null
         '422':
-          $ref: '#/components/responses/ValidationError'
+          description: 요청 값이 올바르지 않음(지원하지 않는 진료과 코드 포함) 또는 서비스 지역 밖 좌표
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                unknown_department:
+                  summary: 진료과 표에 없는 코드
+                  value:
+                    code: validation_error
+                    message: 요청 값이 올바르지 않습니다.
+                    details:
+                      - field: department
+                        message: 지원하지 않는 진료과 코드입니다.
+                out_of_service_area:
+                  summary: 국내 시군구로 바꿀 수 없는 좌표(바다, 해외 등)
+                  value:
+                    code: out_of_service_area
+                    message: 이 위치에서는 병원을 찾을 수 없습니다. 지도를 눌러 국내 위치를 지정하세요.
+        '503':
+          description: 병원 데이터 출처(NMC 공공데이터 또는 Kakao 지역 변환)가 응답하지 않거나 오류를 냄
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: hospital_source_unavailable
+                message: 병원 정보를 잠시 불러올 수 없습니다. 잠시 후 다시 시도하세요.
 
 components:
   parameters:
@@ -671,37 +795,93 @@ components:
           minimum: -180
           maximum: 180
 
+    OpeningHours:
+      type: object
+      description: |
+        하루의 진료시간. NMC `dutyTime{n}s`/`dutyTime{n}c`(n=1~7 월~일, 8 공휴일)에서 옵니다.
+        `close`가 `open`보다 이르거나 같으면 자정을 넘겨 다음 날 새벽까지 진료하는 것이며 `crosses_midnight: true`입니다.
+      required: [day, open, close, crosses_midnight]
+      properties:
+        day:
+          type: string
+          enum: [mon, tue, wed, thu, fri, sat, sun, holiday]
+        open:
+          type: string
+          pattern: '^([01][0-9]|2[0-4]):[0-5][0-9]$'
+          description: 'HH:MM (한국 시간)'
+        close:
+          type: string
+          pattern: '^([01][0-9]|2[0-4]):[0-5][0-9]$'
+          description: 'HH:MM (한국 시간). 자정 마감은 `24:00`으로 올 수 있습니다.'
+        crosses_midnight:
+          type: boolean
+
     Hospital:
       type: object
-      required: [hospital_id, name, type, address, phone, location, distance_m, departments, has_emergency_room]
+      required:
+        - hospital_id
+        - name
+        - type
+        - address
+        - phone
+        - location
+        - distance_m
+        - department
+        - opening_hours
+        - is_open_now
+        - has_night_hours
+        - has_weekend_hours
+        - has_emergency_room
       properties:
         hospital_id:
           type: string
-          description: 심평원 암호화 요양기호(ykiho)
+          description: NMC 기관 ID(`hpid`)
         name:
           type: string
+          description: 기관명(`dutyName`)
         type:
           type: string
-          description: 종별 이름. 예 의원, 병원, 종합병원, 상급종합
+          description: 기관 구분(`dutyDivNam`). 예 의원, 병원, 종합병원
         address:
           type: string
+          description: 주소(`dutyAddr`)
         phone:
           type: [string, 'null']
+          description: 대표전화(`dutyTel1`). 없으면 null
         location:
           $ref: '#/components/schemas/LatLng'
         distance_m:
           type: integer
           minimum: 0
-        departments:
+          description: 요청 좌표에서의 직선거리(하버사인, 미터)
+        department:
+          description: '이 병원을 찾을 때 쓴 진료과(요청한 심평원 코드). 진료과 조건 없이 찾았으면(`filter_applied: false`) null'
+          oneOf:
+            - $ref: '#/components/schemas/DepartmentCode'
+            - type: 'null'
+        opening_hours:
           type: array
+          description: 진료시간이 등록된 요일만 담습니다. 없는 요일은 휴진이거나 정보가 없는 것이며, 둘을 구분할 수 없습니다.
           items:
-            $ref: '#/components/schemas/DepartmentCode'
-        has_emergency_room:
+            $ref: '#/components/schemas/OpeningHours'
+        is_open_now:
+          type: [boolean, 'null']
+          description: |
+            `evaluated_at` 시각(한국 시간)에 진료 중인지. 전날 자정을 넘긴 진료가 새벽까지 이어지는 경우도 포함합니다.
+            진료시간이 하나도 없으면(`opening_hours`가 빈 배열) null
+        has_night_hours:
           type: boolean
+          description: 평일(월~금) 중 하루라도 20:00 이후까지 진료(자정을 넘기는 진료 포함). 기준 시각은 서버 설정값
+        has_weekend_hours:
+          type: boolean
+          description: 토요일 또는 일요일 진료시간이 등록되어 있음
+        has_emergency_room:
+          type: [boolean, 'null']
+          description: 응급실 운영 여부. MVP에서는 null이며 T60(응급의료 데이터)에서 채웁니다
 
     HospitalSearchResponse:
       type: object
-      required: [total, items]
+      required: [total, items, region, department, evaluated_at, notice]
       properties:
         total:
           type: integer
@@ -709,5 +889,40 @@ components:
           description: 반경 안에서 조건에 맞는 병원 수(`limit`과 무관)
         items:
           type: array
+          description: 가까운 순, 최대 `limit`개
           items:
             $ref: '#/components/schemas/Hospital'
+        region:
+          type: object
+          description: 좌표가 속한 시군구. 이 지역의 병원만 검색했습니다
+          required: [sido, sigungu]
+          properties:
+            sido:
+              type: string
+              description: 예 서울특별시
+            sigungu:
+              type: [string, 'null']
+              description: 예 강남구, 수원시 장안구. 시군구가 없는 시도(세종특별자치시)는 null
+        department:
+          type: object
+          description: 요청한 진료과와 실제로 진료과 조건을 적용했는지
+          required: [code, name, filter_applied, message]
+          properties:
+            code:
+              $ref: '#/components/schemas/DepartmentCode'
+            name:
+              type: string
+              description: 진료과 이름(`departments.csv`의 `name_ko`)
+            filter_applied:
+              type: boolean
+              description: false이면 NMC에 대응 진료과가 없어 진료과 조건 없이 검색한 것
+            message:
+              type: [string, 'null']
+              description: '`filter_applied: false`일 때 화면에 보여 줄 안내. 그 밖에는 null'
+        evaluated_at:
+          type: string
+          format: date-time
+          description: '`is_open_now`를 판단한 시각(+09:00). 화면에 "14:20 기준"처럼 보여 줄 수 있습니다'
+        notice:
+          type: string
+          description: 목록 위에 항상 보여 줄 안내(진료시간 변동 가능, 방문 전 전화 확인, 응급 시 119)
