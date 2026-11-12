@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <response><header><resultCode>00</resultCode><resultMsg>NORMAL SERVICE.</resultMsg></header>
 <body><items>
-<item><dutyAddr>서울특별시 강남구 예시로 3</dutyAddr><dutyDiv>B</dutyDiv><dutyDivNam>병원</dutyDivNam><dutyName>주말병원</dutyName><dutyTel1>02-000-0003</dutyTel1><dutyTime6c>1800</dutyTime6c><dutyTime6s>0900</dutyTime6s><dutyTime7c>1800</dutyTime7c><dutyTime7s>0900</dutyTime7s><hpid>T0000003</hpid><rnum>3</rnum><wgs84Lat>37.4990</wgs84Lat><wgs84Lon>127.0290</wgs84Lon></item>
-<item><dutyAddr>서울특별시 강남구 먼곳로 9</dutyAddr><dutyDiv>C</dutyDiv><dutyDivNam>의원</dutyDivNam><dutyName>시간정보없는의원</dutyName><dutyTel1>02-000-0004</dutyTel1><hpid>T0000004</hpid><rnum>4</rnum><wgs84Lat>37.4700</wgs84Lat><wgs84Lon>127.0500</wgs84Lon></item>
-</items><numOfRows>2</numOfRows><pageNo>2</pageNo><totalCount>4</totalCount></body></response>
+<item><dutyAddr>서울특별시 강남구 예시로 3</dutyAddr><dutyDiv>B</dutyDiv><dutyDivNam>병원</dutyDivNam><dutyName>주말내과병원</dutyName><dutyTel1>02-000-0003</dutyTel1><dutyTime6c>1800</dutyTime6c><dutyTime6s>0900</dutyTime6s><dutyTime7c>1800</dutyTime7c><dutyTime7s>0900</dutyTime7s><hpid>T0000003</hpid><rnum>3</rnum><wgs84Lat>37.4990</wgs84Lat><wgs84Lon>127.0290</wgs84Lon></item>
+<item><dutyAddr>서울특별시 강남구 먼곳로 9</dutyAddr><dutyDiv>C</dutyDiv><dutyDivNam>의원</dutyDivNam><dutyName>시간정보없는내과의원</dutyName><dutyTel1>02-000-0004</dutyTel1><hpid>T0000004</hpid><rnum>4</rnum><wgs84Lat>37.4700</wgs84Lat><wgs84Lon>127.0500</wgs84Lon></item>
+</items><numOfRows>2</numOfRows><pageNo>2</pageNo><totalCount>6</totalCount></body></response>

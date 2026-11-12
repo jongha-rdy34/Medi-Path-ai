@@ -11,7 +11,14 @@ from hospitals.tests.conftest import fixture
 def test_nmc_reads_every_page(fake_http):
     items = nmc.fetch_region("서울특별시", "강남구", "D001")
 
-    assert [i["hpid"] for i in items] == ["T0000001", "T0000002", "T0000003", "T0000004"]
+    assert [i["hpid"] for i in items] == [
+        "T0000001",
+        "T0000005",
+        "T0000006",
+        "T0000002",
+        "T0000003",
+        "T0000004",
+    ]
     pages = [c["params"]["pageNo"] for c in fake_http.nmc_calls()]
     assert pages == ["1", "2"]
 
@@ -95,3 +102,33 @@ def test_kakao_bad_json_raises(fake_http):
     fake_http.kakao = b"not json"
     with pytest.raises(SourceUnavailable):
         kakao.region_of(37.4979, 127.0276)
+
+
+# --- department name rule ---------------------------------------------------
+@pytest.mark.parametrize(
+    ("code", "name", "kind", "expected"),
+    [
+        ("01", "가까운내과의원", "의원", True),
+        ("01", "튼튼정형외과의원", "의원", False),
+        ("01", "뉴민병원", "병원", False),  # 병원 needs the name too
+        ("01", "서울성모병원", "종합병원", True),  # 종합병원 is kept
+        ("11", "튼튼소아과의원", "의원", True),  # synonym
+        ("11", "우리소아청소년과의원", "의원", True),
+        ("15", "맑은비뇨기과의원", "의원", True),  # old name of 비뇨의학과
+        ("03", "마음정신과의원", "의원", True),
+        ("10", "예쁜여성의원", "의원", True),
+        ("04", "바른외과의원", "의원", True),
+        ("04", "바른정형외과의원", "의원", False),  # 외과 must not match 정형외과
+        ("04", "강남성형외과의원", "의원", False),
+        ("04", "서울신경외과의원", "의원", False),
+        ("02", "서울신경외과의원", "의원", False),  # 신경과 is not 신경외과
+        ("02", "강남신경과의원", "의원", True),
+        ("09", "편한통증의학과의원", "의원", True),
+        ("49", "하얀치과의원", "치과의원", True),
+        ("01", "강남요양병원", "요양병원", False),
+    ],
+)
+def test_name_matches_department(code, name, kind, expected):
+    from hospitals.departments import name_matches
+
+    assert name_matches(code, name, kind) is expected

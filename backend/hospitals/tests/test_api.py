@@ -35,11 +35,11 @@ def test_matches_contract_and_sorts_by_distance(client, fake_http):
     assert res.status_code == 200
     body = res.json()
     validate(body, "HospitalSearchResponse")
-    # The 4th hospital is ~3.6 km away, outside the default 3 km radius.
-    assert names(res) == ["가까운내과의원", "주말병원", "심야내과의원"]
+    # 튼튼정형외과의원 is filtered out by name; 시간정보없는내과의원 is ~3.6 km away (radius 3 km).
+    assert names(res) == ["가까운내과의원", "주말내과병원", "심야내과의원", "예시대학교병원"]
     distances = [h["distance_m"] for h in body["items"]]
     assert distances == sorted(distances)
-    assert body["total"] == 3
+    assert body["total"] == 4
     assert body["region"] == {"sido": "서울특별시", "sigungu": "강남구"}
     assert body["department"] == {
         "code": "01",
@@ -77,7 +77,7 @@ def test_wider_radius_includes_far_hospital_without_hours(client, fake_http):
     res = get(client, radius=5000)
     far = res.json()["items"][-1]
 
-    assert far["name"] == "시간정보없는의원"
+    assert far["name"] == "시간정보없는내과의원"
     assert far["opening_hours"] == []
     assert far["is_open_now"] is None
 
@@ -85,9 +85,9 @@ def test_wider_radius_includes_far_hospital_without_hours(client, fake_http):
 @pytest.mark.parametrize(
     ("flag", "expected"),
     [
-        ("open_now", ["가까운내과의원", "심야내과의원"]),  # Wed 20:00
+        ("open_now", ["가까운내과의원", "심야내과의원"]),  # Wed 20:00 (대학병원 closes 17:00)
         ("night", ["가까운내과의원", "심야내과의원"]),  # Wed until 21:00 / past midnight
-        ("weekend", ["가까운내과의원", "주말병원"]),  # Sat / Sat+Sun
+        ("weekend", ["가까운내과의원", "주말내과병원"]),  # Sat / Sat+Sun
     ],
 )
 def test_filters(client, fake_http, flag, expected):
@@ -112,7 +112,7 @@ def test_open_now_after_midnight_uses_previous_day(client, fake_http, monkeypatc
 def test_limit_cuts_items_not_total(client, fake_http):
     body = get(client, limit=1).json()
     assert len(body["items"]) == 1
-    assert body["total"] == 3
+    assert body["total"] == 4
 
 
 @pytest.mark.parametrize(
@@ -140,6 +140,21 @@ def test_missing_department_is_rejected(client, fake_http):
     res = client.get(URL, GANGNAM)
     assert res.status_code == 422
     assert "department" in [d["field"] for d in res.json()["details"]]
+
+
+def test_clinics_need_the_department_in_their_name(client, fake_http):
+    """Decision 2026-11-12 (@ley-21): NMC QD also returns clinics that merely list 내과
+    (e.g. an orthopedic clinic). Clinics(의원) and hospitals(병원) must carry the department
+    in their name; 종합병원 is kept because it really runs many departments."""
+    found = names(get(client))
+
+    assert "튼튼정형외과의원" not in found
+    assert "예시대학교병원" in found  # 종합병원
+
+
+def test_name_rule_not_applied_without_department_filter(client, fake_http):
+    found = names(get(client, department="00"))  # 일반의: no NMC code, no filter
+    assert "튼튼정형외과의원" in found
 
 
 def test_department_without_nmc_code_searches_all(client, fake_http):

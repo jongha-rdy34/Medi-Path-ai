@@ -70,3 +70,14 @@ def test_real_same_open_and_close_days_are_ignored(fake_http):
     assert [d["day"] for d in hours.opening_hours(best)] == ["sat"]
     assert hours.is_open_at(best, WED_2PM) is False
     assert hours.has_weekend_hours(best) is True
+
+
+def test_real_results_are_internal_medicine_or_general_hospitals(client, real):
+    """Name rule on live data: no 안과·성형외과 clinics in a 내과 search."""
+    body = client.get(
+        "/api/hospitals", {**GANGNAM_STATION, "department": "01", "radius": 10000}
+    ).json()
+
+    assert body["items"]
+    for h in body["items"]:
+        assert "내과" in h["name"] or h["type"] == "종합병원", h["name"]
