@@ -91,8 +91,9 @@ AI Hub(https://aihub.or.kr)는 회원가입 → 데이터셋 상세 페이지에
 
 | 파일 | 열 | 내용 |
 |---|---|---|
-| `departments.csv` | `code`, `name_ko`, `source` | 심평원 진료과목 코드 중 환자 안내에 쓰는 28개(00~26, 49). 출처: HL7 Korea KR Core `HIRA_Medical_Department` v1.0.2 |
+| `departments.csv` | `code`, `name_ko`, `source`, `nmc_code` | 심평원 진료과목 코드 중 환자 안내에 쓰는 28개(00~26, 49). 출처: HL7 Korea KR Core `HIRA_Medical_Department` v1.0.2. `nmc_code`는 NMC 병·의원 찾기의 진료과목 코드(D001~)이며 빈칸은 대응 없음. `backend/hospitals/`가 읽습니다 |
 | `disease_department.csv` | `disease_id`, `kaggle_label`, `disease_name_ko`, `department_code`, `alt_department_codes`, `reason_ko`, `source_url`, `review_status` | 질환 41종 → 1순위 진료과 + 대안 진료과(`\|` 구분). `reason_ko`는 API `recommended_departments[].reason`의 기본 문구 |
+| `sensitive_diseases.csv` | `disease_id`, `reason` | 화면 Top-3·설명에서 숨기는 민감 질환(진료과 점수에는 포함). 사용자 확정 대기 |
 | `symptoms.csv` | `symptom_id`, `name_ko`, `synonyms_ko` | 표준 증상 131개. `symptom_id`는 Kaggle 열 이름을 정규화한 것(`spotting_ urination` → `spotting_urination`). 동의어는 `\|` 구분 |
 
 ```bash
