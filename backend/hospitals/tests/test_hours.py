@@ -105,3 +105,13 @@ def test_malformed_times_are_ignored():
     h = {"dutyTime1s": "09:00", "dutyTime1c": "1800", "dutyTime2s": "", "dutyTime2c": "1800"}
     assert hours.opening_hours(h) == []
     assert hours.is_open_at(h, at("2026-11-09 10:00")) is None
+
+
+def test_same_open_and_close_is_treated_as_no_hours():
+    """09:00~09:00 is most likely a data error (review on #10): ignore that day, not 24 hours."""
+    h = item(d1=("0900", "0900"), d2=("0900", "1800"))
+
+    assert [d["day"] for d in hours.opening_hours(h)] == ["tue"]
+    assert hours.is_open_at(h, at("2026-11-09 15:00")) is False  # Mon: ignored day
+    assert hours.has_night_hours(item(d1=("0900", "0900"))) is False
+    assert hours.is_open_at(item(d1=("0900", "0900")), at("2026-11-09 15:00")) is None
