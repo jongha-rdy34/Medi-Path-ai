@@ -125,7 +125,7 @@ PR 4개를 이 순서로 올립니다.
 - [x] 분할: `Training.csv` 중복 제거 → 고유 증상 조합 단위 그룹 분할(train/val/test). 같은 조합이 두 셋에 겹치지 않는지 테스트로 확인. `Testing.csv`는 쓰지 않음
 - [x] 위험 요인 3종은 학습·추론 입력에서 항상 0(SPEC 6절)
 - [x] 노이즈 테스트셋: 시드 고정, 증상 일부 제거(dropout) + 관련 없는 증상 추가
-- [ ] end-to-end 평가: T13 평가셋 문장 · _T13 이후 추가 커밋_ — → LLM 구조화 → `/predict` Top-3 정확도와 진료과 추천 정확도
+- [x] end-to-end 평가: T13 평가셋 문장 → LLM 구조화 → 분류 모델 Top-3 정확도와 진료과 추천 정확도 · _`python -m triage.e2e`, 두 Flash-Lite 모두 Top-3 0.932, 진료과 0.983_
 - [x] FastAPI `/predict`(T01 계약), 모델 파일은 버전 이름으로 저장 · _계약 스키마로 응답 검증하는 테스트 포함_
 - **검증**: `cd ml-service && pytest`. 그룹 분할 테스트셋과 노이즈 테스트셋 모두 Top-3 ≥ 0.80. end-to-end 지표를 기록(이후 T50의 비교 기준)
 - **의존**: T01, T10, T11 (end-to-end 평가는 T13)
