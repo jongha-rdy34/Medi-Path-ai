@@ -60,14 +60,20 @@ def _clinics(sido: str, sigungu: str | None, nmc_department: str | None) -> list
     return items
 
 
+def nmc_sigungu(sigungu: str | None) -> str | None:
+    """NMC Q1 for a Kakao 시군구. Two-word names ("수원시 장안구") become the city ("수원시").
+
+    Live check 2026-11-12 (hospital_live_check): NMC returned 0 for "수원시 장안구",
+    "성남시 분당구", "전주시 완산구" and 506 / 463 / 312 for "수원시" / "성남시" / "전주시".
+    New province names (강원특별자치도, 전북특별자치도) work as Q0; the old names return 0.
+    """
+    if sigungu and " " in sigungu:
+        return sigungu.split()[0]
+    return sigungu
+
+
 def _clinics_for_region(region: dict, nmc_department: str | None) -> list[dict]:
-    items = _clinics(region["sido"], region["sigungu"], nmc_department)
-    sigungu = region["sigungu"] or ""
-    if not items and " " in sigungu:
-        # e.g. "수원시 장안구": if NMC knows only the city, search the whole city.
-        # Whether NMC Q1 takes the two-word form is checked with live recordings (T21 PR 3).
-        items = _clinics(region["sido"], sigungu.split()[0], nmc_department)
-    return items
+    return _clinics(region["sido"], nmc_sigungu(region["sigungu"]), nmc_department)
 
 
 def distance_m(lat1: float, lng1: float, lat2: float, lng2: float) -> int:

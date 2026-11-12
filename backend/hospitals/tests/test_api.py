@@ -197,18 +197,14 @@ def test_nmc_cached_per_region_not_per_coordinate(client, fake_http):
     assert "37.49" not in service.cache_key("서울특별시", "강남구", "D001")
 
 
-def test_two_word_sigungu_falls_back_to_city(client, fake_http):
+def test_two_word_sigungu_queries_the_city(client, fake_http):
+    """Live check 2026-11-12: NMC Q1 returns 0 for "성남시 분당구"/"수원시 장안구", >0 for the city."""
     fake_http.kakao = fixture("kakao_bundang.json")
-    fake_http.nmc_by_q1 = {"성남시 분당구": [fixture("nmc_empty.xml")]}
 
     res = get(client)
 
     assert res.status_code == 200
-    assert [c["params"]["Q1"] for c in fake_http.nmc_calls()] == [
-        "성남시 분당구",
-        "성남시",
-        "성남시",
-    ]
+    assert {c["params"]["Q1"] for c in fake_http.nmc_calls()} == {"성남시"}
     assert res.json()["region"] == {"sido": "경기도", "sigungu": "성남시 분당구"}
 
 
