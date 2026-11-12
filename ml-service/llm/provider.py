@@ -40,6 +40,7 @@ class Extraction:
     emergency_suspected: bool = False
     emergency_reason: str | None = None
     parsed: bool = True
+    served_model: str | None = None  # which model answered (primary or fallback)
     latency_s: float = 0.0
     prompt_tokens: int = 0
     output_tokens: int = 0
