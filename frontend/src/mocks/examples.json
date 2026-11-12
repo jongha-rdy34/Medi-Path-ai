@@ -1,0 +1,197 @@
+{
+  "session": {
+    "session_id": "3f1c2b7e-8a4d-4c6e-9b1a-2d5e7f9a0c11",
+    "status": "collecting",
+    "created_at": "2026-11-18T09:00:00+09:00"
+  },
+  "message": {
+    "needsMoreInfo": {
+      "status": "needs_more_info",
+      "session_id": "3f1c2b7e-8a4d-4c6e-9b1a-2d5e7f9a0c11",
+      "structured_symptoms": {
+        "symptoms": [
+          {
+            "symptom_id": "high_fever",
+            "duration_days": 1
+          },
+          {
+            "symptom_id": "abdominal_pain"
+          }
+        ]
+      },
+      "questions": [
+        {
+          "question_id": "q1",
+          "text": "설사나 구토가 있나요?",
+          "choices": [
+            "설사",
+            "구토",
+            "둘 다",
+            "없음"
+          ]
+        },
+        {
+          "question_id": "q2",
+          "text": "배의 어느 쪽이 가장 아픈가요?",
+          "choices": [
+            "윗배",
+            "배꼽 주위",
+            "오른쪽 아랫배",
+            "왼쪽 아랫배",
+            "배 전체"
+          ]
+        }
+      ],
+      "emergency": false,
+      "emergency_notice": null
+    },
+    "resultReady": {
+      "status": "result_ready",
+      "session_id": "3f1c2b7e-8a4d-4c6e-9b1a-2d5e7f9a0c11",
+      "structured_symptoms": {
+        "symptoms": [
+          {
+            "symptom_id": "high_fever",
+            "duration_days": 1
+          },
+          {
+            "symptom_id": "abdominal_pain"
+          },
+          {
+            "symptom_id": "diarrhoea"
+          }
+        ]
+      },
+      "result_url": "/api/triage/sessions/3f1c2b7e-8a4d-4c6e-9b1a-2d5e7f9a0c11/result",
+      "emergency": false,
+      "emergency_notice": null
+    },
+    "emergency": {
+      "status": "result_ready",
+      "session_id": "7b2e4d1a-1c3f-4e5a-8b6d-0f9e8d7c6b5a",
+      "structured_symptoms": {
+        "symptoms": [
+          {
+            "symptom_id": "chest_pain",
+            "severity": "severe"
+          },
+          {
+            "symptom_id": "breathlessness"
+          }
+        ]
+      },
+      "result_url": "/api/triage/sessions/7b2e4d1a-1c3f-4e5a-8b6d-0f9e8d7c6b5a/result",
+      "emergency": true,
+      "emergency_notice": {
+        "reasons": [
+          "가슴 통증과 호흡곤란이 함께 있습니다"
+        ],
+        "message": "지금 바로 119에 전화하거나 가까운 응급실로 가세요.",
+        "call_number": "119"
+      }
+    }
+  },
+  "result": {
+    "normal": {
+      "session_id": "3f1c2b7e-8a4d-4c6e-9b1a-2d5e7f9a0c11",
+      "emergency": false,
+      "emergency_notice": null,
+      "predictions": [
+        {
+          "disease_id": "gastroenteritis",
+          "disease_name_ko": "위장염",
+          "probability": 0.52
+        },
+        {
+          "disease_id": "typhoid",
+          "disease_name_ko": "장티푸스",
+          "probability": 0.23
+        },
+        {
+          "disease_id": "hepatitis_a",
+          "disease_name_ko": "A형 간염",
+          "probability": 0.09
+        }
+      ],
+      "recommended_departments": [
+        {
+          "code": "01",
+          "name_ko": "내과",
+          "reason": "발열, 복통, 설사는 소화기 감염에서 흔한 증상이라 내과 진료를 권합니다."
+        }
+      ],
+      "explanation": "입력하신 발열, 복통, 설사 증상은 위장염에서 자주 나타납니다. 증상이 이틀 넘게 계속되거나 탈수 증상(소변량 감소, 어지럼)이 있으면 진료를 받으세요.",
+      "structured_symptoms": {
+        "symptoms": [
+          {
+            "symptom_id": "high_fever",
+            "duration_days": 1
+          },
+          {
+            "symptom_id": "abdominal_pain"
+          },
+          {
+            "symptom_id": "diarrhoea"
+          }
+        ]
+      },
+      "disclaimer": "이 결과는 의학적 진단이 아니며 참고용 안내입니다. 정확한 진단과 치료는 의료진에게 받으세요.",
+      "model_version": "baseline-2026.11.0",
+      "created_at": "2026-11-18T09:01:30+09:00"
+    },
+    "emergency": {
+      "session_id": "7b2e4d1a-1c3f-4e5a-8b6d-0f9e8d7c6b5a",
+      "emergency": true,
+      "emergency_notice": {
+        "reasons": [
+          "가슴 통증과 호흡곤란이 함께 있습니다"
+        ],
+        "message": "지금 바로 119에 전화하거나 가까운 응급실로 가세요.",
+        "call_number": "119"
+      },
+      "predictions": [
+        {
+          "disease_id": "heart_attack",
+          "disease_name_ko": "심근경색",
+          "probability": 0.61
+        },
+        {
+          "disease_id": "pneumonia",
+          "disease_name_ko": "폐렴",
+          "probability": 0.14
+        },
+        {
+          "disease_id": "gerd",
+          "disease_name_ko": "위식도역류질환",
+          "probability": 0.08
+        }
+      ],
+      "recommended_departments": [
+        {
+          "code": "24",
+          "name_ko": "응급의학과",
+          "reason": "가슴 통증과 호흡곤란이 함께 있으면 응급 평가가 필요합니다."
+        }
+      ],
+      "explanation": "가슴 통증과 호흡곤란이 함께 나타나면 심장이나 폐의 응급 질환일 수 있습니다. 결과를 기다리지 말고 응급실로 가세요.",
+      "structured_symptoms": {
+        "symptoms": [
+          {
+            "symptom_id": "chest_pain",
+            "severity": "severe"
+          },
+          {
+            "symptom_id": "breathlessness"
+          }
+        ]
+      },
+      "disclaimer": "이 결과는 의학적 진단이 아니며 참고용 안내입니다. 정확한 진단과 치료는 의료진에게 받으세요.",
+      "model_version": "baseline-2026.11.0",
+      "created_at": "2026-11-18T09:05:10+09:00"
+    }
+  },
+  "resultNotReady": {
+    "code": "result_not_ready",
+    "message": "추가 질문에 먼저 답해 주세요."
+  }
+}
