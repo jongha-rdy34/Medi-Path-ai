@@ -44,3 +44,6 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# LLM eval response cache (T13)
+ml-service/llm/eval/.cache/
