@@ -87,11 +87,11 @@ class Command(BaseCommand):
 
         def recording_get(url, params, headers=None, timeout=http.DEFAULT_TIMEOUT):
             body = real_get(url, params, headers=headers, timeout=timeout)
-            kind = (
-                "kakao"
-                if "kakao" in url
-                else f"nmc_q1-{params.get('Q1', 'none')}_p{params.get('pageNo')}"
-            )
+            if "kakao" in url:
+                kind = "kakao"
+            else:  # Q0 in the name too, so old/new 시도 names do not overwrite each other
+                q0, q1 = params.get("Q0", "none"), params.get("Q1", "none")
+                kind = f"nmc_{q0}_{q1}_{params.get('QD', 'all')}_p{params.get('pageNo')}"
             ext = "json" if "kakao" in url else "xml"
             (RECORD_DIR / f"{self._current}__{kind.replace(' ', '_')}.{ext}").write_bytes(body)
             return body
@@ -136,6 +136,7 @@ class Command(BaseCommand):
 
     def _measure(self, runs):
         label, lat, lng = PLACES[0]
+        self._current = "measure"
         q = service.Query(lat=lat, lng=lng, department=departments.lookup("01"), open_now=True)
         cache.clear()
         t0 = time.perf_counter()
