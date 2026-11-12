@@ -1,12 +1,12 @@
 """Check hospital search against the REAL NMC and Kakao APIs (run by a person, never in CI).
 
-    python manage.py hospital_live_check              # region + NMC counts for sample places
-    python manage.py hospital_live_check --record     # also save responses to tests/fixtures/recorded/
-    python manage.py hospital_live_check --measure 20 # latency: cache miss once, then N cache hits
+    python manage.py hospital_live_check --env-file ../.env               # region + NMC counts
+    python manage.py hospital_live_check --env-file ../.env --record      # + save responses
+    python manage.py hospital_live_check --env-file ../.env --measure 20  # + latency (miss, N hits)
 
 Keys come from the environment (DATA_GO_KR_SERVICE_KEY, KAKAO_REST_API_KEY) and are never printed
 or saved. Sample points are fixed public places, not user locations. Uses about 20 NMC + 25 Kakao
-calls without --measure.
+calls without --measure. --env-file reads KEY=VALUE lines (works the same on Windows and macOS/Linux).
 """
 
 from __future__ import annotations
@@ -15,9 +15,10 @@ import os
 import statistics
 import time
 from pathlib import Path
+from typing import ClassVar
 
 from django.core.cache import cache
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from hospitals import departments, http, kakao, nmc, service
 
@@ -28,7 +29,11 @@ PLACES = [
     ("seongnam_pangyo_station", 37.3948, 127.1112),  # 두 단어 시군구 확인용
     ("sejong_city_hall", 36.4800, 127.2890),  # 시군구 없는 시도
     ("jeju_city_hall", 33.4996, 126.5312),
+    ("chuncheon_city_hall", 37.8813, 127.7298),  # 강원특별자치도 vs 강원도 (review on #13)
+    ("jeonju_city_hall", 35.8242, 127.1480),  # 전북특별자치도 vs 전라북도 (review on #13)
 ]
+# Renamed provinces: Kakao gives the new name; NMC Q0 may only know the old one.
+OLD_SIDO_NAMES = {"강원특별자치도": "강원도", "전북특별자치도": "전라북도"}
 RECORD_DIR = Path(__file__).resolve().parents[2] / "tests" / "fixtures" / "recorded"
 
 
@@ -40,8 +45,26 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--record", action="store_true", help="save raw responses as fixtures")
         parser.add_argument("--measure", type=int, default=0, help="number of cache-hit runs")
+        parser.add_argument("--env-file", help="read keys from this .env file (never printed)")
+
+    requires_system_checks: ClassVar[list] = []  # no database needed
+
+    def _load_env_file(self, path):
+        if not Path(path).is_file():
+            raise CommandError(f".env 파일을 찾을 수 없습니다: {Path(path).resolve()}")
+        for line in Path(path).read_text(encoding="utf-8-sig").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            name, value = line.split("=", 1)
+            name = name.strip().removeprefix("export ").strip()
+            value = value.strip().strip('"').strip("'")
+            if name and value and not os.environ.get(name):
+                os.environ[name] = value
 
     def handle(self, *args, **opts):
+        if opts["env_file"]:
+            self._load_env_file(opts["env_file"])
         for name in ("DATA_GO_KR_SERVICE_KEY", "KAKAO_REST_API_KEY"):
             ok = bool(os.environ.get(name, "").strip())
             self.stdout.write(f"{name}: {'set' if ok else 'MISSING'}")
@@ -86,16 +109,30 @@ class Command(BaseCommand):
             self.stdout.write(f"  {label}: no region")
             return
         line = f"  {label}: sido={region['sido']!r} sigungu={region['sigungu']!r}"
-        candidates = [region["sigungu"]]
+        sidos = [region["sido"]]
+        if region["sido"] in OLD_SIDO_NAMES:
+            sidos.append(OLD_SIDO_NAMES[region["sido"]])
+        sigungus = [region["sigungu"]]
         if region["sigungu"] and " " in region["sigungu"]:
-            candidates.append(region["sigungu"].split()[0])
-        for q1 in candidates:
-            try:
-                n = len(nmc.fetch_region(region["sido"], q1, "D001"))
-                line += f" | Q1={q1!r} -> {n}건"
-            except http.SourceUnavailable as e:
-                line += f" | Q1={q1!r} -> FAILED ({e.reason})"
+            sigungus.append(region["sigungu"].split()[0])
         self.stdout.write(line)
+        for q0 in sidos:
+            for q1 in sigungus:
+                try:
+                    items = nmc.fetch_region(q0, q1, "D001")
+                except http.SourceUnavailable as e:
+                    self.stdout.write(f"      Q0={q0!r} Q1={q1!r} -> FAILED ({e.reason})")
+                    continue
+                same = sum(
+                    1
+                    for it in items
+                    for d in range(1, 9)
+                    if it.get(f"dutyTime{d}s")
+                    and it.get(f"dutyTime{d}s") == it.get(f"dutyTime{d}c")
+                )
+                self.stdout.write(
+                    f"      Q0={q0!r} Q1={q1!r} -> {len(items)}건 (open==close 요일 {same}개)"
+                )
 
     def _measure(self, runs):
         label, lat, lng = PLACES[0]
