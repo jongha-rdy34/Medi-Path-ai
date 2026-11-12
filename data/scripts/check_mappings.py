@@ -149,6 +149,18 @@ def check_raw_coverage(m: Mappings, raw_dir: Path) -> list[str]:
     return sorted(set(errors))
 
 
+def check_sensitive(m: Mappings, path: Path) -> list[str]:
+    """Hidden-from-users list (sensitive_diseases.csv) must name known diseases."""
+    if not path.exists():
+        return []
+    known = {d["disease_id"] for d in m.diseases}
+    return [
+        f"{path.name}: unknown disease_id '{r['disease_id']}'"
+        for r in _read(path)
+        if r["disease_id"] not in known
+    ]
+
+
 def check_contract_examples(m: Mappings, contract_paths: list[Path]) -> list[str]:
     symptom_ids = {s["symptom_id"] for s in m.symptoms}
     disease_ids = {d["disease_id"] for d in m.diseases}
@@ -177,6 +189,7 @@ def main() -> int:
     m = load_mappings(args.mappings_dir)
     errors, warnings = check_mappings(m)
     errors += check_raw_coverage(m, args.raw_dir)
+    errors += check_sensitive(m, args.mappings_dir / "sensitive_diseases.csv")
     errors += check_contract_examples(m, sorted((REPO_DIR / "contracts").glob("*.yaml")))
 
     for w in warnings:

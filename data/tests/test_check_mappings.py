@@ -133,3 +133,17 @@ def test_mappings_type_is_simple_container(mappings_dir):
     m = load_mappings(mappings_dir)
     assert isinstance(m, Mappings)
     assert {d["code"] for d in m.departments} == {"01", "14"}
+
+
+def test_sensitive_diseases_must_exist_in_the_mapping(mappings_dir):
+    from check_mappings import check_sensitive
+
+    write_csv(
+        mappings_dir / "sensitive_diseases.csv",
+        ["disease_id", "reason"],
+        [["gerd", "x"], ["aids", "y"]],
+    )
+
+    errors = check_sensitive(load_mappings(mappings_dir), mappings_dir / "sensitive_diseases.csv")
+
+    assert errors == ["sensitive_diseases.csv: unknown disease_id 'aids'"]
