@@ -58,6 +58,8 @@ sed -i 's/@A_GITHUB_ID/@<A_ID>/g; s/@B_GITHUB_ID/@<B_ID>/g' .github/CODEOWNERS
 - [x] Block force pushes
 - [x] Require a pull request before merging → Required approvals **0**
 - [x] Require status checks to pass → **Add checks** → `ci-ok`
+  - [ ] Require branches to be up to date before merging: **끔**(`strict=false`). 병렬 브랜치가 많아 매번 main을 다시 받게 하지 않습니다.
+- 메모: `require_extra_approval_for_unattributed_changes`가 켜져 있습니다(2026-11-12 확인). 승인 0명 설정과 함께 머지가 막히면 끕니다. 첫 PR 머지 결과를 보고 사용자가 결정합니다.
 - Bypass list는 비워 둡니다(소유자도 규칙을 따름)
 
 같은 설정을 CLI로 할 때(`POST /repos/{owner}/{repo}/rulesets`):
@@ -85,7 +87,7 @@ gh api -X POST repos/jongha-rdy34/Medi-Path-ai/rulesets --input - <<'JSON'
     {
       "type": "required_status_checks",
       "parameters": {
-        "strict_required_status_checks_policy": true,
+        "strict_required_status_checks_policy": false,
         "required_status_checks": [{ "context": "ci-ok" }]
       }
     }
@@ -137,22 +139,21 @@ for m in api-contract platform data-foundation triage-model llm-assistant hospit
 
 ## 8단계. 룰셋 검증 (4단계 설정 후)
 
-1. **직접 push가 거부되는지**: 아무 커밋이나 `main`에 바로 push해 봅니다.
+`main`에 테스트 커밋을 push해서 확인하지 않습니다.
+
+1. **규칙이 적용됐는지 API로 읽기** (인증 없이 됨)
 
 ```bash
-git checkout main && git commit --allow-empty -m "chore: ruleset check" && git push origin main
+curl -s https://api.github.com/repos/jongha-rdy34/Medi-Path-ai/rules/branches/main
 ```
 
-**기대 결과**: `GH013: Repository rule violations found` 등으로 거부됩니다. 확인 후 로컬 커밋을 되돌립니다.
+확인할 것:
 
-```bash
-git reset --hard origin/main
-```
+| `type` | 기대 값 |
+|---|---|
+| `deletion` | 있음(브랜치 삭제 금지) |
+| `non_fast_forward` | 있음(강제 push 금지) |
+| `pull_request` | `required_approving_review_count: 0` |
+| `required_status_checks` | `required_status_checks`에 `ci-ok`, `strict_required_status_checks_policy: false` |
 
-2. **`ci-ok` 전에는 머지가 막히는지**: 아무 브랜치로 PR을 만들고, CI가 끝나기 전에 머지를 시도합니다.
-
-```bash
-gh pr merge <PR 번호> --merge
-```
-
-**기대 결과**: 필수 상태 체크 대기로 거절됩니다. CI가 통과한 뒤에는 승인 없이 머지됩니다(필수 승인 0).
+2. **`ci-ok` 전에는 머지가 막히는지**: 첫 실제 PR에서 확인합니다. CI가 끝나기 전에는 Merge 버튼이 막히고, `ci-ok`가 통과한 뒤에는 승인 없이 머지되면 정상입니다. 막히면 4단계의 `require_extra_approval_for_unattributed_changes` 메모를 보세요.
