@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 import { useTriageStore } from '../stores/triage'
+import ProgressSteps from './ProgressSteps.vue'
 
 const store = useTriageStore()
 const draft = ref('')
@@ -31,7 +32,11 @@ async function submit(text = draft.value) {
       <textarea v-model="draft" maxlength="500" rows="3" aria-label="증상 입력" placeholder="증상을 입력하세요" />
       <button type="submit" :disabled="store.busy || !draft.trim()">보내기</button>
     </form>
-    <p v-if="store.error" class="error" role="status">{{ store.error }}</p>
+    <ProgressSteps v-if="store.busy" :step="store.step" />
+    <p v-if="store.error" class="error" role="status">
+      {{ store.error }}
+      <button v-if="store.canRetry" type="button" data-test="retry" @click="store.retry()">다시 시도</button>
+    </p>
   </section>
 </template>
 
