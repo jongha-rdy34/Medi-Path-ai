@@ -28,3 +28,19 @@ def test_never_offers_risk_factors_or_unknown_ids():
 
 def test_always_include_ids_exist_in_the_dictionary():
     assert set(ALWAYS_INCLUDE) <= set(VOCAB)
+
+
+def test_dictionary_location_can_be_overridden_for_containers(tmp_path, monkeypatch):
+    import importlib
+
+    from llm import provider
+
+    (tmp_path / "symptoms.csv").write_text(
+        "symptom_id,name_ko,synonyms_ko\ncough,기침,콜록\n", encoding="utf-8"
+    )
+    monkeypatch.setenv("MAPPINGS_DIR", str(tmp_path))
+    try:
+        assert importlib.reload(provider).load_symptom_dictionary() == {"cough": "기침 (콜록)"}
+    finally:
+        monkeypatch.delenv("MAPPINGS_DIR")
+        importlib.reload(provider)

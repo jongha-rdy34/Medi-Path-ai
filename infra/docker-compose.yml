@@ -71,10 +71,19 @@ services:
     environment:
       MODEL_DIR: /app/models
       MODEL_VERSION: ${MODEL_VERSION:-baseline-2026.11.0}
+      MAPPINGS_DIR: /app/data/mappings
+      # LLM (ADR 0001). 키가 없으면 /llm/*는 503 llm_unavailable입니다.
+      # 클라우드 세션에서는 네트워크 프록시가 진짜 키를 넣으므로 아무 값이나 넣어도 됩니다.
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      GEMINI_FALLBACK_MODEL: ${GEMINI_FALLBACK_MODEL:-gemini-3.1-flash-lite}
+      LLM_CANDIDATE_K: ${LLM_CANDIDATE_K:-30}
     volumes:
       # 학습한 모델 파일(gitignore 대상). 만들기: cd ml-service && python -m triage.train
       # 모델이 없으면 /health는 200, /predict는 503 model_not_loaded를 돌려줍니다.
       - ../ml-service/models:/app/models:ro
+      # 증상 사전(LLM 프롬프트)
+      - ../data/mappings:/app/data/mappings:ro
     ports:
       - "8001:8001"
     healthcheck:
