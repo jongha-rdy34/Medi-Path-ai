@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>내 주변 병원 찾기</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; display: flex; height: 100vh; }
+    #map { flex: 1; }
+    #side { width: 340px; display: flex; flex-direction: column; border-left: 1px solid #ddd; }
+    #filters { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; display: grid; gap: 6px; }
+    #filters label { cursor: pointer; }
+    #status { font-size: 12px; color: #666; padding: 6px 10px; }
+    #results { overflow-y: auto; flex: 1; }
+    .item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .item:hover { background: #f7f7f7; }
+    .name { font-weight: bold; }
+    .meta { font-size: 12px; color: #666; margin-top: 2px; }
+    .badge { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 8px; margin-right: 3px; color: #fff; }
+    .open { background: #1e9e50; } .closed { background: #999; }
+    .night { background: #4b4bc8; } .wk { background: #e08a00; }
+    details { font-size: 12px; color: #444; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="side">
+    <div id="filters">
+      <label>반경
+        <select id="radius">
+          <option value="1000">1km</option>
+          <option value="2000" selected>2km</option>
+          <option value="3000">3km</option>
+          <option value="5000">5km</option>
+        </select>
+      </label>
+      <label>진료과
+        <!-- 다른 과목 코드는 nmc_department_codes.csv 참고 -->
+        <select id="dept">
+          <option value="">전체</option>
+          <option value="D001">내과</option>
+          <option value="D002">소아청소년과</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="openNow" /> 지금 진료 중</label>
+      <label><input type="checkbox" id="night" /> 야간 진료 (평일 20시 이후)</label>
+      <label><input type="checkbox" id="weekend" /> 주말 진료 (토·일)</label>
+      <div>
+        <button id="search">검색</button>
+        <button id="locate" title="내 위치 다시 찾기">📍 내 위치</button>
+      </div>
+    </div>
+    <div id="status">위치 확인 중…</div>
+    <div id="results"></div>
+  </div>
+
+  <!-- ★ YOUR_JS_KEY 를 JavaScript 키로 교체 / 카카오 콘솔에 http://localhost:3000 도메인 등록 -->
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_JS_KEY&libraries=services&autoload=false"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    kakao.maps.load(() => {
+      let here = new kakao.maps.LatLng(37.5665, 126.9780); // 기본: 서울시청
+      const map = new kakao.maps.Map($('map'), { center: here, level: 5 });
+      const geocoder = new kakao.maps.services.Geocoder();
+      const info = new kakao.maps.InfoWindow({ zIndex: 1 });
+      const me = new kakao.maps.Circle({ center: here, radius: 15, strokeWeight: 3, strokeColor: '#1a73e8', fillColor: '#1a73e8', fillOpacity: 0.6, map });
+      const range = new kakao.maps.Circle({ center: here, radius: 2000, strokeWeight: 1, strokeColor: '#1a73e8', strokeOpacity: 0.5, fillColor: '#1a73e8', fillOpacity: 0.05, map });
+      let markers = [];
+
+      // 좌표 → 시도/시군구 (공공데이터 API는 지역 단위로만 조회 가능)
+      const toRegion = latlng => new Promise((resolve, reject) =>
+        geocoder.coord2RegionCode(latlng.getLng(), latlng.getLat(), (res, status) => {
+          if (status !== kakao.maps.services.Status.OK) return reject(new Error('지역 변환 실패'));
+          const b = res.find(r => r.region_type === 'B') || res[0];
+          resolve({ sido: b.region_1depth_name, sigungu: b.region_2depth_name });
+        }));
+
+      async function search() {
+        const radius = $('radius').value;
+        range.setPosition(here); range.setRadius(Number(radius));
+        markers.forEach(m => m.setMap(null)); markers = [];
+        $('results').innerHTML = '';
+        $('status').textContent = '검색 중…';
+        try {
+          const { sido, sigungu } = await toRegion(here);
+          const params = new URLSearchParams({
+            lat: here.getLat(), lng: here.getLng(), radius, sido, sigungu, dept: $('dept').value,
+          });
+          ['openNow', 'night', 'weekend'].forEach(k => $(k).checked && params.set(k, '1'));
+
+          const res = await fetch('/api/hospitals?' + params);
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error);
+
+          $('status').textContent = `${sido} ${sigungu} · 반경 ${radius / 1000}km · ${data.count}곳` +
+            (data.count > data.items.length ? ` (가까운 ${data.items.length}곳 표시)` : '');
+          data.items.forEach(render);
+        } catch (e) {
+          $('status').textContent = '⚠ ' + e.message;
+        }
+      }
+
+      function render(h) {
+        const pos = new kakao.maps.LatLng(h.lat, h.lng);
+        const marker = new kakao.maps.Marker({ map, position: pos, title: h.name });
+        markers.push(marker);
+        const open = () => {
+          info.setContent(`<div style="padding:6px;font-size:12px;white-space:nowrap">${esc(h.name)}<br>오늘 ${esc(h.today)}</div>`);
+          info.open(map, marker);
+          map.panTo(pos);
+        };
+        kakao.maps.event.addListener(marker, 'click', open);
+
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.innerHTML = `
+          <div class="name">${esc(h.name)}</div>
+          <div class="meta">
+            <span class="badge ${h.openNow ? 'open' : 'closed'}">${h.openNow ? '진료 중' : '진료 종료'}</span>
+            ${h.night ? '<span class="badge night">야간</span>' : ''}
+            ${h.sat ? '<span class="badge wk">토</span>' : ''}${h.sun ? '<span class="badge wk">일</span>' : ''}
+          </div>
+          <div class="meta">${h.distance}m · ${esc(h.type)} · 오늘 ${esc(h.today)}</div>
+          <div class="meta">${esc(h.addr)} ${h.tel ? '· ' + esc(h.tel) : ''}</div>
+          <details><summary>요일별 진료시간</summary>${h.weekly.map(esc).join('<br>')}</details>`;
+        el.onclick = e => { if (e.target.tagName !== 'SUMMARY') open(); };
+        $('results').appendChild(el);
+      }
+
+      function setHere(latlng) {
+        here = latlng;
+        me.setPosition(latlng);
+        map.setCenter(latlng);
+        search();
+      }
+
+      function locate() {
+        $('status').textContent = '위치 확인 중…';
+        navigator.geolocation.getCurrentPosition(
+          p => setHere(new kakao.maps.LatLng(p.coords.latitude, p.coords.longitude)),
+          () => { $('status').textContent = '⚠ 위치를 못 가져왔어요. 지도를 클릭해 위치를 지정하세요.'; setHere(here); },
+          { timeout: 15000, maximumAge: 60000 }
+        );
+      }
+
+      kakao.maps.event.addListener(map, 'click', e => setHere(e.latLng));
+      $('search').onclick = search;
+      $('locate').onclick = locate;
+      ['radius', 'dept', 'openNow', 'night', 'weekend'].forEach(id => $(id).onchange = search);
+      locate();
+    });
+  </script>
+</body>
+</html>
