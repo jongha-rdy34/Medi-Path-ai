@@ -34,7 +34,8 @@ const department = props.result.recommended_departments[0]
       <p>{{ result.explanation }}</p>
     </section>
 
-    <HospitalFinder v-if="department" :department="department.code" />
+    <!-- Emergency (decision A, 2026-11-12): no hospital list; the banner offers 119 and the e-gen ER finder. -->
+    <HospitalFinder v-if="department && !result.emergency" :department="department.code" />
 
     <MedicalDisclaimer :text="result.disclaimer" />
   </div>
