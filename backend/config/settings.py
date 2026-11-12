@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "triage",
+    "hospitals",  # T21 hospital search (@ley-21)
 ]
 
 MIDDLEWARE = [

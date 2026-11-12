@@ -24,4 +24,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/health", health),
     path("", include("triage.urls")),
+    path("", include("hospitals.urls")),  # T21 (@ley-21)
 ]
