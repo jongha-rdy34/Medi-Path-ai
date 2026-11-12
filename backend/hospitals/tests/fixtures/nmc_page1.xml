@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response><header><resultCode>00</resultCode><resultMsg>NORMAL SERVICE.</resultMsg></header>
+<body><items>
+<item><dutyAddr>서울특별시 강남구 예시로 1</dutyAddr><dutyDiv>C</dutyDiv><dutyDivNam>의원</dutyDivNam><dutyName>가까운내과의원</dutyName><dutyTel1>02-000-0001</dutyTel1><dutyTime1c>1800</dutyTime1c><dutyTime1s>0900</dutyTime1s><dutyTime2c>1800</dutyTime2c><dutyTime2s>0900</dutyTime2s><dutyTime3c>2100</dutyTime3c><dutyTime3s>0900</dutyTime3s><dutyTime4c>1800</dutyTime4c><dutyTime4s>0900</dutyTime4s><dutyTime5c>1800</dutyTime5c><dutyTime5s>0900</dutyTime5s><dutyTime6c>1300</dutyTime6c><dutyTime6s>0900</dutyTime6s><hpid>T0000001</hpid><rnum>1</rnum><wgs84Lat>37.4985</wgs84Lat><wgs84Lon>127.0281</wgs84Lon></item>
+<item><dutyAddr>서울특별시 강남구 예시로 2</dutyAddr><dutyDiv>C</dutyDiv><dutyDivNam>의원</dutyDivNam><dutyName>심야내과의원</dutyName><dutyTime1c>0200</dutyTime1c><dutyTime1s>1900</dutyTime1s><dutyTime2c>0200</dutyTime2c><dutyTime2s>1900</dutyTime2s><dutyTime3c>0200</dutyTime3c><dutyTime3s>1900</dutyTime3s><dutyTime4c>0200</dutyTime4c><dutyTime4s>1900</dutyTime4s><dutyTime5c>0200</dutyTime5c><dutyTime5s>1900</dutyTime5s><hpid>T0000002</hpid><rnum>2</rnum><wgs84Lat>37.5021</wgs84Lat><wgs84Lon>127.0352</wgs84Lon></item>
+</items><numOfRows>2</numOfRows><pageNo>1</pageNo><totalCount>4</totalCount></body></response>
