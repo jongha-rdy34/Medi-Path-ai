@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Symptom Care API
-  version: 0.2.2
+  version: 0.2.3
   summary: 증상 기반 진료과·병원 안내 서비스 공개 API (v0)
   description: |
     증상 기반 진료과·병원 안내 서비스의 공개 API 계약입니다.
@@ -173,6 +173,25 @@ paths:
                 message: 이 세션은 이미 결과가 확정됐습니다. 새 세션을 시작하세요.
         '422':
           $ref: '#/components/responses/ValidationError'
+        '503':
+          description: |
+            증상 분석(LLM) 또는 ml-service를 잠시 쓸 수 없음. 세션은 바뀌지 않으므로 같은 메시지를 다시 보내면 됩니다.
+            기본·대체 LLM 모두 실패하면 `llm_unavailable`, ml-service에 닿지 않으면 `service_unavailable`입니다(T30).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                llmUnavailable:
+                  summary: 기본·대체 LLM 모두 실패
+                  value:
+                    code: llm_unavailable
+                    message: 증상 분석이 잠시 어렵습니다. 잠시 후 다시 시도해 주세요.
+                serviceUnavailable:
+                  summary: ml-service에 닿지 않음
+                  value:
+                    code: service_unavailable
+                    message: 증상 분석이 잠시 어렵습니다. 잠시 후 다시 시도해 주세요.
 
   /api/triage/sessions/{session_id}/result:
     parameters:
@@ -273,7 +292,8 @@ paths:
         좌표 주변에서 `department` 진료과가 있는 병원을 가까운 순으로 돌려줍니다(T21).
 
         - **데이터 출처**: 국립중앙의료원 전국 병·의원 찾기 서비스(공공데이터포털). 좌표 → 시도·시군구 변환은 Kakao `coord2regioncode`.
-          서버는 좌표가 속한 **시군구 한 곳**의 병원을 받아 반경과 조건으로 거릅니다. 그래서 구 경계 근처에서는 옆 구 병원이 빠질 수 있습니다.
+          서버는 좌표와 반경 원 둘레 8곳이 속한 **시군구를 모두** 받아 합친 뒤 반경과 조건으로 거릅니다(구 경계를 넘는 반경 지원, #15).
+          둘레의 표본 점 사이로만 아주 좁게 걸친 시군구는 빠질 수 있습니다.
         - **진료과 코드**: 심평원 코드를 받습니다. NMC 코드로 바꾸는 일은 서버 안에서만 합니다.
         - **진료과 조건은 기관 이름까지 봅니다**(2026-11-12 결정). NMC 진료과 조건은 그 진료과목을 *등록한* 모든 기관을 돌려주므로
           (예: 내과를 함께 등록한 안과·성형외과 의원), 의원·병원은 이름에 진료과가 들어간 곳만 보여 줍니다(동의어 포함: 소아과, 비뇨기과, 정신과 등).
@@ -899,7 +919,7 @@ components:
             $ref: '#/components/schemas/Hospital'
         region:
           type: object
-          description: 좌표가 속한 시군구. 이 지역의 병원만 검색했습니다
+          description: 좌표가 속한 시군구(화면 표시용). 반경이 옆 시군구에 걸치면 그 시군구의 병원도 함께 검색합니다
           required: [sido, sigungu]
           properties:
             sido:

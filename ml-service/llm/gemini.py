@@ -19,16 +19,20 @@ import time
 from google import genai
 from google.genai import errors, types
 
+from llm.candidates import select_candidates
 from llm.provider import (
     Extraction,
     filter_questions,
     load_symptom_dictionary,
+    sanitize_emergency_explanation,
     sanitize_explanation,
     sanitize_symptoms,
 )
 from triage.data import RISK_FACTORS
 
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
+DEFAULT_FALLBACK_MODEL = "gemini-3.1-flash-lite"
+RETRYABLE = (429, 500, 502, 503, 504)  # quota and temporary server errors
 
 EXTRACT_INSTRUCTION = """너는 증상 안내 서비스의 증상 구조화 도우미다. 진단을 하지 않는다.
 사용자가 한국어로 쓴 증상 문장에서, 아래 사전에 있는 증상만 골라 symptom_id로 돌려준다.
@@ -51,6 +55,11 @@ EXPLAIN_INSTRUCTION = """너는 증상 안내 서비스의 설명 도우미다. 
 가능성 있는 질환과 사용자의 증상을 보고, 일반인이 이해할 쉬운 한국어 2~3문장으로 설명한다.
 확정적으로 말하지 말고, 언제 진료를 받아야 하는지 덧붙인다."""
 
+EMERGENCY_EXPLAIN_INSTRUCTION = """너는 증상 안내 서비스의 응급 안내 도우미다. "진단"이라는 말을 쓰지 않는다.
+사용자의 증상에 위급할 수 있는 신호가 있다. 쉬운 한국어 2문장으로 쓴다.
+첫 문장은 위급할 수 있는 이유를 짧게, 둘째 문장은 "지금 바로 119에 연락하거나 가까운 응급실로 가세요"라고 안내한다.
+119와 응급실 외의 방문(일반 병원, 의원, 외래 진료, 내원)은 권하지 않는다. 기다려 보라는 말도 하지 않는다."""
+
 
 class GeminiProvider:
     def __init__(
@@ -60,9 +69,18 @@ class GeminiProvider:
         vocab: dict[str, str] | None = None,
         max_retries: int = 3,
         retry_sleep: float = 20.0,
+        fallback_model: str | None = None,
+        candidate_k: int | None = None,
     ):
         self.client = client or genai.Client()
         self.model = model or os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
+        # ADR 0001: on 429/5xx from the primary model, try the fallback once its retries are spent.
+        self.fallback_model = fallback_model or os.environ.get("GEMINI_FALLBACK_MODEL") or None
+        # None = full dictionary (T13 baseline); an int = only the k most relevant lines (T30).
+        env_k = os.environ.get("LLM_CANDIDATE_K")
+        self.candidate_k = (
+            candidate_k if candidate_k is not None else (int(env_k) if env_k else None)
+        )
         self.vocab = {
             k: v for k, v in (vocab or load_symptom_dictionary()).items() if k not in RISK_FACTORS
         }
@@ -70,18 +88,29 @@ class GeminiProvider:
         self.retry_sleep = retry_sleep
 
     def _generate(self, contents: str, config: types.GenerateContentConfig):
-        """Returns the response; self.last_latency_s is the successful attempt only."""
+        """Returns the response. Sets self.last_latency_s (successful attempt only)
+        and self.last_model (the model that answered)."""
+        models = [self.model] + ([self.fallback_model] if self.fallback_model else [])
+        for i, model in enumerate(models):
+            try:
+                return self._generate_with(model, contents, config)
+            except errors.APIError as exc:
+                if exc.code not in RETRYABLE or i == len(models) - 1:
+                    raise
+        raise RuntimeError("unreachable")
+
+    def _generate_with(self, model: str, contents: str, config: types.GenerateContentConfig):
         for attempt in range(self.max_retries + 1):
             start = time.perf_counter()
             try:
                 response = self.client.models.generate_content(
-                    model=self.model, contents=contents, config=config
+                    model=model, contents=contents, config=config
                 )
                 self.last_latency_s = time.perf_counter() - start
+                self.last_model = model
                 return response
             except errors.APIError as exc:
-                # 429 quota and 5xx gateway/overload errors are temporary; others are real.
-                if exc.code not in (429, 500, 502, 503, 504) or attempt == self.max_retries:
+                if exc.code not in RETRYABLE or attempt == self.max_retries:
                     raise
                 time.sleep(self.retry_sleep * 2**attempt)  # exponential backoff
         raise RuntimeError("unreachable")
@@ -109,7 +138,12 @@ class GeminiProvider:
         }
 
     def extract_symptoms(self, text: str) -> Extraction:
-        dictionary = "\n".join(f"{k}: {v}" for k, v in sorted(self.vocab.items()))
+        ids = (
+            sorted(self.vocab)
+            if self.candidate_k is None
+            else sorted(select_candidates(text, self.vocab, self.candidate_k))
+        )
+        dictionary = "\n".join(f"{k}: {self.vocab[k]}" for k in ids)
         config = types.GenerateContentConfig(
             system_instruction=EXTRACT_INSTRUCTION.format(dictionary=dictionary),
             response_mime_type="application/json",
@@ -128,13 +162,16 @@ class GeminiProvider:
         except ValueError:
             data = None
         if not isinstance(data, dict):
-            return Extraction(symptoms=[], parsed=False, latency_s=latency, **tokens)
+            return Extraction(
+                symptoms=[], parsed=False, latency_s=latency, served_model=self.last_model, **tokens
+            )
         return Extraction(
             symptoms=sanitize_symptoms(data.get("symptoms"), set(self.vocab)),
             emergency_suspected=bool(data.get("emergency_suspected")),
             emergency_reason=data.get("emergency_reason") or None,
             latency_s=latency,
             raw=data,
+            served_model=self.last_model,
             **tokens,
         )
 
@@ -170,11 +207,16 @@ class GeminiProvider:
             return []
         return filter_questions(questions)
 
-    def explain(self, disease_names: list[str], symptom_ids: list[str]) -> str:
+    def explain(
+        self, disease_names: list[str], symptom_ids: list[str], emergency: bool = False
+    ) -> str:
         names = [self.vocab.get(s, s).split(" (")[0] for s in symptom_ids]
         config = types.GenerateContentConfig(
-            system_instruction=EXPLAIN_INSTRUCTION, temperature=0.3
+            system_instruction=EMERGENCY_EXPLAIN_INSTRUCTION if emergency else EXPLAIN_INSTRUCTION,
+            temperature=0.3,
         )
         prompt = f"가능성 있는 질환: {', '.join(disease_names)}\n증상: {', '.join(names)}"
         response = self._generate(prompt, config)
+        if emergency:
+            return sanitize_emergency_explanation(response.text)
         return sanitize_explanation(response.text)
