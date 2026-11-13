@@ -114,13 +114,14 @@ class GeminiProvider:
         self.timeout_s = timeout_s
 
     def _generate(
-        self, contents: str, config: types.GenerateContentConfig, use_fallback: bool = True
+        self,
+        contents: str,
+        config: types.GenerateContentConfig,
+        fallback_on_timeout: bool = True,
     ):
         """Returns the response. Sets self.last_latency_s (successful attempt only)
         and self.last_model (the model that answered)."""
         models = [self.model] + ([self.fallback_model] if self.fallback_model else [])
-        if not use_fallback:
-            models = models[:1]
         if self.timeout_s:
             # Client-side limit only. The SDK would also send X-Server-Timeout = the same value,
             # and Gemini rejects deadlines under 10 s (400), so the server deadline stays >= 10 s.
@@ -138,7 +139,7 @@ class GeminiProvider:
             try:
                 return self._generate_with(model, contents, config)
             except LlmTimeout as exc:
-                if i == len(models) - 1:
+                if i == len(models) - 1 or not fallback_on_timeout:
                     raise
                 cause = exc.code
             except errors.APIError as exc:
@@ -272,8 +273,8 @@ class GeminiProvider:
         prompt = f"가능성 있는 질환: {', '.join(disease_names)}\n증상: {', '.join(names)}"
         try:
             # The explanation is optional text: on timeout show the default sentence at once
-            # rather than waiting for the fallback model.
-            response = self._generate(prompt, config, use_fallback=False)
+            # rather than waiting for the fallback model (quota and 5xx errors still fall back).
+            response = self._generate(prompt, config, fallback_on_timeout=False)
         except LlmTimeout:
             return EMERGENCY_EXPLANATION if emergency else FALLBACK_EXPLANATION
         if emergency:

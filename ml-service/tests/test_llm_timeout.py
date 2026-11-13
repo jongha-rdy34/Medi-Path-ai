@@ -119,3 +119,16 @@ def test_switching_to_the_fallback_is_logged_with_the_cause_only(caplog):
 
     assert "llm_fallback from=primary to=backup cause=timeout" in caplog.text
     assert "비밀 문장" not in caplog.text
+
+
+def test_explanation_still_uses_the_fallback_model_on_quota_errors():
+    from google.genai import errors
+
+    quota = errors.ClientError(429, {"error": {"code": 429, "message": "quota", "status": "x"}})
+    p, calls = make(quota, quota, "감기 가능성이 있습니다.")
+    p.max_retries = 1  # as in the service (app.main.load_llm)
+
+    text = p.explain(["감기"], ["cough"])
+
+    assert text == "감기 가능성이 있습니다."
+    assert [c["model"] for c in calls] == ["primary", "primary", "backup"]
