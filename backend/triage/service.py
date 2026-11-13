@@ -11,10 +11,16 @@ recorded anywhere (response, DB or logs). /predict itself is unchanged.
 
 from __future__ import annotations
 
+import logging
+
 from django.utils import timezone
 
 from triage import clients, mappings
+from triage.errors import ApiError
+from triage.http_clients import ServiceUnavailable
 from triage.models import TriageSession
+
+log = logging.getLogger("triage")
 
 DISCLAIMER = (
     "이 결과는 의학적 진단이 아니며 참고용 안내입니다. 정확한 진단과 치료는 의료진에게 받으세요."
@@ -23,6 +29,25 @@ EMERGENCY_MESSAGE = "지금 바로 119에 전화하거나 가까운 응급실로
 MAX_QUESTION_TURNS = 1  # ask follow-up questions at most once
 MIN_SYMPTOMS_FOR_RESULT = 3
 ML_TOP_K = 10  # enough to refill Top-3 after hiding sensitive diseases
+RETRY_MESSAGE = "증상 분석이 잠시 어렵습니다. 잠시 후 다시 시도해 주세요."
+FALLBACK_QUESTIONS = [
+    {
+        "question_id": "q1",
+        "text": "증상이 언제부터 시작됐나요?",
+        "choices": ["오늘", "1~2일 전", "3일 이상"],
+    },
+    {"question_id": "q2", "text": "함께 있는 다른 증상이 있나요?"},
+]
+FALLBACK_EXPLANATION = (
+    "입력하신 증상을 바탕으로 가능성이 있는 질환과 권장 진료과를 안내해 드렸습니다. "
+    "증상이 심해지거나 오래가면 의료진에게 진료를 받으세요."
+)
+
+
+def unavailable(exc: ServiceUnavailable) -> ApiError:
+    # Cause code only; never the user's text (SPEC section 6).
+    log.warning("triage_unavailable code=%s", exc.code)
+    return ApiError(503, exc.code, RETRY_MESSAGE)
 
 
 def emergency_notice(session: TriageSession) -> dict | None:
@@ -40,14 +65,17 @@ def structured(session: TriageSession) -> dict:
 
 
 def handle_message(session: TriageSession, text: str) -> dict:
-    extracted = clients.llm_client.extract_symptoms(text)
-    known = {s["symptom_id"] for s in session.symptoms}
-    session.symptoms = session.symptoms + [
-        s for s in extracted.symptoms if s["symptom_id"] not in known
-    ]
+    # External calls first: if they fail, the session is left exactly as it was.
+    try:
+        extracted = clients.llm_client.extract_symptoms(text)
+        known = {s["symptom_id"] for s in session.symptoms}
+        merged = session.symptoms + [s for s in extracted.symptoms if s["symptom_id"] not in known]
+        reasons = clients.safety_client.check(merged)
+    except ServiceUnavailable as exc:
+        raise unavailable(exc) from None
+    session.symptoms = merged
     session.turns += 1
 
-    reasons = clients.safety_client.check(session.symptoms)
     if extracted.emergency_suspected and extracted.emergency_reason:
         reasons.append(extracted.emergency_reason)
     if reasons:
@@ -65,7 +93,10 @@ def handle_message(session: TriageSession, text: str) -> dict:
         "emergency_notice": emergency_notice(session),
     }
     if ready and session.symptoms:
-        session.result = build_result(session)
+        try:
+            session.result = build_result(session)
+        except ServiceUnavailable as exc:
+            raise unavailable(exc) from None
         session.status = TriageSession.Status.RESULT_READY
         session.save()
         return {
@@ -79,8 +110,24 @@ def handle_message(session: TriageSession, text: str) -> dict:
     return {
         "status": "needs_more_info",
         **common,
-        "questions": clients.llm_client.next_questions(ids),
+        "questions": _questions(ids),
     }
+
+
+def _questions(ids: list[str]) -> list[dict]:
+    try:
+        return clients.llm_client.next_questions(ids) or FALLBACK_QUESTIONS
+    except ServiceUnavailable as exc:
+        log.warning("questions_fallback code=%s", exc.code)
+        return FALLBACK_QUESTIONS
+
+
+def _explain(names: list[str], ids: list[str]) -> str:
+    try:
+        return clients.llm_client.explain(names, ids) or FALLBACK_EXPLANATION
+    except ServiceUnavailable as exc:
+        log.warning("explain_fallback code=%s", exc.code)
+        return FALLBACK_EXPLANATION
 
 
 def department_scores(ranked: list[tuple[str, float]]) -> dict[str, float]:
@@ -126,7 +173,7 @@ def build_result(session: TriageSession) -> dict:
         ]
     else:
         departments = [recommend_department(ranked, [d for d, _ in visible])]
-    explanation = clients.llm_client.explain([p["disease_name_ko"] for p in predictions], ids)
+    explanation = _explain([p["disease_name_ko"] for p in predictions], ids)
     return {
         "session_id": str(session.id),
         "emergency": session.emergency,

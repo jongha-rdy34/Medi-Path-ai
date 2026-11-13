@@ -7,13 +7,18 @@ so Gemini and a local LoRA model (T52) are swapped by configuration.
 from __future__ import annotations
 
 import csv
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Protocol
 
 from triage.data import RISK_FACTORS
 
-SYMPTOMS_CSV = Path(__file__).resolve().parents[2] / "data" / "mappings" / "symptoms.csv"
+# data/mappings (T11). Containers mount it and set MAPPINGS_DIR (infra/docker-compose.yml).
+MAPPINGS_DIR = Path(
+    os.environ.get("MAPPINGS_DIR", Path(__file__).resolve().parents[2] / "data" / "mappings")
+)
+SYMPTOMS_CSV = MAPPINGS_DIR / "symptoms.csv"
 SEVERITIES = ("mild", "moderate", "severe")
 
 # Questions about risk factors (on hold, SPEC section 6) or identity are never asked.
@@ -40,6 +45,7 @@ class Extraction:
     emergency_suspected: bool = False
     emergency_reason: str | None = None
     parsed: bool = True
+    served_model: str | None = None  # which model answered (primary or fallback)
     latency_s: float = 0.0
     prompt_tokens: int = 0
     output_tokens: int = 0

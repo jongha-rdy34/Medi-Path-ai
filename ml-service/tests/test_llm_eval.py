@@ -76,3 +76,15 @@ def test_cache_avoids_repeat_calls_and_reports_planned_calls(tmp_path):
 
     assert provider.calls == 1
     assert [s.symptom_id for s in again.symptoms] == [s.symptom_id for s in first.symptoms]
+
+
+def test_cache_and_results_are_separated_by_prompt_variant(tmp_path):
+    from llm.eval.run import CachedExtractor, run_tag
+
+    full, slim = CountingProvider(), CountingProvider()
+    slim.candidate_k = 30
+
+    assert run_tag(full) == "fake-model" and run_tag(slim) == "fake-model-k30"
+    CachedExtractor(full, tmp_path).extract("열이 나요")
+    _, called = CachedExtractor(slim, tmp_path).extract("열이 나요")
+    assert called and slim.calls == 1
