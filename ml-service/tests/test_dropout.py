@@ -73,3 +73,34 @@ def test_baseline_training_is_unchanged_without_augmentation():
 
     assert report["split"]["augment"] is None
     assert report["metrics"]["group_test"] == {"rows": 41, "top1": 1.0, "top3": 1.0}
+
+
+@real_data
+def test_default_model_is_the_dropout_model_and_meets_acceptance():
+    from triage.train import DEFAULT_AUGMENT, DEFAULT_VERSION
+
+    assert (DEFAULT_VERSION, DEFAULT_AUGMENT) == ("dropout-2026.11.0", "dropout")
+    report = train_and_evaluate(
+        **DEFAULT_PATHS, version=DEFAULT_VERSION, seed=42, augment=DEFAULT_AUGMENT
+    )
+    m = report["metrics"]
+    assert m["group_test"]["top3"] >= 0.80
+    assert m["noise_test"]["top3"] >= 0.80
+    assert m["short_test"]["top3"] >= 0.90  # 2-3 symptom inputs (baseline: 0.729)
+
+
+@real_data
+def test_training_is_reproducible_with_the_same_seed():
+    import numpy as np
+
+    a = train_and_evaluate(**DEFAULT_PATHS, version="a", seed=42, augment="dropout")
+    b = train_and_evaluate(**DEFAULT_PATHS, version="b", seed=42, augment="dropout")
+
+    assert a["metrics"] == b["metrics"]
+    assert np.array_equal(a["model"].estimator.coef_, b["model"].estimator.coef_)
+
+
+def test_service_loads_the_dropout_model_by_default():
+    from app.main import DEFAULT_MODEL_VERSION
+
+    assert DEFAULT_MODEL_VERSION == "dropout-2026.11.0"

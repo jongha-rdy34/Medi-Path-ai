@@ -2,8 +2,7 @@
 
 Trains both models with the same seed and split, then compares them on the group test set, the
 noise set, the new 2-3 symptom set, end-to-end from saved LLM extractions (no API calls) and a
-few hand-picked short inputs. Saves the dropout model under its own version name; switching the
-service default (MODEL_VERSION) is the user's decision.
+few hand-picked short inputs. Saves the dropout model, the service default since 2026-11-13.
 
 Usage (from ml-service/, needs data/raw):
     python -m triage.compare --out ../docs/perf/t30-symptom-dropout.json \

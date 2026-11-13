@@ -1,9 +1,10 @@
 """Train and evaluate the baseline model (T14).
 
 Usage (from ml-service/):
-    python -m triage.train                      # writes models/<version>.joblib and .metrics.json
-    python -m triage.train --version baseline-2026.11.0
-    python -m triage.train --augment dropout --version dropout-2026.11.0   # T30 follow-up C-2
+    python -m triage.train      # default: models/dropout-2026.11.0.joblib and .metrics.json
+    python -m triage.train --augment none --version baseline-2026.11.0   # previous baseline (T14)
+
+Same seed -> same model (seeded split, seeded augmentation, LogisticRegression random_state=0).
 
 Needs the Kaggle raw data: python data/scripts/download.py (repository root).
 """
@@ -32,7 +33,9 @@ DEFAULT_PATHS = {
     "disease_department_csv": REPO / "data/mappings/disease_department.csv",
     "symptoms_csv": REPO / "data/mappings/symptoms.csv",
 }
-DEFAULT_VERSION = "baseline-2026.11.0"
+# Default model since 2026-11-13 (T30 follow-up C-2, user-approved): symptom-dropout training.
+DEFAULT_VERSION = "dropout-2026.11.0"
+DEFAULT_AUGMENT = "dropout"
 MODELS_DIR = Path(__file__).resolve().parents[1] / "models"
 
 
@@ -98,11 +101,14 @@ def main() -> int:
     parser.add_argument("--version", default=DEFAULT_VERSION)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--out", type=Path, default=MODELS_DIR)
-    parser.add_argument("--augment", choices=["dropout"], default=None)
+    parser.add_argument("--augment", choices=["dropout", "none"], default=DEFAULT_AUGMENT)
     args = parser.parse_args()
 
     report = train_and_evaluate(
-        **DEFAULT_PATHS, version=args.version, seed=args.seed, augment=args.augment
+        **DEFAULT_PATHS,
+        version=args.version,
+        seed=args.seed,
+        augment=None if args.augment == "none" else args.augment,
     )
     path = report.pop("model").save(args.out)
     metrics_path = args.out / f"{args.version}.metrics.json"

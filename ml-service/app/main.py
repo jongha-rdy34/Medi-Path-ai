@@ -24,7 +24,7 @@ from triage.model import TriageModel
 log = logging.getLogger("ml-service")
 
 DEFAULT_MODEL_DIR = Path(__file__).resolve().parents[1] / "models"
-DEFAULT_MODEL_VERSION = "baseline-2026.11.0"
+DEFAULT_MODEL_VERSION = "dropout-2026.11.0"  # symptom-dropout model (T30 follow-up C-2)
 
 
 def load_model() -> TriageModel | None:
