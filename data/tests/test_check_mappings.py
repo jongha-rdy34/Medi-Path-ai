@@ -147,3 +147,37 @@ def test_sensitive_diseases_must_exist_in_the_mapping(mappings_dir):
     errors = check_sensitive(load_mappings(mappings_dir), mappings_dir / "sensitive_diseases.csv")
 
     assert errors == ["sensitive_diseases.csv: unknown disease_id 'aids'"]
+
+
+def test_nmc_codes_must_be_well_formed_unique_and_in_the_code_table(mappings_dir, tmp_path):
+    from check_mappings import check_nmc_codes
+
+    write_csv(
+        mappings_dir / "departments.csv",
+        ["code", "name_ko", "source", "nmc_code"],
+        [
+            ["00", "일반의", "s", ""],
+            ["01", "내과", "s", "D001"],
+            ["14", "피부과", "s", "D001"],
+            ["24", "응급의학과", "s", "X24"],
+            ["12", "안과", "s", "D099"],
+        ],
+    )
+    table = tmp_path / "nmc_department_codes.csv"
+    write_csv(table, ["nmc_code", "name_ko"], [["D001", "내과"], ["D005", "피부과"]])
+
+    errors = check_nmc_codes(load_mappings(mappings_dir), table)
+
+    assert sorted(errors) == sorted(
+        [
+            "departments.csv: nmc_code 'D001' is used by both '01' and '14'",
+            "departments.csv: department '24' nmc_code 'X24' does not match ^D[0-9]{3}$",
+            "departments.csv: department '12' nmc_code 'D099' is not in nmc_department_codes.csv",
+        ]
+    )
+
+
+def test_nmc_check_is_skipped_until_the_column_exists(mappings_dir, tmp_path):
+    from check_mappings import check_nmc_codes
+
+    assert check_nmc_codes(load_mappings(mappings_dir), tmp_path / "missing.csv") == []
