@@ -1,0 +1,427 @@
+{
+  "model": "dropout-2026.11.0",
+  "rare": [
+    "dengue",
+    "hepatitis_e",
+    "malaria",
+    "typhoid"
+  ],
+  "weights": {
+    "1.0": {
+      "short_test": {
+        "cases": 289,
+        "top1": 0.8685,
+        "top3": 0.9723,
+        "rare_first_when_not_rare": 3,
+        "rare_truth_in_top3": "34/39"
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 52,
+        "top1": 0.9615,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 52,
+        "top1": 0.9038,
+        "top3": 0.9808,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 52,
+        "top1": 0.9423,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "examples": [
+        {
+          "symptoms": [
+            "mild_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "tuberculosis",
+            "pneumonia",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "pneumonia",
+            "bronchial_asthma",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "dengue",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "malaria",
+            "dengue",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "tuberculosis",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "malaria",
+            "hepatitis_a",
+            "chicken_pox"
+          ]
+        }
+      ]
+    },
+    "0.5": {
+      "short_test": {
+        "cases": 289,
+        "top1": 0.8616,
+        "top3": 0.9619,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "31/39"
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 52,
+        "top1": 0.9615,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 52,
+        "top1": 0.9038,
+        "top3": 0.9808,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 52,
+        "top1": 0.9423,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "examples": [
+        {
+          "symptoms": [
+            "mild_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "tuberculosis",
+            "pneumonia",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "pneumonia",
+            "bronchial_asthma",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "common_cold",
+            "dengue"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "malaria",
+            "dengue",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "tuberculosis",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "hepatitis_a",
+            "malaria",
+            "chicken_pox"
+          ]
+        }
+      ]
+    },
+    "0.3": {
+      "short_test": {
+        "cases": 289,
+        "top1": 0.8512,
+        "top3": 0.9516,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "27/39"
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 52,
+        "top1": 0.9615,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 52,
+        "top1": 0.9038,
+        "top3": 0.9808,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 52,
+        "top1": 0.9423,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "examples": [
+        {
+          "symptoms": [
+            "mild_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "tuberculosis",
+            "pneumonia",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "pneumonia",
+            "bronchial_asthma",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "common_cold",
+            "pneumonia"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "malaria",
+            "dengue",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "tuberculosis",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "hepatitis_a",
+            "malaria",
+            "chicken_pox"
+          ]
+        }
+      ]
+    },
+    "0.2": {
+      "short_test": {
+        "cases": 289,
+        "top1": 0.8443,
+        "top3": 0.9412,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "24/39"
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 52,
+        "top1": 0.9615,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 52,
+        "top1": 0.9038,
+        "top3": 0.9808,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 52,
+        "top1": 0.9423,
+        "top3": 1.0,
+        "rare_first_when_not_rare": 0,
+        "rare_truth_in_top3": "5/5"
+      },
+      "examples": [
+        {
+          "symptoms": [
+            "mild_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "tuberculosis",
+            "pneumonia",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "cough",
+            "phlegm"
+          ],
+          "screen_top3": [
+            "pneumonia",
+            "bronchial_asthma",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "common_cold",
+            "pneumonia"
+          ]
+        },
+        {
+          "symptoms": [
+            "high_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "malaria",
+            "common_cold",
+            "dengue"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "malaise"
+          ],
+          "screen_top3": [
+            "chicken_pox",
+            "tuberculosis",
+            "common_cold"
+          ]
+        },
+        {
+          "symptoms": [
+            "mild_fever",
+            "headache",
+            "muscle_pain"
+          ],
+          "screen_top3": [
+            "hepatitis_a",
+            "chicken_pox",
+            "malaria"
+          ]
+        }
+      ]
+    }
+  }
+}

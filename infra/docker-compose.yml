@@ -50,6 +50,7 @@ services:
     environment:
       POSTGRES_HOST: postgres
       ML_SERVICE_URL: http://ml-service:8001
+      RARE_DISEASE_WEIGHT: ${RARE_DISEASE_WEIGHT:-0.5}
       MAPPINGS_DIR: /app/data/mappings
     volumes:
       # 질환·진료과 매핑(T11). 결과의 질환명·권장 진료과에 씁니다.
