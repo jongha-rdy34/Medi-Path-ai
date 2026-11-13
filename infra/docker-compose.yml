@@ -80,6 +80,7 @@ services:
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
       GEMINI_FALLBACK_MODEL: ${GEMINI_FALLBACK_MODEL:-gemini-3.1-flash-lite}
       LLM_CANDIDATE_K: ${LLM_CANDIDATE_K:-30}
+      LLM_TIMEOUT_S: ${LLM_TIMEOUT_S:-8}
     volumes:
       # 학습한 모델 파일(gitignore 대상). 만들기: cd ml-service && python -m triage.train
       # 모델이 없으면 /health는 200, /predict는 503 model_not_loaded를 돌려줍니다.

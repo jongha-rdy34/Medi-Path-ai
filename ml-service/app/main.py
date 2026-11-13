@@ -39,7 +39,8 @@ def load_model() -> TriageModel | None:
 
 def load_llm():
     """GeminiProvider for the service: short retries (latency budget, SPEC p95 < 10 s),
-    fallback model from GEMINI_FALLBACK_MODEL, slim prompt (LLM_CANDIDATE_K, default 30)."""
+    fallback model from GEMINI_FALLBACK_MODEL, slim prompt (LLM_CANDIDATE_K, default 30),
+    per-call time limit (LLM_TIMEOUT_S, default 8 s; on timeout the fallback model answers)."""
     if not os.environ.get("GEMINI_API_KEY") and not os.environ.get("GOOGLE_API_KEY"):
         log.warning("GEMINI_API_KEY is not set; /llm/* will return 503")
         return None
@@ -49,6 +50,7 @@ def load_llm():
         max_retries=1,
         retry_sleep=1.0,
         candidate_k=int(os.environ.get("LLM_CANDIDATE_K", "30")),
+        timeout_s=float(os.environ.get("LLM_TIMEOUT_S", "8")),
     )
 
 
