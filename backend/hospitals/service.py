@@ -16,7 +16,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 from hospitals import hours, kakao, nmc
-from hospitals.departments import Department
+from hospitals.departments import Department, name_matches
 
 KST = ZoneInfo("Asia/Seoul")
 NOTICE = "진료시간은 병원 사정에 따라 바뀔 수 있으니 방문 전에 전화로 확인하세요. 응급 상황이면 119에 연락하세요."
@@ -126,6 +126,8 @@ def search(q: Query) -> dict:
         h = _hospital(item, q, when, filtered)
         if h is None or h["distance_m"] > q.radius:
             continue
+        if filtered and not name_matches(dept.code, h["name"], h["type"]):
+            continue  # lists the department but is another specialty (decision 2026-11-12)
         if q.open_now and h["is_open_now"] is not True:
             continue
         if q.night and not h["has_night_hours"]:
