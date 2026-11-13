@@ -6,7 +6,7 @@ triage/clients.py; real Gemini latency is measured separately (T30).
 
 import os
 
-from config.settings import *  # noqa: F403
+from config.settings import *
 
 DATABASES = {
     "default": {
