@@ -8,6 +8,7 @@ An empty `nmc_code` means NMC has no matching 진료과목 (e.g. 00 일반의): 
 from __future__ import annotations
 
 import csv
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -50,3 +51,42 @@ def lookup(code: str) -> Department | None:
         cached = (mtime, _load(path))
         _cache[path] = cached
     return cached[1].get(code)
+
+
+# --- Department name rule (decision 2026-11-12, @ley-21) ------------------------------------
+# NMC's QD returns every institution that *lists* the department, e.g. an orthopedic clinic that
+# also lists 내과 (live: 서초구 내과 290건, of which 70 clinics had 내과 in the name). For a
+# specialty the service should point to a clinic of that specialty, so institutions must carry
+# the department in their name. 종합병원 (incl. 상급종합) is exempt: it really runs the department.
+NAME_RULE_EXEMPT_TYPES = frozenset({"종합병원"})
+
+# 심평원 code -> regex on the institution name. Default: the department name itself.
+# Synonyms cover old names (비뇨기과, 소아과, 정신과) and common clinic names (여성의원, 통증).
+_SURGERY_PREFIXES = ("정형", "성형", "신경", "흉부", "악안면")
+NAME_PATTERNS: dict[str, str] = {
+    "02": r"신경과",
+    "03": r"정신건강의학과|정신과|정신의학과",
+    "04": "".join(f"(?<!{p})" for p in _SURGERY_PREFIXES) + r"외과",
+    "07": r"흉부외과|흉부심장혈관외과",
+    "09": r"마취통증|통증의학과|통증",
+    "10": r"산부인과|여성의원|여성병원",
+    "11": r"소아청소년과|소아과|어린이",
+    "15": r"비뇨",
+    "16": r"영상의학과|영상",
+    "17": r"방사선종양|치료방사선",
+    "18": r"병리",
+    "19": r"진단검사|임상병리",
+    "21": r"재활",
+    "49": r"치과",
+}
+
+
+def name_matches(code: str, name: str, institution_type: str) -> bool:
+    """True when the institution may be shown for department `code`."""
+    if (institution_type or "").strip() in NAME_RULE_EXEMPT_TYPES:
+        return True
+    pattern = NAME_PATTERNS.get(code)
+    if pattern is None:
+        dept = lookup(code)
+        pattern = re.escape(dept.name) if dept else None
+    return bool(pattern and re.search(pattern, name or ""))

@@ -161,6 +161,41 @@ def check_sensitive(m: Mappings, path: Path) -> list[str]:
     ]
 
 
+NMC_CODE_PATTERN = re.compile(r"^D[0-9]{3}$")
+NMC_CODES_CSV = REPO_DIR / "prototypes" / "kakao-hospital-search" / "nmc_department_codes.csv"
+
+
+def check_nmc_codes(m: Mappings, nmc_table: Path) -> list[str]:
+    """departments.csv `nmc_code`: format, no duplicates, present in the NMC code table.
+
+    Empty means NMC has no matching department (search without a department filter).
+    """
+    if not m.departments or "nmc_code" not in m.departments[0]:
+        return []
+    known = {r["nmc_code"] for r in _read(nmc_table)} if nmc_table.exists() else set()
+    errors, owner = [], {}
+    for d in m.departments:
+        code = (d.get("nmc_code") or "").strip()
+        if not code:
+            continue
+        if not NMC_CODE_PATTERN.match(code):
+            errors.append(
+                f"departments.csv: department '{d['code']}' nmc_code '{code}' "
+                f"does not match {NMC_CODE_PATTERN.pattern}"
+            )
+            continue
+        if code in owner:
+            errors.append(
+                f"departments.csv: nmc_code '{code}' is used by both '{owner[code]}' and '{d['code']}'"
+            )
+        owner.setdefault(code, d["code"])
+        if known and code not in known:
+            errors.append(
+                f"departments.csv: department '{d['code']}' nmc_code '{code}' is not in {nmc_table.name}"
+            )
+    return errors
+
+
 def check_contract_examples(m: Mappings, contract_paths: list[Path]) -> list[str]:
     symptom_ids = {s["symptom_id"] for s in m.symptoms}
     disease_ids = {d["disease_id"] for d in m.diseases}
@@ -190,6 +225,7 @@ def main() -> int:
     errors, warnings = check_mappings(m)
     errors += check_raw_coverage(m, args.raw_dir)
     errors += check_sensitive(m, args.mappings_dir / "sensitive_diseases.csv")
+    errors += check_nmc_codes(m, NMC_CODES_CSV)
     errors += check_contract_examples(m, sorted((REPO_DIR / "contracts").glob("*.yaml")))
 
     for w in warnings:

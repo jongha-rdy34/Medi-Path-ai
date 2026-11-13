@@ -1,4 +1,9 @@
-"""Hospital search (T21): Kakao region → NMC clinics (cached per region) → distance + hours filters.
+"""Hospital search (T21): Kakao regions → NMC clinics (cached per region) → distance + hours filters.
+
+The radius circle can cross 시군구 borders (live: 강남역 resolves to 서초구). So the center and 8
+points on the circle are turned into regions, every distinct region is fetched from NMC, and the
+merged list is filtered by distance (decision 2026-11-12, @ley-21, #15). A district that only
+touches the circle between two sample points can still be missed.
 
 Privacy (SPEC 6, AGENTS 4): the user's coordinates are used for this request only. They are not
 stored, logged or put in cache keys. Only 시도/시군구 and the department go into the cache key.
@@ -7,7 +12,9 @@ stored, logged or put in cache keys. Only 시도/시군구 and the department go
 from __future__ import annotations
 
 import hashlib
+import logging
 import math
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -16,7 +23,11 @@ from django.conf import settings
 from django.core.cache import cache
 
 from hospitals import hours, kakao, nmc
-from hospitals.departments import Department
+from hospitals.departments import Department, name_matches
+from hospitals.http import SourceUnavailable
+
+log = logging.getLogger(__name__)
+RING_POINTS = 8
 
 KST = ZoneInfo("Asia/Seoul")
 NOTICE = "진료시간은 병원 사정에 따라 바뀔 수 있으니 방문 전에 전화로 확인하세요. 응급 상황이면 119에 연락하세요."
@@ -60,14 +71,67 @@ def _clinics(sido: str, sigungu: str | None, nmc_department: str | None) -> list
     return items
 
 
-def _clinics_for_region(region: dict, nmc_department: str | None) -> list[dict]:
-    items = _clinics(region["sido"], region["sigungu"], nmc_department)
-    sigungu = region["sigungu"] or ""
-    if not items and " " in sigungu:
-        # e.g. "수원시 장안구": if NMC knows only the city, search the whole city.
-        # Whether NMC Q1 takes the two-word form is checked with live recordings (T21 PR 3).
-        items = _clinics(region["sido"], sigungu.split()[0], nmc_department)
-    return items
+def nmc_sigungu(sigungu: str | None) -> str | None:
+    """NMC Q1 for a Kakao 시군구. Two-word names ("수원시 장안구") become the city ("수원시").
+
+    Live check 2026-11-12 (hospital_live_check): NMC returned 0 for "수원시 장안구",
+    "성남시 분당구", "전주시 완산구" and 506 / 463 / 312 for "수원시" / "성남시" / "전주시".
+    New province names (강원특별자치도, 전북특별자치도) work as Q0; the old names return 0.
+    """
+    if sigungu and " " in sigungu:
+        return sigungu.split()[0]
+    return sigungu
+
+
+def sample_points(lat: float, lng: float, radius: int, n: int = RING_POINTS) -> list[tuple]:
+    """The center, then `n` points on the circle of `radius` metres (equirectangular, fine at 10 km)."""
+    dlat = radius / 111_320
+    dlng = radius / (111_320 * math.cos(math.radians(lat)))
+    ring = [
+        (lat + dlat * math.cos(2 * math.pi * i / n), lng + dlng * math.sin(2 * math.pi * i / n))
+        for i in range(n)
+    ]
+    return [(lat, lng), *ring]
+
+
+def _regions(q: Query) -> tuple[dict, list[dict]]:
+    """(the point's own region, every region the circle touches). Kakao calls run in parallel."""
+    points = sample_points(q.lat, q.lng, q.radius)
+
+    def safe(point):
+        try:
+            return kakao.region_of(*point)
+        except SourceUnavailable as e:
+            return e
+
+    with ThreadPoolExecutor(max_workers=len(points)) as pool:
+        found = list(pool.map(safe, points))
+    center = found[0]
+    if isinstance(center, SourceUnavailable):
+        raise center
+    if center is None:
+        raise OutOfServiceArea
+    failed = sum(isinstance(r, SourceUnavailable) for r in found[1:])
+    if failed:
+        log.warning("kakao: %d of %d ring points failed", failed, RING_POINTS)
+    regions = [r for r in found if isinstance(r, dict)]
+    return center, regions
+
+
+def _clinics_in(regions: list[dict], nmc_department: str | None) -> list[dict]:
+    """NMC clinics for every distinct (시도, NMC 시군구), deduplicated by hpid."""
+    keys = list(dict.fromkeys((r["sido"], nmc_sigungu(r["sigungu"])) for r in regions))
+    with ThreadPoolExecutor(max_workers=min(4, len(keys))) as pool:
+        lists = list(pool.map(lambda k: _clinics(k[0], k[1], nmc_department), keys))
+    seen, out = set(), []
+    for items in lists:
+        for item in items:
+            hpid = item.get("hpid")
+            if hpid and hpid in seen:
+                continue
+            seen.add(hpid)
+            out.append(item)
+    return out
 
 
 def distance_m(lat1: float, lng1: float, lat2: float, lng2: float) -> int:
@@ -108,18 +172,18 @@ def _hospital(item: dict, q: Query, when: datetime, filtered: bool) -> dict | No
 
 
 def search(q: Query) -> dict:
-    region = kakao.region_of(q.lat, q.lng)
-    if region is None:
-        raise OutOfServiceArea
+    region, regions = _regions(q)
     dept = q.department
     filtered = dept.nmc_code is not None
     when = now()
 
     found = []
-    for item in _clinics_for_region(region, dept.nmc_code):
+    for item in _clinics_in(regions, dept.nmc_code):
         h = _hospital(item, q, when, filtered)
         if h is None or h["distance_m"] > q.radius:
             continue
+        if filtered and not name_matches(dept.code, h["name"], h["type"]):
+            continue  # lists the department but is another specialty (decision 2026-11-12)
         if q.open_now and h["is_open_now"] is not True:
             continue
         if q.night and not h["has_night_hours"]:

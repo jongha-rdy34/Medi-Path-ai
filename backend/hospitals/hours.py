@@ -3,7 +3,8 @@
 NMC gives dutyTime{n}s / dutyTime{n}c as "HHMM" strings for n = 1..7 (Mon..Sun) and 8 (holiday).
 Source: 국립중앙의료원 전국 병·의원 찾기 서비스 활용가이드(서비스 버전 1.1), getHsptlMdcncListInfoInqire.
 
-A close time at or before the open time means the clinic runs past midnight into the next day.
+A close time before the open time means the clinic runs past midnight into the next day.
+Equal open and close times (e.g. 0900/0900) are treated as a data error and that day is ignored.
 All times are Korea time (Asia/Seoul). Holidays are not detected (known limitation, SPEC 4.1).
 """
 
@@ -36,14 +37,14 @@ def _minutes(hhmm: str | None) -> int | None:
 def _span(item: dict, day: int) -> tuple[int, int] | None:
     start = _minutes(item.get(f"dutyTime{day}s"))
     close = _minutes(item.get(f"dutyTime{day}c"))
-    if start is None or close is None:
+    if start is None or close is None or start == close:
         return None
     return start, close
 
 
 def _crosses_midnight(span: tuple[int, int]) -> bool:
     start, close = span
-    return close <= start
+    return close < start
 
 
 def _fmt(minutes: int) -> str:

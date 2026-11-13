@@ -1,7 +1,7 @@
 [tool.pytest.ini_options]
 # pytest-django: https://github.com/pytest-dev/pytest-django/blob/main/docs/configuring_django.rst
 DJANGO_SETTINGS_MODULE = "config.test_settings"
-testpaths = ["tests"]
+testpaths = ["tests", "hospitals/tests"]  # hospitals: T21 (@ley-21)
 
 [tool.ruff]
 line-length = 100
