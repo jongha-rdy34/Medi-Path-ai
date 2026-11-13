@@ -1,0 +1,283 @@
+{
+  "seed": 42,
+  "models": {
+    "baseline-2026.11.0": {
+      "augment": null,
+      "train_rows": 263,
+      "val": {
+        "rows": 41,
+        "top1": 1.0,
+        "top3": 1.0
+      },
+      "group_test": {
+        "rows": 41,
+        "top1": 1.0,
+        "top3": 1.0
+      },
+      "noise_test": {
+        "rows": 205,
+        "top1": 0.9463,
+        "top3": 0.9951
+      },
+      "short_test": {
+        "rows": 317,
+        "top1": 0.5899,
+        "top3": 0.7287
+      },
+      "e2e": {
+        "gemini-3.5-flash-lite": {
+          "cases": 59,
+          "no_symptoms_extracted": 0,
+          "top1": 0.8305,
+          "top3": 0.9322,
+          "department_top1": 0.9831
+        },
+        "gemini-3.1-flash-lite": {
+          "cases": 59,
+          "no_symptoms_extracted": 0,
+          "top1": 0.8305,
+          "top3": 0.9322,
+          "department_top1": 0.9831
+        },
+        "gemini-3.5-flash-lite-k30": {
+          "cases": 59,
+          "no_symptoms_extracted": 0,
+          "top1": 0.8136,
+          "top3": 0.9322,
+          "department_top1": 0.9492
+        }
+      },
+      "examples": {
+        "열·기침·누런 가래 → 폐렴이 Top-3": {
+          "passed": 0,
+          "of": 2,
+          "cases": [
+            {
+              "symptoms": [
+                "mild_fever",
+                "cough",
+                "phlegm"
+              ],
+              "top3": [
+                "bronchial_asthma",
+                "gerd",
+                "urinary_tract_infection"
+              ],
+              "ok": false
+            },
+            {
+              "symptoms": [
+                "high_fever",
+                "cough",
+                "phlegm"
+              ],
+              "top3": [
+                "bronchial_asthma",
+                "aids",
+                "impetigo"
+              ],
+              "ok": false
+            }
+          ]
+        },
+        "열·두통·몸살 → 응급 질환(뇌출혈 등)이 1위가 아님": {
+          "passed": 4,
+          "of": 4,
+          "cases": [
+            {
+              "symptoms": [
+                "high_fever",
+                "headache",
+                "malaise"
+              ],
+              "top3": [
+                "aids",
+                "paralysis_brain_hemorrhage",
+                "chicken_pox"
+              ],
+              "ok": true
+            },
+            {
+              "symptoms": [
+                "high_fever",
+                "headache",
+                "muscle_pain"
+              ],
+              "top3": [
+                "malaria",
+                "aids",
+                "paralysis_brain_hemorrhage"
+              ],
+              "ok": true
+            },
+            {
+              "symptoms": [
+                "mild_fever",
+                "headache",
+                "malaise"
+              ],
+              "top3": [
+                "chicken_pox",
+                "paralysis_brain_hemorrhage",
+                "hypertension"
+              ],
+              "ok": true
+            },
+            {
+              "symptoms": [
+                "mild_fever",
+                "headache",
+                "muscle_pain"
+              ],
+              "top3": [
+                "malaria",
+                "hepatitis_a",
+                "paralysis_brain_hemorrhage"
+              ],
+              "ok": true
+            }
+          ]
+        }
+      }
+    },
+    "dropout-2026.11.0": {
+      "augment": "dropout",
+      "train_rows": 3371,
+      "val": {
+        "rows": 41,
+        "top1": 1.0,
+        "top3": 1.0
+      },
+      "group_test": {
+        "rows": 41,
+        "top1": 1.0,
+        "top3": 1.0
+      },
+      "noise_test": {
+        "rows": 205,
+        "top1": 0.961,
+        "top3": 0.9951
+      },
+      "short_test": {
+        "rows": 317,
+        "top1": 0.8328,
+        "top3": 0.9464
+      },
+      "e2e": {
+        "gemini-3.5-flash-lite": {
+          "cases": 59,
+          "no_symptoms_extracted": 0,
+          "top1": 0.9322,
+          "top3": 0.9831,
+          "department_top1": 0.9661
+        },
+        "gemini-3.1-flash-lite": {
+          "cases": 59,
+          "no_symptoms_extracted": 0,
+          "top1": 0.8814,
+          "top3": 0.9661,
+          "department_top1": 0.9492
+        },
+        "gemini-3.5-flash-lite-k30": {
+          "cases": 59,
+          "no_symptoms_extracted": 0,
+          "top1": 0.9153,
+          "top3": 0.9831,
+          "department_top1": 0.9492
+        }
+      },
+      "examples": {
+        "열·기침·누런 가래 → 폐렴이 Top-3": {
+          "passed": 2,
+          "of": 2,
+          "cases": [
+            {
+              "symptoms": [
+                "mild_fever",
+                "cough",
+                "phlegm"
+              ],
+              "top3": [
+                "tuberculosis",
+                "pneumonia",
+                "common_cold"
+              ],
+              "ok": true
+            },
+            {
+              "symptoms": [
+                "high_fever",
+                "cough",
+                "phlegm"
+              ],
+              "top3": [
+                "pneumonia",
+                "bronchial_asthma",
+                "common_cold"
+              ],
+              "ok": true
+            }
+          ]
+        },
+        "열·두통·몸살 → 응급 질환(뇌출혈 등)이 1위가 아님": {
+          "passed": 4,
+          "of": 4,
+          "cases": [
+            {
+              "symptoms": [
+                "high_fever",
+                "headache",
+                "malaise"
+              ],
+              "top3": [
+                "chicken_pox",
+                "dengue",
+                "common_cold"
+              ],
+              "ok": true
+            },
+            {
+              "symptoms": [
+                "high_fever",
+                "headache",
+                "muscle_pain"
+              ],
+              "top3": [
+                "malaria",
+                "dengue",
+                "common_cold"
+              ],
+              "ok": true
+            },
+            {
+              "symptoms": [
+                "mild_fever",
+                "headache",
+                "malaise"
+              ],
+              "top3": [
+                "chicken_pox",
+                "tuberculosis",
+                "common_cold"
+              ],
+              "ok": true
+            },
+            {
+              "symptoms": [
+                "mild_fever",
+                "headache",
+                "muscle_pain"
+              ],
+              "top3": [
+                "malaria",
+                "hepatitis_a",
+                "chicken_pox"
+              ],
+              "ok": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

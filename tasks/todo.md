@@ -171,6 +171,7 @@ PR 4개를 이 순서로 올립니다.
 - [ ] KLUE-RoBERTa-base 또는 KM-BERT로 증상→질환 분류 학습(Colab, 5060, 3080 Ti 중 하나)
 - [ ] RTX 5060을 쓰면 `cu128` PyTorch에서 `torch.cuda.is_available()`부터 확인
 - [ ] 베이스라인(T14)과 Top-1·Top-3 정확도, 추론 지연(CPU)을 비교하는 표
+- 비교 기준 추가(2026-11-13): 증상 일부를 빼고 학습한 `dropout-2026.11.0`과 증상 2~3개 평가 세트(`short_test`)도 함께 비교 · _`docs/perf/t30-symptom-dropout.md`_
 - **검증**: 그룹 분할 테스트셋과 노이즈 테스트셋 모두 Top-3 ≥ 0.80이고 베이스라인보다 높음. end-to-end 지표도 베이스라인과 비교. CPU 추론 p95 < 300ms
 - **의존**: T14
 
