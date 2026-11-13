@@ -14,6 +14,7 @@ Usage (stdlib only):
 
 import argparse
 import json
+import math
 import statistics
 import time
 import urllib.error
@@ -81,8 +82,10 @@ def run_once(base: str, sentence: str) -> dict:
 
 
 def percentile(values: list[int], q: float) -> int:
+    """Nearest-rank percentile: the ceil(q * n)-th smallest value (p95 of 20 runs = 19th).
+    The first version used round(), which returns the maximum for n = 20 (banker's rounding)."""
     ordered = sorted(values)
-    return ordered[min(len(ordered) - 1, max(0, round(q * len(ordered) + 0.5) - 1))]
+    return ordered[max(0, math.ceil(q * len(ordered)) - 1)]
 
 
 def main() -> None:

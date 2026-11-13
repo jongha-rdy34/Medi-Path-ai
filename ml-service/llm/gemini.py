@@ -13,6 +13,8 @@
 from __future__ import annotations
 
 import json
+import logging
+import math
 import os
 import time
 
@@ -21,6 +23,8 @@ from google.genai import errors, types
 
 from llm.candidates import select_candidates
 from llm.provider import (
+    EMERGENCY_EXPLANATION,
+    FALLBACK_EXPLANATION,
     Extraction,
     filter_questions,
     load_symptom_dictionary,
@@ -32,7 +36,26 @@ from triage.data import RISK_FACTORS
 
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
 DEFAULT_FALLBACK_MODEL = "gemini-3.1-flash-lite"
+log = logging.getLogger(__name__)
+
+SERVER_DEADLINE_MIN_S = 10  # Gemini API minimum for X-Server-Timeout
 RETRYABLE = (429, 500, 502, 503, 504)  # quota and temporary server errors
+
+
+class LlmTimeout(Exception):
+    """A Gemini call ran past the time limit (T30 follow-up C-1). Logged as cause=timeout."""
+
+    code = "timeout"
+
+
+def is_timeout(exc: BaseException) -> bool:
+    """httpx / httpx2 raise a subclass of `TimeoutException` when HttpOptions.timeout is exceeded
+    (google-genai 3.1.0, _api_client._HTTPX_TRANSIENT_EXC; the SDK does not retry by default).
+    Matched by class name so neither HTTP library becomes a direct dependency."""
+    return isinstance(exc, TimeoutError) or any(
+        c.__name__ == "TimeoutException" for c in type(exc).__mro__
+    )
+
 
 EXTRACT_INSTRUCTION = """너는 증상 안내 서비스의 증상 구조화 도우미다. 진단을 하지 않는다.
 사용자가 한국어로 쓴 증상 문장에서, 아래 사전에 있는 증상만 골라 symptom_id로 돌려준다.
@@ -71,10 +94,12 @@ class GeminiProvider:
         retry_sleep: float = 20.0,
         fallback_model: str | None = None,
         candidate_k: int | None = None,
+        timeout_s: float | None = None,
     ):
         self.client = client or genai.Client()
         self.model = model or os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
-        # ADR 0001: on 429/5xx from the primary model, try the fallback once its retries are spent.
+        # ADR 0001: on 429/5xx from the primary model, try the fallback (429: at once; 5xx: after
+        # the retries; timeout: at once).
         self.fallback_model = fallback_model or os.environ.get("GEMINI_FALLBACK_MODEL") or None
         # None = full dictionary (T13 baseline); an int = only the k most relevant lines (T30).
         env_k = os.environ.get("LLM_CANDIDATE_K")
@@ -86,20 +111,53 @@ class GeminiProvider:
         }
         self.max_retries = max_retries
         self.retry_sleep = retry_sleep
+        # Per-call time limit (None = SDK default). On timeout the next model is tried at once.
+        self.timeout_s = timeout_s
 
-    def _generate(self, contents: str, config: types.GenerateContentConfig):
+    def _generate(
+        self,
+        contents: str,
+        config: types.GenerateContentConfig,
+        fallback_on_timeout: bool = True,
+    ):
         """Returns the response. Sets self.last_latency_s (successful attempt only)
         and self.last_model (the model that answered)."""
         models = [self.model] + ([self.fallback_model] if self.fallback_model else [])
+        if self.timeout_s:
+            # Client-side limit only. The SDK would also send X-Server-Timeout = the same value,
+            # and Gemini rejects deadlines under 10 s (400), so the server deadline stays >= 10 s.
+            # google-genai 3.1.0 _api_client.populate_server_timeout_header keeps a preset header.
+            server_deadline = str(max(SERVER_DEADLINE_MIN_S, math.ceil(self.timeout_s)))
+            config = config.model_copy(
+                update={
+                    "http_options": types.HttpOptions(
+                        timeout=int(self.timeout_s * 1000),
+                        headers={"X-Server-Timeout": server_deadline},
+                    )
+                }
+            )
         for i, model in enumerate(models):
             try:
-                return self._generate_with(model, contents, config)
+                return self._generate_with(model, contents, config, has_next=i < len(models) - 1)
+            except LlmTimeout as exc:
+                if i == len(models) - 1 or not fallback_on_timeout:
+                    raise
+                cause = exc.code
             except errors.APIError as exc:
                 if exc.code not in RETRYABLE or i == len(models) - 1:
                     raise
+                cause = exc.code
+            # Cause only, never the prompt (SPEC section 6).
+            log.warning("llm_fallback from=%s to=%s cause=%s", model, models[i + 1], cause)
         raise RuntimeError("unreachable")
 
-    def _generate_with(self, model: str, contents: str, config: types.GenerateContentConfig):
+    def _generate_with(
+        self,
+        model: str,
+        contents: str,
+        config: types.GenerateContentConfig,
+        has_next: bool = False,
+    ):
         for attempt in range(self.max_retries + 1):
             start = time.perf_counter()
             try:
@@ -112,7 +170,13 @@ class GeminiProvider:
             except errors.APIError as exc:
                 if exc.code not in RETRYABLE or attempt == self.max_retries:
                     raise
+                if exc.code == 429 and has_next:
+                    raise  # per-minute quota: the next model answers sooner than a retry here
                 time.sleep(self.retry_sleep * 2**attempt)  # exponential backoff
+            except Exception as exc:
+                if is_timeout(exc):
+                    raise LlmTimeout() from exc  # no retry on a slow model: go to the next one
+                raise
         raise RuntimeError("unreachable")
 
     def _extract_schema(self) -> dict:
@@ -216,7 +280,12 @@ class GeminiProvider:
             temperature=0.3,
         )
         prompt = f"가능성 있는 질환: {', '.join(disease_names)}\n증상: {', '.join(names)}"
-        response = self._generate(prompt, config)
+        try:
+            # The explanation is optional text: on timeout show the default sentence at once
+            # rather than waiting for the fallback model (quota and 5xx errors still fall back).
+            response = self._generate(prompt, config, fallback_on_timeout=False)
+        except LlmTimeout:
+            return EMERGENCY_EXPLANATION if emergency else FALLBACK_EXPLANATION
         if emergency:
             return sanitize_emergency_explanation(response.text)
         return sanitize_explanation(response.text)
