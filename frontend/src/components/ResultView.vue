@@ -20,6 +20,7 @@ const department = props.result.recommended_departments[0]
           <span class="name">{{ p.disease_name_ko }}</span>
           <span class="bar"><span class="fill" :style="{ width: percent(p.probability) }" /></span>
           <span class="pct">{{ percent(p.probability) }}</span>
+          <p v-if="p.note" class="note" data-test="prediction-note">{{ p.note }}</p>
         </li>
       </ul>
     </section>
@@ -74,6 +75,15 @@ h2 {
   display: block;
   height: 100%;
   background: #2f6fde;
+}
+.note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 13px;
+  color: #6b4e00;
+  background: #fff6db;
+  border-radius: 6px;
+  padding: 6px 8px;
 }
 .pct {
   text-align: right;

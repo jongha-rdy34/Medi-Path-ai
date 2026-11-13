@@ -17,6 +17,25 @@ python data/scripts/check_mappings.py   # source_url이 빈 질환은 경고로 
 - [ ] 목록을 확정해 주세요(추가·삭제). 파일만 고치면 되고 코드는 바꾸지 않습니다.
 - 처리 위치: `backend/triage/service.py`의 `build_result()` (ml-service `/predict`는 전체 확률을 그대로 돌려줌)
 
+## 0-2. 국내에서 드문 질환 목록 확정 (`rare_in_korea.csv`) — 사용자 확정 필요
+
+이 목록의 질환은 **화면 Top-3를 정할 때만 점수에 가중치(`RARE_DISEASE_WEIGHT`, 기본 0.3)를 곱해 순위를 낮추고**, 화면에 남으면 그 항목 아래에 짧은 안내를 붙입니다. 확률 원값과 권장 진료과 계산은 바꾸지 않습니다(민감 질환과 같은 원칙). 모델과 `/predict`도 그대로입니다.
+
+- 초안(Kaggle 41종 중):
+  | disease_id | 안내 문구 키 | 근거(요약) |
+  |---|---|---|
+  | `dengue` 뎅기열 | `travel` | 국내 자체 발생 없음, 해외 유입 |
+  | `malaria` 말라리아 | `travel_or_border` | 휴전선 인근(인천·경기·강원 북부) 삼일열 + 해외 유입 |
+  | `typhoid` 장티푸스 | `travel` | 국내 발생 적고 해외 유입 비중 큼 |
+  | `hepatitis_e` E형 간염 | `travel` | 국내 발생 드묾, 해외 유입 보고 |
+- 넣지 않은 것: 결핵(국내 발생이 많음), 수두·A형 간염(국내 흔함), B·C·D형 간염(민감 질환으로 이미 숨김)
+- 근거는 질병관리청 감염병 포털의 법정감염병 분류입니다. 연도별 신고 건수 URL은 아직 확인하지 못했습니다(이 환경에서 접속 불가). 확정 때 `reason`에 URL을 넣어 주세요.
+- 안내 문구(`backend/triage/service.py`의 `RARE_NOTES`)
+  - `travel`: "국내에서는 드문 질환입니다. 최근 해외여행(특히 동남아·아프리카 등) 이력이 있다면 의료진에게 꼭 알려 주세요."
+  - `travel_or_border`: "국내에서는 드문 질환입니다. 최근 해외여행이나 휴전선 인근 지역(인천·경기·강원 북부) 방문 이력이 있다면 의료진에게 꼭 알려 주세요."
+- [ ] 목록과 문구를 확정해 주세요(추가·삭제는 파일만 고치면 됩니다. 새 문구 키는 코드에도 추가 필요)
+- [ ] 가중치 기본값 확정(비교표: `docs/perf/rare-disease-weight.md`)
+
 ## 0-1. 심평원 ↔ NMC 진료과 코드 대응 (`departments.csv`의 `nmc_code`)
 
 근거: `prototypes/kakao-hospital-search/nmc_department_codes.csv`(NMC 활용가이드 CODE_MST D000, 25개). 이름이 같은 것끼리 짝지었습니다.

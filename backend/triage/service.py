@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import logging
 
+from django.conf import settings
 from django.utils import timezone
 
 from triage import clients, mappings
@@ -46,6 +47,17 @@ FALLBACK_EXPLANATION = (
 EMERGENCY_EXPLANATION = (
     "위급할 수 있는 신호가 있습니다. 지금 바로 119에 연락하거나 가까운 응급실로 가세요."
 )
+# Shown under a disease that is rare in Korea (rare_in_korea.csv note_key).
+RARE_NOTES = {
+    "travel": (
+        "국내에서는 드문 질환입니다. 최근 해외여행(특히 동남아·아프리카 등) 이력이 있다면 "
+        "의료진에게 꼭 알려 주세요."
+    ),
+    "travel_or_border": (
+        "국내에서는 드문 질환입니다. 최근 해외여행이나 휴전선 인근 지역(인천·경기·강원 북부) "
+        "방문 이력이 있다면 의료진에게 꼭 알려 주세요."
+    ),
+}
 GENERAL_VISIT_TERMS = ("병원", "의원", "내원", "외래", "진료를 받", "진료받")
 
 
@@ -164,14 +176,29 @@ def recommend_department(ranked: list[tuple[str, float]], visible: list[str]) ->
     return {"code": code, "name_ko": name, "reason": reason}
 
 
+def screen_top3(ranked: list[tuple[str, float]]) -> list[tuple[str, float]]:
+    """On-screen Top-3: sensitive diseases hidden, diseases rare in Korea ordered by
+    probability x RARE_DISEASE_WEIGHT. The returned probabilities are the model values;
+    departments are computed from the full ranking elsewhere (department_scores)."""
+    known = mappings.diseases()
+    hidden = mappings.sensitive_disease_ids()
+    rare = mappings.rare_diseases()
+    weight = settings.RARE_DISEASE_WEIGHT
+    candidates = [(d, p) for d, p in ranked if d in known and d not in hidden]
+    return sorted(
+        candidates, key=lambda dp: dp[1] * (weight if dp[0] in rare else 1.0), reverse=True
+    )[:3]
+
+
 def build_result(session: TriageSession) -> dict:
     ids = [s["symptom_id"] for s in session.symptoms]
     version, ranked = clients.ml_client.predict(ids, top_k=ML_TOP_K)
     known = mappings.diseases()
-    hidden = mappings.sensitive_disease_ids()
-    visible = [(d, p) for d, p in ranked if d in known and d not in hidden][:3]
+    visible = screen_top3(ranked)
+    rare = mappings.rare_diseases()
     predictions = [
         {"disease_id": d, "disease_name_ko": known[d]["disease_name_ko"], "probability": p}
+        | ({"note": RARE_NOTES[rare[d]]} if d in rare else {})
         for d, p in visible
     ]
     if session.emergency:

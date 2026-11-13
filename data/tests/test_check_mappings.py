@@ -181,3 +181,18 @@ def test_nmc_check_is_skipped_until_the_column_exists(mappings_dir, tmp_path):
     from check_mappings import check_nmc_codes
 
     assert check_nmc_codes(load_mappings(mappings_dir), tmp_path / "missing.csv") == []
+
+
+def test_rare_in_korea_list_needs_known_diseases_and_known_note_keys(mappings_dir):
+    from check_mappings import check_rare_in_korea
+
+    write_csv(
+        mappings_dir / "rare_in_korea.csv",
+        ["disease_id", "note_key", "reason"],
+        [["malaria", "travel", "근거"], ["flu", "unknown_key", "근거"]],
+    )
+
+    errors = check_rare_in_korea(load_mappings(mappings_dir), mappings_dir / "rare_in_korea.csv")
+
+    assert "rare_in_korea.csv: unknown disease_id 'malaria'" in errors
+    assert "rare_in_korea.csv: unknown note_key 'unknown_key'" in errors

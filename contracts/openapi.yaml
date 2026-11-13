@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Symptom Care API
-  version: 0.2.3
+  version: 0.3.0
   summary: 증상 기반 진료과·병원 안내 서비스 공개 API (v0)
   description: |
     증상 기반 진료과·병원 안내 서비스의 공개 API 계약입니다.
@@ -743,6 +743,12 @@ components:
           type: number
           minimum: 0
           maximum: 1
+          description: 모델 확률 원값. 화면 순서는 국내에서 드문 질환의 순위 조정 때문에 확률 순서와 다를 수 있습니다.
+        note:
+          type: string
+          description: >-
+            국내에서 드문 질환일 때만 붙는 짧은 안내(예: 해외여행 이력 확인). 없으면 필드가 빠집니다.
+            (2026-11-13 추가, 선택 필드라 하위 호환)
 
     RecommendedDepartment:
       type: object

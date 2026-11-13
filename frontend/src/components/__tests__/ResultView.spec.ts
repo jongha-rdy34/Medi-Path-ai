@@ -34,6 +34,29 @@ describe('ResultView', () => {
     expect(w.find('a[data-test="egen-link"]').attributes('href')).toMatch(/^https:\/\/www\.e-gen\.or\.kr/)
   })
 
+  it('shows the note under a disease that is rare in Korea, and only there', () => {
+    const rare: TriageResult = {
+      ...normal,
+      predictions: [
+        { disease_id: 'hepatitis_a', disease_name_ko: 'A형 간염', probability: 0.32 },
+        {
+          disease_id: 'malaria',
+          disease_name_ko: '말라리아',
+          probability: 0.38,
+          note: '국내에서는 드문 질환입니다. 최근 해외여행 이력이 있다면 의료진에게 꼭 알려 주세요.',
+        },
+        { disease_id: 'chicken_pox', disease_name_ko: '수두', probability: 0.08 },
+      ],
+    }
+    const w = mount(ResultView, { props: { result: rare } })
+
+    const notes = w.findAll('[data-test="prediction-note"]')
+    expect(notes).toHaveLength(1)
+    expect(notes[0]!.text()).toContain('해외여행')
+    const items = w.findAll('[data-test="prediction"]')
+    expect(items[1]!.find('[data-test="prediction-note"]').exists()).toBe(true)
+  })
+
   it('puts the emergency banner above everything else', () => {
     const w = mount(ResultView, { props: { result: emergency } })
 

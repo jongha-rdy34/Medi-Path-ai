@@ -44,7 +44,8 @@ export interface TriageResult {
   session_id: string
   emergency: boolean
   emergency_notice: EmergencyNotice | null
-  predictions: { disease_id: string; disease_name_ko: string; probability: number }[]
+  /** `note`: only for a disease rare in Korea (contract 0.3.0). Order is the screen order. */
+  predictions: { disease_id: string; disease_name_ko: string; probability: number; note?: string }[]
   recommended_departments: { code: string; name_ko: string; reason: string }[]
   explanation: string
   structured_symptoms: StructuredSymptoms
