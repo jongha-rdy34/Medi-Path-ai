@@ -125,10 +125,35 @@ def test_explanation_still_uses_the_fallback_model_on_quota_errors():
     from google.genai import errors
 
     quota = errors.ClientError(429, {"error": {"code": 429, "message": "quota", "status": "x"}})
-    p, calls = make(quota, quota, "감기 가능성이 있습니다.")
+    p, calls = make(quota, "감기 가능성이 있습니다.")
     p.max_retries = 1  # as in the service (app.main.load_llm)
 
     text = p.explain(["감기"], ["cough"])
 
     assert text == "감기 가능성이 있습니다."
-    assert [c["model"] for c in calls] == ["primary", "primary", "backup"]
+    assert [c["model"] for c in calls][-1] == "backup"
+
+
+def test_quota_error_goes_straight_to_the_fallback_without_retrying_the_same_model():
+    # 429 is a per-minute quota: retrying the same model a second later only adds latency.
+    from google.genai import errors
+
+    quota = errors.ClientError(429, {"error": {"code": 429, "message": "quota", "status": "x"}})
+    p, calls = make(quota, EXTRACT_OK)
+    p.max_retries = 1
+
+    p.extract_symptoms("기침이 나요")
+
+    assert [c["model"] for c in calls] == ["primary", "backup"]
+
+
+def test_server_errors_are_still_retried_on_the_same_model_first():
+    from google.genai import errors
+
+    busy = errors.ServerError(503, {"error": {"code": 503, "message": "busy", "status": "x"}})
+    p, calls = make(busy, EXTRACT_OK)
+    p.max_retries = 1
+
+    p.extract_symptoms("기침이 나요")
+
+    assert [c["model"] for c in calls] == ["primary", "primary"]

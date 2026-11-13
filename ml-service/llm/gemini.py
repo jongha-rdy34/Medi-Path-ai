@@ -98,7 +98,8 @@ class GeminiProvider:
     ):
         self.client = client or genai.Client()
         self.model = model or os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
-        # ADR 0001: on 429/5xx from the primary model, try the fallback once its retries are spent.
+        # ADR 0001: on 429/5xx from the primary model, try the fallback (429: at once; 5xx: after
+        # the retries; timeout: at once).
         self.fallback_model = fallback_model or os.environ.get("GEMINI_FALLBACK_MODEL") or None
         # None = full dictionary (T13 baseline); an int = only the k most relevant lines (T30).
         env_k = os.environ.get("LLM_CANDIDATE_K")
@@ -137,7 +138,7 @@ class GeminiProvider:
             )
         for i, model in enumerate(models):
             try:
-                return self._generate_with(model, contents, config)
+                return self._generate_with(model, contents, config, has_next=i < len(models) - 1)
             except LlmTimeout as exc:
                 if i == len(models) - 1 or not fallback_on_timeout:
                     raise
@@ -150,7 +151,13 @@ class GeminiProvider:
             log.warning("llm_fallback from=%s to=%s cause=%s", model, models[i + 1], cause)
         raise RuntimeError("unreachable")
 
-    def _generate_with(self, model: str, contents: str, config: types.GenerateContentConfig):
+    def _generate_with(
+        self,
+        model: str,
+        contents: str,
+        config: types.GenerateContentConfig,
+        has_next: bool = False,
+    ):
         for attempt in range(self.max_retries + 1):
             start = time.perf_counter()
             try:
@@ -163,6 +170,8 @@ class GeminiProvider:
             except errors.APIError as exc:
                 if exc.code not in RETRYABLE or attempt == self.max_retries:
                     raise
+                if exc.code == 429 and has_next:
+                    raise  # per-minute quota: the next model answers sooner than a retry here
                 time.sleep(self.retry_sleep * 2**attempt)  # exponential backoff
             except Exception as exc:
                 if is_timeout(exc):
