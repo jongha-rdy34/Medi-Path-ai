@@ -184,3 +184,103 @@ def test_latency_excludes_retry_waits(monkeypatch):
     p, _ = provider(overloaded, json.dumps({"symptoms": [], "emergency_suspected": False}))
 
     assert p.extract_symptoms("text").latency_s == 1.5
+
+
+def test_prompt_lists_only_candidates_when_k_is_set():
+    p, client = provider(json.dumps({"symptoms": [], "emergency_suspected": False}))
+    p.candidate_k = 1
+
+    p.extract_symptoms("기침이 나요")
+
+    instruction = client.models.calls[0]["config"].system_instruction
+    listed = {line.split(":")[0] for line in instruction.splitlines() if ":" in line}
+    assert "cough" in listed and "high_fever" not in listed
+
+
+def fallback_provider(*replies):
+    client = SimpleNamespace(models=FakeModels(replies))
+    p = GeminiProvider(
+        client=client,
+        model="primary",
+        fallback_model="backup",
+        vocab=VOCAB,
+        max_retries=0,
+        retry_sleep=0,
+    )
+    return p, client
+
+
+def test_falls_back_to_the_second_model_on_quota_or_server_errors():
+    limited = errors.ClientError(
+        429, {"error": {"code": 429, "message": "quota", "status": "RESOURCE_EXHAUSTED"}}
+    )
+    p, client = fallback_provider(
+        limited, json.dumps({"symptoms": [], "emergency_suspected": False})
+    )
+
+    result = p.extract_symptoms("text")
+
+    assert [c["model"] for c in client.models.calls] == ["primary", "backup"]
+    assert result.parsed and result.served_model == "backup"
+
+
+def test_does_not_fall_back_on_client_mistakes():
+    bad = errors.ClientError(
+        400, {"error": {"code": 400, "message": "bad", "status": "INVALID_ARGUMENT"}}
+    )
+    p, client = fallback_provider(bad)
+
+    with pytest.raises(errors.ClientError):
+        p.extract_symptoms("text")
+    assert [c["model"] for c in client.models.calls] == ["primary"]
+
+
+def test_raises_when_both_models_fail():
+    down = errors.ServerError(
+        503, {"error": {"code": 503, "message": "x", "status": "UNAVAILABLE"}}
+    )
+    p, client = fallback_provider(down, down)
+
+    with pytest.raises(errors.ServerError):
+        p.extract_symptoms("text")
+    assert [c["model"] for c in client.models.calls] == ["primary", "backup"]
+
+
+# --- T30 follow-up C-3: emergency explanations only point to 119 or the ER ---
+
+GENERAL_VISIT_WORDS = ("병원", "의원", "내원")
+
+
+def test_emergency_explain_uses_the_emergency_instruction():
+    p, client = provider("지금 바로 119에 연락하거나 가까운 응급실로 가세요.")
+
+    p.explain(["심근경색"], ["chest_pain"], emergency=True)
+
+    instruction = client.models.calls[0]["config"].system_instruction
+    assert "119" in instruction and "응급실" in instruction
+
+
+@pytest.mark.parametrize(
+    "reply",
+    [
+        "심근경색일 수 있으니 가까운 병원에 가 보세요.",
+        "동네 의원에 내원해 진료를 받으세요.",
+        "",
+    ],
+)
+def test_emergency_explanation_never_suggests_a_regular_visit(reply):
+    p, _ = provider(reply)
+
+    text = p.explain(["심근경색"], ["chest_pain"], emergency=True)
+
+    assert "119" in text
+    assert not any(w in text for w in GENERAL_VISIT_WORDS)
+
+
+def test_non_emergency_explain_keeps_the_regular_instruction():
+    p, client = provider("감기 가능성이 있습니다. 증상이 오래가면 병원 진료를 받으세요.")
+
+    text = p.explain(["감기"], ["cough"])
+
+    assert "병원" in text
+    assert "응급실" not in client.models.calls[0]["config"].system_instruction

@@ -157,6 +157,32 @@ jobs:
       - run: ruff format --check .
       - run: pytest
 
+  e2e:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' || needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - run: pip install -r backend/requirements.txt
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - name: Install the Chromium build that matches @playwright/test
+        run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Playwright E2E (backend with stub AI clients, real frontend)
+        run: npm run e2e -- --trace off
+        working-directory: frontend
+
   compose:
     needs: changes
     if: ${{ needs.changes.outputs.compose == 'true' }}
@@ -178,7 +204,7 @@ jobs:
         run: docker compose --env-file .env -f infra/docker-compose.yml --profile core down -v
 
   ci-ok:
-    needs: [changes, contracts, backend, ml-service, frontend, data, compose]
+    needs: [changes, contracts, backend, ml-service, frontend, data, e2e, compose]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:

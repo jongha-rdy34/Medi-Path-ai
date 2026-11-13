@@ -4,7 +4,8 @@ Vue 3 + Vite + TypeScript. `create-vue@3.24.0`로 생성했습니다(`--ts --vit
 
 ```bash
 npm ci            # 의존성 설치(lockfile 그대로)
-npm run dev       # 개발 서버 http://localhost:5173
+npm run dev       # 개발 서버 http://localhost:5173 (/api는 백엔드로 프록시: VITE_API_PROXY, 기본 http://localhost:8000)
+VITE_USE_MOCK=true npm run dev   # 백엔드 없이 계약 예시(MSW)로 화면 개발
 npm run test      # Vitest 1회 실행
 npm run check:lint  # oxlint + eslint (수정 없이 검사만, CI용)
 npm run lint      # 자동 수정까지

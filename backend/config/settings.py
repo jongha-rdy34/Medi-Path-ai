@@ -136,3 +136,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {"EXCEPTION_HANDLER": "triage.errors.exception_handler"}
 # data/mappings (T11). docker compose mounts it at /app/data/mappings.
 MAPPINGS_DIR = Path(os.environ.get("MAPPINGS_DIR", BASE_DIR.parent / "data" / "mappings"))
+
+# ml-service (contracts/ml-service.openapi.yaml). "stub" only for tests (config/test_settings.py).
+ML_SERVICE_URL = os.environ.get("ML_SERVICE_URL", "http://localhost:8001")
+TRIAGE_CLIENTS = os.environ.get("TRIAGE_CLIENTS", "http")

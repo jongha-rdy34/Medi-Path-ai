@@ -34,12 +34,19 @@ DAILY_LIMIT = 500  # requests per day per model (free tier)
 MIN_SLEEP_S = 4.0  # 15 RPM
 
 
+def run_tag(provider) -> str:
+    """Model name plus prompt variant, e.g. gemini-3.5-flash-lite-k30 (T30 slim prompt)."""
+    tag = str(getattr(provider, "model", "provider"))
+    k = getattr(provider, "candidate_k", None)
+    return f"{tag}-k{k}" if k else tag
+
+
 class CachedExtractor:
     """Caches extract_symptoms() on disk by (model, text hash)."""
 
     def __init__(self, provider, cache_dir: Path = CACHE_DIR):
         self.provider = provider
-        self.dir = cache_dir / str(getattr(provider, "model", "provider"))
+        self.dir = cache_dir / run_tag(provider)
 
     def _path(self, text: str) -> Path:
         return self.dir / (hashlib.sha256(text.encode("utf-8")).hexdigest() + ".json")
@@ -162,12 +169,13 @@ def main() -> int:
     summary = summarize(rows, args.price_in, args.price_out)
     model = getattr(provider, "model", args.provider)
     RESULTS_DIR.mkdir(exist_ok=True)
-    out = RESULTS_DIR / f"{model}.json"
+    out = RESULTS_DIR / f"{run_tag(provider)}.json"
     out.write_text(
         json.dumps(
             {
                 "provider": args.provider,
                 "model": model,
+                "candidate_k": getattr(provider, "candidate_k", None),
                 "run_at": datetime.now(UTC).isoformat(timespec="seconds"),
                 "summary": summary,
                 "cases": [

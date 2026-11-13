@@ -26,6 +26,14 @@ describe('ResultView', () => {
     expect(w.find('[data-test="hospital-finder"]').attributes('data-department')).toBe('01')
   })
 
+  it('replaces the hospital finder with 119 and the emergency-room finder in an emergency', () => {
+    const w = mount(ResultView, { props: { result: emergency } })
+
+    expect(w.find('[data-test="hospital-finder"]').exists()).toBe(false)
+    expect(w.find('a[href="tel:119"]').exists()).toBe(true)
+    expect(w.find('a[data-test="egen-link"]').attributes('href')).toMatch(/^https:\/\/www\.e-gen\.or\.kr/)
+  })
+
   it('puts the emergency banner above everything else', () => {
     const w = mount(ResultView, { props: { result: emergency } })
 
