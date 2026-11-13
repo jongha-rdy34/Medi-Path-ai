@@ -30,6 +30,12 @@ FALLBACK_EXPLANATION = (
     "입력하신 증상을 바탕으로 가능성이 있는 질환과 진료과를 안내해 드렸습니다. "
     "증상이 심해지거나 오래가면 의료진에게 진료를 받으세요."
 )
+# Emergency results only point to 119 or the ER (T30 follow-up C-3, SPEC section 6).
+EMERGENCY_EXPLANATION = (
+    "위급할 수 있는 신호가 있습니다. 지금 바로 119에 연락하거나 가까운 응급실로 가세요."
+)
+# Words that suggest a regular (non-emergency) visit; never allowed in an emergency explanation.
+GENERAL_VISIT_TERMS = ("병원", "의원", "내원", "외래", "진료를 받", "진료받")
 
 
 @dataclass(frozen=True)
@@ -57,7 +63,9 @@ class LLMProvider(Protocol):
 
     def next_questions(self, symptom_ids: list[str]) -> list[dict]: ...
 
-    def explain(self, disease_names: list[str], symptom_ids: list[str]) -> str: ...
+    def explain(
+        self, disease_names: list[str], symptom_ids: list[str], emergency: bool = False
+    ) -> str: ...
 
 
 def load_symptom_dictionary(path: Path = SYMPTOMS_CSV) -> dict[str, str]:
@@ -102,3 +110,11 @@ def sanitize_explanation(text: str) -> str:
     """The service gives guidance, not a diagnosis (SPEC section 6)."""
     text = (text or "").strip()
     return text.replace("진단", "판단") if text else FALLBACK_EXPLANATION
+
+
+def sanitize_emergency_explanation(text: str) -> str:
+    """Keep the LLM text only if it points to 119 and suggests no regular visit."""
+    text = sanitize_explanation(text)
+    if "119" not in text or any(term in text for term in GENERAL_VISIT_TERMS):
+        return EMERGENCY_EXPLANATION
+    return text

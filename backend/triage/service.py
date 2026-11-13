@@ -42,6 +42,11 @@ FALLBACK_EXPLANATION = (
     "입력하신 증상을 바탕으로 가능성이 있는 질환과 권장 진료과를 안내해 드렸습니다. "
     "증상이 심해지거나 오래가면 의료진에게 진료를 받으세요."
 )
+# Emergency results only point to 119 or the ER (T30 follow-up C-3).
+EMERGENCY_EXPLANATION = (
+    "위급할 수 있는 신호가 있습니다. 지금 바로 119에 연락하거나 가까운 응급실로 가세요."
+)
+GENERAL_VISIT_TERMS = ("병원", "의원", "내원", "외래", "진료를 받", "진료받")
 
 
 def unavailable(exc: ServiceUnavailable) -> ApiError:
@@ -122,12 +127,18 @@ def _questions(ids: list[str]) -> list[dict]:
         return FALLBACK_QUESTIONS
 
 
-def _explain(names: list[str], ids: list[str]) -> str:
+def _explain(names: list[str], ids: list[str], emergency: bool) -> str:
+    fallback = EMERGENCY_EXPLANATION if emergency else FALLBACK_EXPLANATION
     try:
-        return clients.llm_client.explain(names, ids) or FALLBACK_EXPLANATION
+        text = clients.llm_client.explain(names, ids, emergency) or fallback
     except ServiceUnavailable as exc:
         log.warning("explain_fallback code=%s", exc.code)
-        return FALLBACK_EXPLANATION
+        return fallback
+    # Defense in depth: ml-service already filters, but never show a regular-visit hint
+    # on an emergency result.
+    if emergency and ("119" not in text or any(t in text for t in GENERAL_VISIT_TERMS)):
+        return EMERGENCY_EXPLANATION
+    return text
 
 
 def department_scores(ranked: list[tuple[str, float]]) -> dict[str, float]:
@@ -173,7 +184,7 @@ def build_result(session: TriageSession) -> dict:
         ]
     else:
         departments = [recommend_department(ranked, [d for d, _ in visible])]
-    explanation = _explain([p["disease_name_ko"] for p in predictions], ids)
+    explanation = _explain([p["disease_name_ko"] for p in predictions], ids, session.emergency)
     return {
         "session_id": str(session.id),
         "emergency": session.emergency,

@@ -36,9 +36,9 @@ class FakeLLM:
         self._maybe_fail()
         return [{"question_id": "q1", "text": "열은 언제부터 났나요?", "choices": ["오늘", "어제"]}]
 
-    def explain(self, disease_names, symptom_ids):
+    def explain(self, disease_names, symptom_ids, emergency=False):
         self._maybe_fail()
-        self.explained.append(disease_names)
+        self.explained.append((disease_names, emergency))
         return "설명입니다."
 
 
@@ -121,3 +121,20 @@ def test_raw_text_is_not_logged(client, caplog):
         client.post("/llm/extract", json={"text": "비밀스러운 회사 이야기와 함께 열이 나요"})
 
     assert "비밀스러운" not in caplog.text
+
+
+def test_explain_passes_the_emergency_flag(client):
+    res = client.post(
+        "/llm/explain",
+        json={"disease_names": ["심근경색"], "symptom_ids": ["chest_pain"], "emergency": True},
+    )
+
+    assert res.status_code == 200
+    validate(res.json(), ML, "ExplainResponse")
+    assert app.state.llm.explained[-1] == (["심근경색"], True)
+
+
+def test_explain_defaults_to_non_emergency(client):
+    client.post("/llm/explain", json={"disease_names": ["감기"], "symptom_ids": ["cough"]})
+
+    assert app.state.llm.explained[-1] == (["감기"], False)

@@ -137,6 +137,7 @@ class ExplainRequest(BaseModel):
 
     disease_names: list[str] = Field(min_length=1, max_length=3)
     symptom_ids: list[Annotated[str, Field(pattern=SYMPTOM_ID)]] = Field(max_length=30)
+    emergency: bool = False
 
 
 class SafetyRequest(BaseModel):
@@ -200,7 +201,9 @@ def llm_questions(body: QuestionsRequest, request: Request) -> dict | JSONRespon
 @app.post("/llm/explain", response_model=None)
 def llm_explain(body: ExplainRequest, request: Request) -> dict | JSONResponse:
     result, failure = call_llm(
-        request, "explain", lambda llm: llm.explain(body.disease_names, body.symptom_ids)
+        request,
+        "explain",
+        lambda llm: llm.explain(body.disease_names, body.symptom_ids, body.emergency),
     )
     return failure or {"explanation": result}
 

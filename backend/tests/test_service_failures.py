@@ -31,7 +31,7 @@ class QuietLLM(clients.StubLLMClient):
     def next_questions(self, symptom_ids):
         raise ServiceUnavailable("llm_unavailable")
 
-    def explain(self, disease_names, symptom_ids):
+    def explain(self, disease_names, symptom_ids, emergency=False):
         raise ServiceUnavailable("llm_unavailable")
 
 

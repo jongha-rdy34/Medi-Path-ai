@@ -40,7 +40,7 @@ class SpyLLM(clients.StubLLMClient):
     def __init__(self):
         self.explained = []
 
-    def explain(self, disease_names, symptom_ids):
+    def explain(self, disease_names, symptom_ids, emergency=False):
         self.explained.append(list(disease_names))
         return "설명"
 

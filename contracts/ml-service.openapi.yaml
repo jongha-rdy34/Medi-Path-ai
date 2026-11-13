@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Symptom Care ml-service (internal)
-  version: 0.2.0
+  version: 0.3.0
   summary: 백엔드 → ml-service 내부 계약 (v0, T30에서 LLM·위급 판정 추가)
   description: |
     backend-api가 호출하는 triage-model 추론 서버(FastAPI)의 내부 계약입니다. 외부에 공개하지 않습니다.
@@ -349,6 +349,12 @@ components:
           maxItems: 30
           items:
             $ref: './openapi.yaml#/components/schemas/SymptomId'
+        emergency:
+          type: boolean
+          default: false
+          description: >-
+            true이면 설명은 119 연락이나 가까운 응급실 방문만 안내하고, 일반 병원·의원 방문은 권하지 않습니다.
+            (T30 후속 C-3, 추가 필드라 하위 호환)
 
     ExplainResponse:
       type: object

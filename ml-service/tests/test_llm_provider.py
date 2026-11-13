@@ -244,3 +244,43 @@ def test_raises_when_both_models_fail():
     with pytest.raises(errors.ServerError):
         p.extract_symptoms("text")
     assert [c["model"] for c in client.models.calls] == ["primary", "backup"]
+
+
+# --- T30 follow-up C-3: emergency explanations only point to 119 or the ER ---
+
+GENERAL_VISIT_WORDS = ("병원", "의원", "내원")
+
+
+def test_emergency_explain_uses_the_emergency_instruction():
+    p, client = provider("지금 바로 119에 연락하거나 가까운 응급실로 가세요.")
+
+    p.explain(["심근경색"], ["chest_pain"], emergency=True)
+
+    instruction = client.models.calls[0]["config"].system_instruction
+    assert "119" in instruction and "응급실" in instruction
+
+
+@pytest.mark.parametrize(
+    "reply",
+    [
+        "심근경색일 수 있으니 가까운 병원에 가 보세요.",
+        "동네 의원에 내원해 진료를 받으세요.",
+        "",
+    ],
+)
+def test_emergency_explanation_never_suggests_a_regular_visit(reply):
+    p, _ = provider(reply)
+
+    text = p.explain(["심근경색"], ["chest_pain"], emergency=True)
+
+    assert "119" in text
+    assert not any(w in text for w in GENERAL_VISIT_WORDS)
+
+
+def test_non_emergency_explain_keeps_the_regular_instruction():
+    p, client = provider("감기 가능성이 있습니다. 증상이 오래가면 병원 진료를 받으세요.")
+
+    text = p.explain(["감기"], ["cough"])
+
+    assert "병원" in text
+    assert "응급실" not in client.models.calls[0]["config"].system_instruction

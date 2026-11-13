@@ -97,3 +97,13 @@ def test_unreachable_service_is_service_unavailable():
         HttpMLClient("http://127.0.0.1:9", timeout=1).predict(["cough"], top_k=3)
 
     assert exc.value.code == "service_unavailable"
+
+
+def test_explain_sends_the_emergency_flag(server):
+    url, _, seen = server
+
+    HttpLLMClient(url).explain(["심근경색"], ["chest_pain"], emergency=True)
+    HttpLLMClient(url).explain(["감기"], ["cough"])
+
+    bodies = [body for path, body in seen if path == "/llm/explain"]
+    assert [b["emergency"] for b in bodies] == [True, False]

@@ -24,6 +24,7 @@ from llm.provider import (
     Extraction,
     filter_questions,
     load_symptom_dictionary,
+    sanitize_emergency_explanation,
     sanitize_explanation,
     sanitize_symptoms,
 )
@@ -53,6 +54,11 @@ QUESTIONS_INSTRUCTION = """너는 증상 안내 서비스의 추가 질문 도�
 EXPLAIN_INSTRUCTION = """너는 증상 안내 서비스의 설명 도우미다. "진단"이라는 말을 쓰지 않는다.
 가능성 있는 질환과 사용자의 증상을 보고, 일반인이 이해할 쉬운 한국어 2~3문장으로 설명한다.
 확정적으로 말하지 말고, 언제 진료를 받아야 하는지 덧붙인다."""
+
+EMERGENCY_EXPLAIN_INSTRUCTION = """너는 증상 안내 서비스의 응급 안내 도우미다. "진단"이라는 말을 쓰지 않는다.
+사용자의 증상에 위급할 수 있는 신호가 있다. 쉬운 한국어 2문장으로 쓴다.
+첫 문장은 위급할 수 있는 이유를 짧게, 둘째 문장은 "지금 바로 119에 연락하거나 가까운 응급실로 가세요"라고 안내한다.
+119와 응급실 외의 방문(일반 병원, 의원, 외래 진료, 내원)은 권하지 않는다. 기다려 보라는 말도 하지 않는다."""
 
 
 class GeminiProvider:
@@ -201,11 +207,16 @@ class GeminiProvider:
             return []
         return filter_questions(questions)
 
-    def explain(self, disease_names: list[str], symptom_ids: list[str]) -> str:
+    def explain(
+        self, disease_names: list[str], symptom_ids: list[str], emergency: bool = False
+    ) -> str:
         names = [self.vocab.get(s, s).split(" (")[0] for s in symptom_ids]
         config = types.GenerateContentConfig(
-            system_instruction=EXPLAIN_INSTRUCTION, temperature=0.3
+            system_instruction=EMERGENCY_EXPLAIN_INSTRUCTION if emergency else EXPLAIN_INSTRUCTION,
+            temperature=0.3,
         )
         prompt = f"가능성 있는 질환: {', '.join(disease_names)}\n증상: {', '.join(names)}"
         response = self._generate(prompt, config)
+        if emergency:
+            return sanitize_emergency_explanation(response.text)
         return sanitize_explanation(response.text)
