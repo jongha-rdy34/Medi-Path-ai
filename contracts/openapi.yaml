@@ -173,6 +173,25 @@ paths:
                 message: 이 세션은 이미 결과가 확정됐습니다. 새 세션을 시작하세요.
         '422':
           $ref: '#/components/responses/ValidationError'
+        '503':
+          description: |
+            증상 분석(LLM) 또는 ml-service를 잠시 쓸 수 없음. 세션은 바뀌지 않으므로 같은 메시지를 다시 보내면 됩니다.
+            기본·대체 LLM 모두 실패하면 `llm_unavailable`, ml-service에 닿지 않으면 `service_unavailable`입니다(T30).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                llmUnavailable:
+                  summary: 기본·대체 LLM 모두 실패
+                  value:
+                    code: llm_unavailable
+                    message: 증상 분석이 잠시 어렵습니다. 잠시 후 다시 시도해 주세요.
+                serviceUnavailable:
+                  summary: ml-service에 닿지 않음
+                  value:
+                    code: service_unavailable
+                    message: 증상 분석이 잠시 어렵습니다. 잠시 후 다시 시도해 주세요.
 
   /api/triage/sessions/{session_id}/result:
     parameters:

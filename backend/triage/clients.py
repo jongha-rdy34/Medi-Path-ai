@@ -86,6 +86,21 @@ class StubSafetyClient:
         return reasons
 
 
-llm_client = StubLLMClient()
-ml_client = StubMLClient()
-safety_client = StubSafetyClient()
+def build():
+    """(llm, ml, safety) clients per settings.TRIAGE_CLIENTS: "http" (ml-service) or "stub"."""
+    from django.conf import settings
+
+    if getattr(settings, "TRIAGE_CLIENTS", "http") == "stub":
+        return StubLLMClient(), StubMLClient(), StubSafetyClient()
+    from triage.http_clients import HttpLLMClient, HttpMLClient, HttpSafetyClient
+
+    url = settings.ML_SERVICE_URL
+    # LLM calls get a longer timeout: primary + fallback model with retries (ADR 0001).
+    return (
+        HttpLLMClient(url, timeout=30.0),
+        HttpMLClient(url, timeout=5.0),
+        HttpSafetyClient(url, timeout=5.0),
+    )
+
+
+llm_client, ml_client, safety_client = build()
