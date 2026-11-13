@@ -3,8 +3,8 @@
 `GET /api/hospitals` (계약: `contracts/openapi.yaml`의 `searchHospitals`). 프로토타입(`prototypes/kakao-hospital-search/`)의 Node 서버 로직을 Django로 옮긴 앱입니다.
 
 ```
-좌표 ─▶ kakao.region_of (coord2regioncode, 캐시 안 함)
-      ─▶ nmc.fetch_region (NMC 병·의원 목록, 시도+시군구+진료과 단위 6시간 캐시)
+좌표 ─▶ kakao.region_of × 9 (중심 + 반경 원 둘레 8곳, 동시 호출, 캐시 안 함)
+      ─▶ nmc.fetch_region (겹치는 시군구마다, 시도+시군구+진료과 단위 6시간 캐시, 중복 제거)
       ─▶ service.search (거리, 지금 진료 중 / 야간 / 주말, 거리순, limit)
 ```
 
@@ -70,7 +70,8 @@ Windows PowerShell에서도 같은 명령입니다(`..\.env`도 됩니다).
 - 녹화 응답 일부를 `tests/fixtures/recorded/`에 줄여서 두고 `test_recorded.py`가 씁니다.
 
 ## 알려진 한계
-- 좌표가 속한 **시군구 한 곳만** 조회해서 구 경계 근처에서는 반경 안이라도 옆 구 병원이 빠집니다. 실제로 강남역 좌표는 서초구로 잡혀 강남구 쪽 병원이 빠집니다.
+- 반경이 걸치는 시군구는 **중심 + 둘레 8곳 표본**으로 찾습니다(#15). 표본 점 사이로만 아주 좁게 걸친 시군구는 빠질 수 있습니다. 강남역(서초구로 잡힘) 반경 3 km는 강남구도 함께 검색됩니다.
+- 요청마다 Kakao를 최대 9번 부릅니다(동시 호출). 쿼터는 Kakao 콘솔 [통계] > [쿼터]에서 확인합니다. 둘레 점 호출이 실패하면 그 점은 건너뜁니다(중심 점 실패는 503).
 - **공휴일은 판단하지 않습니다**(요일 기준).
 - 진료시간은 기관이 **신고한 정보**라 실제와 다를 수 있습니다(응답 `notice`).
 - NMC는 휴진과 정보 없음을 구분하지 않습니다. 진료시간이 하나도 없으면 `is_open_now: null`.
