@@ -80,6 +80,7 @@ services:
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
       GEMINI_FALLBACK_MODEL: ${GEMINI_FALLBACK_MODEL:-gemini-3.1-flash-lite}
       LLM_CANDIDATE_K: ${LLM_CANDIDATE_K:-30}
+      LLM_TIMEOUT_S: ${LLM_TIMEOUT_S:-8}
     volumes:
       # 학습한 모델 파일(gitignore 대상). 만들기: cd ml-service && python -m triage.train
       # (기본 dropout-2026.11.0, 시드 고정이라 같은 데이터면 같은 모델)
