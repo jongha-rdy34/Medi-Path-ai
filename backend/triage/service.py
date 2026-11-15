@@ -12,6 +12,7 @@ recorded anywhere (response, DB or logs). /predict itself is unchanged.
 from __future__ import annotations
 
 import logging
+import re
 
 from django.conf import settings
 from django.utils import timezone
@@ -139,10 +140,16 @@ def _questions(ids: list[str]) -> list[dict]:
         return FALLBACK_QUESTIONS
 
 
-def _explain(names: list[str], ids: list[str], emergency: bool) -> str:
+# A number with % (or 퍼센트/프로) never reaches the user: the screen shows labels only.
+PERCENT = re.compile(r"\d+(?:\.\d+)?\s*(?:%|퍼센트|프로)")
+
+
+def _explain(
+    names: list[str], ids: list[str], emergency: bool, likelihoods: list[str] | None = None
+) -> str:
     fallback = EMERGENCY_EXPLANATION if emergency else FALLBACK_EXPLANATION
     try:
-        text = clients.llm_client.explain(names, ids, emergency) or fallback
+        text = clients.llm_client.explain(names, ids, emergency, likelihoods) or fallback
     except ServiceUnavailable as exc:
         log.warning("explain_fallback code=%s", exc.code)
         return fallback
@@ -150,6 +157,8 @@ def _explain(names: list[str], ids: list[str], emergency: bool) -> str:
     # on an emergency result.
     if emergency and ("119" not in text or any(t in text for t in GENERAL_VISIT_TERMS)):
         return EMERGENCY_EXPLANATION
+    if PERCENT.search(text):
+        return fallback
     return text
 
 
@@ -176,14 +185,25 @@ def recommend_department(ranked: list[tuple[str, float]], visible: list[str]) ->
     return {"code": code, "name_ko": name, "reason": reason}
 
 
-def screen_top3(ranked: list[tuple[str, float]]) -> list[tuple[str, float]]:
+def likelihood(probability: float) -> str:
+    """Label shown instead of a percentage; uses the model probability (before any weight)."""
+    if probability >= settings.LIKELIHOOD_HIGH:
+        return "high"
+    if probability >= settings.LIKELIHOOD_MEDIUM:
+        return "medium"
+    return "low"
+
+
+def screen_top3(
+    ranked: list[tuple[str, float]], weight: float | None = None
+) -> list[tuple[str, float]]:
     """On-screen Top-3: sensitive diseases hidden, diseases rare in Korea ordered by
     probability x RARE_DISEASE_WEIGHT. The returned probabilities are the model values;
     departments are computed from the full ranking elsewhere (department_scores)."""
     known = mappings.diseases()
     hidden = mappings.sensitive_disease_ids()
     rare = mappings.rare_diseases()
-    weight = settings.RARE_DISEASE_WEIGHT
+    weight = settings.RARE_DISEASE_WEIGHT if weight is None else weight
     candidates = [(d, p) for d, p in ranked if d in known and d not in hidden]
     return sorted(
         candidates, key=lambda dp: dp[1] * (weight if dp[0] in rare else 1.0), reverse=True
@@ -195,9 +215,17 @@ def build_result(session: TriageSession) -> dict:
     version, ranked = clients.ml_client.predict(ids, top_k=ML_TOP_K)
     known = mappings.diseases()
     visible = screen_top3(ranked)
+    # Only the rare-disease weight counts as an adjustment: both orders already hide
+    # sensitive diseases, so hiding is never revealed.
+    order_adjusted = [d for d, _ in visible] != [d for d, _ in screen_top3(ranked, weight=1.0)]
     rare = mappings.rare_diseases()
     predictions = [
-        {"disease_id": d, "disease_name_ko": known[d]["disease_name_ko"], "probability": p}
+        {
+            "disease_id": d,
+            "disease_name_ko": known[d]["disease_name_ko"],
+            "probability": p,
+            "likelihood": likelihood(p),
+        }
         | ({"note": RARE_NOTES[rare[d]]} if d in rare else {})
         for d, p in visible
     ]
@@ -211,12 +239,18 @@ def build_result(session: TriageSession) -> dict:
         ]
     else:
         departments = [recommend_department(ranked, [d for d, _ in visible])]
-    explanation = _explain([p["disease_name_ko"] for p in predictions], ids, session.emergency)
+    explanation = _explain(
+        [p["disease_name_ko"] for p in predictions],
+        ids,
+        session.emergency,
+        [p["likelihood"] for p in predictions],
+    )
     return {
         "session_id": str(session.id),
         "emergency": session.emergency,
         "emergency_notice": emergency_notice(session),
         "predictions": predictions,
+        "order_adjusted": order_adjusted,
         "recommended_departments": departments,
         "explanation": explanation,
         "structured_symptoms": structured(session),

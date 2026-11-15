@@ -9,6 +9,10 @@ test('symptom chat -> follow-up -> result with the hospital area', async ({ page
   await page.getByRole('button', { name: '오늘' }).click()
 
   await expect(page.locator('[data-test="prediction"]')).toHaveCount(3)
+  // Labels instead of percentages (2026-11-15); stub ranking has no rare-disease reorder.
+  await expect(page.locator('[data-test="likelihood"]')).toHaveCount(3)
+  await expect(page.locator('.result')).not.toContainText('%')
+  await expect(page.locator('[data-test="order-adjusted"]')).toHaveCount(0)
   await expect(page.getByText('권장 진료과')).toBeVisible()
   await expect(page.locator('[data-test="hospital-finder"]')).toBeVisible()
   await expect(page.locator('[data-test="disclaimer"]')).toContainText('의학적 진단이 아니며')
@@ -25,5 +29,7 @@ test('emergency -> 119 and ER finder, no hospital list', async ({ page }) => {
   await expect(banner.locator('a[href="tel:119"]')).toBeVisible()
   await expect(banner.locator('[data-test="egen-link"]')).toHaveAttribute('href', /^https:\/\/www\.e-gen\.or\.kr/)
   await expect(page.locator('[data-test="prediction"]').first()).toBeVisible()
+  await expect(page.locator('[data-test="likelihood"]').first()).toBeVisible()
+  await expect(page.locator('.result')).not.toContainText('%')
   await expect(page.locator('[data-test="hospital-finder"]')).toHaveCount(0)
 })

@@ -25,6 +25,7 @@ from llm.candidates import select_candidates
 from llm.provider import (
     EMERGENCY_EXPLANATION,
     FALLBACK_EXPLANATION,
+    LIKELIHOOD_KO,
     Extraction,
     filter_questions,
     load_symptom_dictionary,
@@ -76,7 +77,8 @@ QUESTIONS_INSTRUCTION = """너는 증상 안내 서비스의 추가 질문 도�
 
 EXPLAIN_INSTRUCTION = """너는 증상 안내 서비스의 설명 도우미다. "진단"이라는 말을 쓰지 않는다.
 가능성 있는 질환과 사용자의 증상을 보고, 일반인이 이해할 쉬운 한국어 2~3문장으로 설명한다.
-확정적으로 말하지 말고, 언제 진료를 받아야 하는지 덧붙인다."""
+확정적으로 말하지 말고, 언제 진료를 받아야 하는지 덧붙인다.
+확률이나 퍼센트 같은 숫자는 쓰지 않는다. 질환 옆의 가능성 단계(높음·보통·낮음)만 참고한다."""
 
 EMERGENCY_EXPLAIN_INSTRUCTION = """너는 증상 안내 서비스의 응급 안내 도우미다. "진단"이라는 말을 쓰지 않는다.
 사용자의 증상에 위급할 수 있는 신호가 있다. 쉬운 한국어 2문장으로 쓴다.
@@ -272,9 +274,18 @@ class GeminiProvider:
         return filter_questions(questions)
 
     def explain(
-        self, disease_names: list[str], symptom_ids: list[str], emergency: bool = False
+        self,
+        disease_names: list[str],
+        symptom_ids: list[str],
+        emergency: bool = False,
+        likelihoods: list[str] | None = None,
     ) -> str:
         names = [self.vocab.get(s, s).split(" (")[0] for s in symptom_ids]
+        if likelihoods:  # labels only; probabilities never go into the prompt
+            disease_names = [
+                f"{d}({LIKELIHOOD_KO[lab]})" if lab in LIKELIHOOD_KO else d
+                for d, lab in zip(disease_names, likelihoods, strict=False)
+            ]
         config = types.GenerateContentConfig(
             system_instruction=EMERGENCY_EXPLAIN_INSTRUCTION if emergency else EXPLAIN_INSTRUCTION,
             temperature=0.3,

@@ -27,13 +27,13 @@ class RecordingLLM(clients.StubLLMClient):
     def __init__(self):
         self.flags = []
 
-    def explain(self, disease_names, symptom_ids, emergency=False):
+    def explain(self, disease_names, symptom_ids, emergency=False, likelihoods=None):
         self.flags.append(emergency)
         return super().explain(disease_names, symptom_ids, emergency)
 
 
 class DownExplainLLM(clients.StubLLMClient):
-    def explain(self, disease_names, symptom_ids, emergency=False):
+    def explain(self, disease_names, symptom_ids, emergency=False, likelihoods=None):
         raise ServiceUnavailable("llm_unavailable")
 
 

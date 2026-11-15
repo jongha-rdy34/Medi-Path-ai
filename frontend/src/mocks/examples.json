@@ -100,19 +100,24 @@
         {
           "disease_id": "gastroenteritis",
           "disease_name_ko": "위장염",
-          "probability": 0.52
+          "probability": 0.52,
+          "likelihood": "medium"
         },
         {
           "disease_id": "typhoid",
           "disease_name_ko": "장티푸스",
-          "probability": 0.23
+          "probability": 0.23,
+          "likelihood": "medium",
+          "note": "국내에서는 드문 질환입니다. 최근 해외여행(특히 동남아·아프리카 등) 이력이 있다면 의료진에게 꼭 알려 주세요."
         },
         {
           "disease_id": "hepatitis_a",
           "disease_name_ko": "A형 간염",
-          "probability": 0.09
+          "probability": 0.09,
+          "likelihood": "low"
         }
       ],
+      "order_adjusted": false,
       "recommended_departments": [
         {
           "code": "01",
@@ -153,19 +158,23 @@
         {
           "disease_id": "heart_attack",
           "disease_name_ko": "심근경색",
-          "probability": 0.61
+          "probability": 0.61,
+          "likelihood": "medium"
         },
         {
           "disease_id": "pneumonia",
           "disease_name_ko": "폐렴",
-          "probability": 0.14
+          "probability": 0.14,
+          "likelihood": "low"
         },
         {
           "disease_id": "gerd",
           "disease_name_ko": "위식도역류질환",
-          "probability": 0.08
+          "probability": 0.08,
+          "likelihood": "low"
         }
       ],
+      "order_adjusted": false,
       "recommended_departments": [
         {
           "code": "24",
