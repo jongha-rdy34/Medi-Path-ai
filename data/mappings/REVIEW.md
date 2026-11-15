@@ -34,7 +34,7 @@ python data/scripts/check_mappings.py   # source_url이 빈 질환은 경고로 
   - `travel`: "국내에서는 드문 질환입니다. 최근 해외여행(특히 동남아·아프리카 등) 이력이 있다면 의료진에게 꼭 알려 주세요."
   - `travel_or_border`: "국내에서는 드문 질환입니다. 최근 해외여행이나 휴전선 인근 지역(인천·경기·강원 북부) 방문 이력이 있다면 의료진에게 꼭 알려 주세요."
 - [ ] 목록과 문구를 확정해 주세요(추가·삭제는 파일만 고치면 됩니다. 새 문구 키는 코드에도 추가 필요)
-- [ ] 가중치 기본값 확정(비교표: `docs/perf/rare-disease-weight.md`)
+- [x] 가중치 기본값 확정: **0.5** (사용자 확정 2026-11-15, 비교표: `docs/perf/rare-disease-weight.md`)
 
 ## 0-1. 심평원 ↔ NMC 진료과 코드 대응 (`departments.csv`의 `nmc_code`)
 
