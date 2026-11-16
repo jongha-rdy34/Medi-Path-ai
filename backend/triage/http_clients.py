@@ -61,9 +61,15 @@ class HttpLLMClient(_Base):
         ]
 
     def explain(
-        self, disease_names: list[str], symptom_ids: list[str], emergency: bool = False
+        self,
+        disease_names: list[str],
+        symptom_ids: list[str],
+        emergency: bool = False,
+        likelihoods: list[str] | None = None,
     ) -> str:
         body = {"disease_names": disease_names, "symptom_ids": symptom_ids, "emergency": emergency}
+        if likelihoods:
+            body["likelihoods"] = likelihoods
         return _post(self.base_url, "/llm/explain", body, self.timeout)["explanation"]
 
 

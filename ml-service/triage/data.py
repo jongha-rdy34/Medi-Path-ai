@@ -102,3 +102,54 @@ def make_noise_set(
             extra = rng.sample([c for c in candidates if c not in symptoms], add)
             noisy.append((frozenset(kept + extra), disease))
     return noisy
+
+
+def augment_with_dropout(
+    rows: list[Row],
+    seed: int,
+    variants: int = 10,
+    drop_prob: float = 0.5,
+    short_sizes: tuple[int, ...] = (2, 3),
+    min_symptoms: int = 2,
+) -> list[Row]:
+    """Training augmentation (T30 follow-up C-2): real users name 2-3 symptoms, while a
+    Kaggle combination has 7.6 on average.
+
+    Keeps every original row and adds, per row, `variants` copies that drop each symptom with
+    `drop_prob` (at least `min_symptoms` kept) plus one random subset of each size in
+    `short_sizes`. Only removes symptoms, never adds one; risk factors are left out of the
+    subsets (they are never model input, SPEC section 6). Seeded, so training is reproducible.
+    """
+    rng = random.Random(seed)
+    out = list(rows)
+    for symptoms, disease in rows:
+        pool = sorted(symptoms - set(RISK_FACTORS))
+        if len(pool) <= min_symptoms:
+            continue
+        for _ in range(variants):
+            kept = [s for s in pool if rng.random() >= drop_prob]
+            if len(kept) < min_symptoms:
+                kept = rng.sample(pool, min_symptoms)
+            out.append((frozenset(kept), disease))
+        for size in short_sizes:
+            if len(pool) > size:
+                out.append((frozenset(rng.sample(pool, size)), disease))
+    return out
+
+
+def make_short_set(
+    rows: list[Row], seed: int, sizes: tuple[int, ...] = (2, 3), per_row: int = 5
+) -> list[Row]:
+    """Evaluation set of 2-3 symptom inputs (T30 follow-up C-2): up to `per_row` distinct random
+    subsets of each size from each held-out row. No unrelated symptoms are added (the noise set
+    covers that), and risk factors are left out."""
+    rng = random.Random(seed)
+    out: dict[Row, None] = {}
+    for symptoms, disease in rows:
+        pool = sorted(symptoms - set(RISK_FACTORS))
+        for size in sizes:
+            if len(pool) < size:
+                continue
+            for _ in range(per_row):
+                out[(frozenset(rng.sample(pool, size)), disease)] = None
+    return list(out)

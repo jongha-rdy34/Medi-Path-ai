@@ -136,6 +136,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {"EXCEPTION_HANDLER": "triage.errors.exception_handler"}
 # data/mappings (T11). docker compose mounts it at /app/data/mappings.
 MAPPINGS_DIR = Path(os.environ.get("MAPPINGS_DIR", BASE_DIR.parent / "data" / "mappings"))
+# Diseases rare in Korea (data/mappings/rare_in_korea.csv): their score is multiplied by this
+# weight only to order the on-screen Top-3. Probabilities and departments are unchanged.
+# Default 0.5, user-confirmed 2026-11-15 (docs/perf/rare-disease-weight.md).
+RARE_DISEASE_WEIGHT = float(os.environ.get("RARE_DISEASE_WEIGHT", "0.5"))
+# Users see likelihood labels instead of percentages (2026-11-15): "high" if the model
+# probability >= LIKELIHOOD_HIGH, "medium" if >= LIKELIHOOD_MEDIUM, else "low".
+# Thresholds from docs/perf/likelihood-labels.md.
+LIKELIHOOD_HIGH = float(os.environ.get("LIKELIHOOD_HIGH", "0.7"))
+LIKELIHOOD_MEDIUM = float(os.environ.get("LIKELIHOOD_MEDIUM", "0.2"))
 
 # ml-service (contracts/ml-service.openapi.yaml). "stub" only for tests (config/test_settings.py).
 ML_SERVICE_URL = os.environ.get("ML_SERVICE_URL", "http://localhost:8001")

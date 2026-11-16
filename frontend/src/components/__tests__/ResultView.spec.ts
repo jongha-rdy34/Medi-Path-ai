@@ -10,12 +10,18 @@ const normal = examples.result.normal as TriageResult
 const emergency = examples.result.emergency as TriageResult
 
 describe('ResultView', () => {
-  it('shows top-3 probabilities, the department and the disclaimer', () => {
+  it('shows top-3 likelihood labels without any percentage, the department and the disclaimer', () => {
     const w = mount(ResultView, { props: { result: normal } })
 
     expect(w.findAll('[data-test="prediction"]')).toHaveLength(3)
     expect(w.text()).toContain('위장염')
-    expect(w.text()).toContain('52%')
+    expect(w.findAll('[data-test="likelihood"]').map((e) => e.text())).toEqual([
+      '가능성 보통',
+      '가능성 보통',
+      '가능성 낮음',
+    ])
+    expect(w.text()).not.toMatch(/\d\s*%/)
+    expect(w.find('.bar').exists()).toBe(false)
     expect(w.text()).toContain('내과')
     expect(w.find('[data-test="disclaimer"]').text()).toContain('의학적 진단이 아니며')
   })
@@ -32,6 +38,40 @@ describe('ResultView', () => {
     expect(w.find('[data-test="hospital-finder"]').exists()).toBe(false)
     expect(w.find('a[href="tel:119"]').exists()).toBe(true)
     expect(w.find('a[data-test="egen-link"]').attributes('href')).toMatch(/^https:\/\/www\.e-gen\.or\.kr/)
+  })
+
+  it('shows the note under a disease that is rare in Korea, and only there', () => {
+    const rare: TriageResult = {
+      ...normal,
+      predictions: [
+        { disease_id: 'hepatitis_a', disease_name_ko: 'A형 간염', probability: 0.32, likelihood: 'medium' },
+        {
+          disease_id: 'malaria',
+          disease_name_ko: '말라리아',
+          probability: 0.38,
+          likelihood: 'medium',
+          note: '국내에서는 드문 질환입니다. 최근 해외여행 이력이 있다면 의료진에게 꼭 알려 주세요.',
+        },
+        { disease_id: 'chicken_pox', disease_name_ko: '수두', probability: 0.08, likelihood: 'low' },
+      ],
+    }
+    const w = mount(ResultView, { props: { result: rare } })
+
+    const notes = w.findAll('[data-test="prediction-note"]')
+    expect(notes).toHaveLength(1)
+    expect(notes[0]!.text()).toContain('해외여행')
+    const items = w.findAll('[data-test="prediction"]')
+    expect(items[1]!.find('[data-test="prediction-note"]').exists()).toBe(true)
+  })
+
+  it('shows the order notice only when rare diseases changed the order', () => {
+    const adjusted = mount(ResultView, { props: { result: { ...normal, order_adjusted: true } } })
+    const notice = adjusted.find('[data-test="order-adjusted"]')
+    expect(notice.text()).toBe('국내 발생 빈도를 반영해 순서를 조정했습니다.')
+    const html = adjusted.html()
+    expect(html.indexOf('data-test="order-adjusted"')).toBeLessThan(html.indexOf('data-test="prediction"'))
+
+    expect(mount(ResultView, { props: { result: normal } }).find('[data-test="order-adjusted"]').exists()).toBe(false)
   })
 
   it('puts the emergency banner above everything else', () => {

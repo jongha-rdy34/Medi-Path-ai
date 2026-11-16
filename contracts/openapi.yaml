@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Symptom Care API
-  version: 0.2.3
+  version: 0.4.0
   summary: 증상 기반 진료과·병원 안내 서비스 공개 API (v0)
   description: |
     증상 기반 진료과·병원 안내 서비스의 공개 API 계약입니다.
@@ -219,12 +219,17 @@ paths:
                       - disease_id: gastroenteritis
                         disease_name_ko: 위장염
                         probability: 0.52
+                        likelihood: medium
                       - disease_id: typhoid
                         disease_name_ko: 장티푸스
                         probability: 0.23
+                        likelihood: medium
+                        note: 국내에서는 드문 질환입니다. 최근 해외여행(특히 동남아·아프리카 등) 이력이 있다면 의료진에게 꼭 알려 주세요.
                       - disease_id: hepatitis_a
                         disease_name_ko: A형 간염
                         probability: 0.09
+                        likelihood: low
+                    order_adjusted: false
                     recommended_departments:
                       - code: '01'
                         name_ko: 내과
@@ -252,12 +257,16 @@ paths:
                       - disease_id: heart_attack
                         disease_name_ko: 심근경색
                         probability: 0.61
+                        likelihood: medium
                       - disease_id: pneumonia
                         disease_name_ko: 폐렴
                         probability: 0.14
+                        likelihood: low
                       - disease_id: gerd
                         disease_name_ko: 위식도역류질환
                         probability: 0.08
+                        likelihood: low
+                    order_adjusted: false
                     recommended_departments:
                       - code: '24'
                         name_ko: 응급의학과
@@ -743,6 +752,18 @@ components:
           type: number
           minimum: 0
           maximum: 1
+          description: 모델 확률 원값(평가·디버깅용, 사용자 화면에는 표시하지 않음). 화면 순서는 국내에서 드문 질환의 순위 조정 때문에 확률 순서와 다를 수 있습니다.
+        likelihood:
+          type: string
+          enum: [high, medium, low]
+          description: >-
+            화면에 확률 숫자 대신 보여 주는 단계(가능성 높음·보통·낮음). 백엔드가 모델 확률 원값으로 정합니다
+            (LIKELIHOOD_HIGH·LIKELIHOOD_MEDIUM). 2026-11-15 추가, 선택 필드라 하위 호환.
+        note:
+          type: string
+          description: >-
+            국내에서 드문 질환일 때만 붙는 짧은 안내(예: 해외여행 이력 확인). 없으면 필드가 빠집니다.
+            (2026-11-13 추가, 선택 필드라 하위 호환)
 
     RecommendedDepartment:
       type: object
@@ -786,6 +807,11 @@ components:
           maxItems: 3
           items:
             $ref: '#/components/schemas/DiseasePrediction'
+        order_adjusted:
+          type: boolean
+          description: >-
+            국내에서 드문 질환 때문에 화면 Top-3 순서가 바뀌었으면 true. 화면은 이때만 "국내 발생 빈도를 반영해
+            순서를 조정했습니다."를 보여 줍니다. 민감 질환 숨김은 반영하지 않습니다. 2026-11-15 추가, 선택 필드.
         recommended_departments:
           type: array
           minItems: 1

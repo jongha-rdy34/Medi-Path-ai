@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import type { TriageResult } from '../api/types'
+import type { Likelihood, TriageResult } from '../api/types'
 import EmergencyBanner from './EmergencyBanner.vue'
 import HospitalFinder from '../features/hospitals/HospitalFinder.vue'
 import MedicalDisclaimer from './MedicalDisclaimer.vue'
 
 const props = defineProps<{ result: TriageResult }>()
-const percent = (p: number) => `${Math.round(p * 100)}%`
+// Users see a likelihood label, never a percentage (2026-11-15). The backend picks the label.
+const LABELS: Record<Likelihood, string> = {
+  high: '가능성 높음',
+  medium: '가능성 보통',
+  low: '가능성 낮음',
+}
 const department = props.result.recommended_departments[0]
 </script>
 
@@ -15,11 +20,16 @@ const department = props.result.recommended_departments[0]
 
     <section>
       <h2>가능성 있는 질환</h2>
+      <p v-if="result.order_adjusted" class="order-adjusted" data-test="order-adjusted">
+        국내 발생 빈도를 반영해 순서를 조정했습니다.
+      </p>
       <ul class="predictions">
         <li v-for="p in result.predictions" :key="p.disease_id" data-test="prediction">
           <span class="name">{{ p.disease_name_ko }}</span>
-          <span class="bar"><span class="fill" :style="{ width: percent(p.probability) }" /></span>
-          <span class="pct">{{ percent(p.probability) }}</span>
+          <span v-if="p.likelihood" :class="['likelihood', p.likelihood]" data-test="likelihood">
+            {{ LABELS[p.likelihood] }}
+          </span>
+          <p v-if="p.note" class="note" data-test="prediction-note">{{ p.note }}</p>
         </li>
       </ul>
     </section>
@@ -60,23 +70,41 @@ h2 {
 }
 .predictions li {
   display: grid;
-  grid-template-columns: 7em 1fr 3em;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 8px;
 }
-.bar {
-  height: 10px;
-  background: #eee;
-  border-radius: 5px;
-  overflow: hidden;
+.note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 13px;
+  color: #6b4e00;
+  background: #fff6db;
+  border-radius: 6px;
+  padding: 6px 8px;
 }
-.fill {
-  display: block;
-  height: 100%;
+.likelihood {
+  justify-self: end;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+.likelihood.high {
+  color: #fff;
   background: #2f6fde;
 }
-.pct {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
+.likelihood.medium {
+  color: #1d4ea3;
+  background: #dce8fb;
+}
+.likelihood.low {
+  color: #555;
+  background: #eee;
+}
+.order-adjusted {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #555;
 }
 </style>

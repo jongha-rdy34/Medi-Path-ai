@@ -36,9 +36,10 @@ class FakeLLM:
         self._maybe_fail()
         return [{"question_id": "q1", "text": "열은 언제부터 났나요?", "choices": ["오늘", "어제"]}]
 
-    def explain(self, disease_names, symptom_ids, emergency=False):
+    def explain(self, disease_names, symptom_ids, emergency=False, likelihoods=None):
         self._maybe_fail()
         self.explained.append((disease_names, emergency))
+        self.likelihoods = likelihoods
         return "설명입니다."
 
 
@@ -138,3 +139,13 @@ def test_explain_defaults_to_non_emergency(client):
     client.post("/llm/explain", json={"disease_names": ["감기"], "symptom_ids": ["cough"]})
 
     assert app.state.llm.explained[-1] == (["감기"], False)
+
+
+def test_explain_passes_likelihood_labels(client):
+    res = client.post(
+        "/llm/explain",
+        json={"disease_names": ["감기"], "symptom_ids": ["cough"], "likelihoods": ["medium"]},
+    )
+
+    assert res.status_code == 200
+    assert app.state.llm.likelihoods == ["medium"]

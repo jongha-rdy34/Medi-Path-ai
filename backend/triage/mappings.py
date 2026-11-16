@@ -27,3 +27,9 @@ def sensitive_disease_ids() -> frozenset[str]:
 @cache
 def departments() -> dict[str, str]:
     return {r["code"]: r["name_ko"] for r in _rows("departments.csv")}
+
+
+@cache
+def rare_diseases() -> dict[str, str]:
+    """disease_id -> note key, for diseases rare in Korea (rare_in_korea.csv, user-reviewed)."""
+    return {r["disease_id"]: r["note_key"] for r in _rows("rare_in_korea.csv")}

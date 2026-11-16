@@ -49,7 +49,11 @@ class StubLLMClient:
         ]
 
     def explain(
-        self, disease_names: list[str], symptom_ids: list[str], emergency: bool = False
+        self,
+        disease_names: list[str],
+        symptom_ids: list[str],
+        emergency: bool = False,
+        likelihoods: list[str] | None = None,
     ) -> str:
         if emergency:
             return (

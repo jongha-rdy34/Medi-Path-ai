@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import csv
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Protocol
@@ -64,7 +65,11 @@ class LLMProvider(Protocol):
     def next_questions(self, symptom_ids: list[str]) -> list[dict]: ...
 
     def explain(
-        self, disease_names: list[str], symptom_ids: list[str], emergency: bool = False
+        self,
+        disease_names: list[str],
+        symptom_ids: list[str],
+        emergency: bool = False,
+        likelihoods: list[str] | None = None,
     ) -> str: ...
 
 
@@ -106,10 +111,17 @@ def filter_questions(questions: list, limit: int = 3) -> list[dict]:
     return kept[:limit]
 
 
+# Users see likelihood labels, never percentages (2026-11-15).
+PERCENT = re.compile(r"\d+(?:\.\d+)?\s*(?:%|퍼센트|프로)")
+LIKELIHOOD_KO = {"high": "가능성 높음", "medium": "가능성 보통", "low": "가능성 낮음"}
+
+
 def sanitize_explanation(text: str) -> str:
-    """The service gives guidance, not a diagnosis (SPEC section 6)."""
+    """The service gives guidance, not a diagnosis (SPEC section 6), and shows no percentages."""
     text = (text or "").strip()
-    return text.replace("진단", "판단") if text else FALLBACK_EXPLANATION
+    if not text or PERCENT.search(text):
+        return FALLBACK_EXPLANATION
+    return text.replace("진단", "판단")
 
 
 def sanitize_emergency_explanation(text: str) -> str:

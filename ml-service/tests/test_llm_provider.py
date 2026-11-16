@@ -9,6 +9,7 @@ from google.genai import errors
 from llm.gemini import GeminiProvider
 from llm.provider import (
     BLOCKED_QUESTION_TERMS,
+    FALLBACK_EXPLANATION,
     filter_questions,
     sanitize_explanation,
 )
@@ -284,3 +285,26 @@ def test_non_emergency_explain_keeps_the_regular_instruction():
 
     assert "병원" in text
     assert "응급실" not in client.models.calls[0]["config"].system_instruction
+
+
+# --- 2026-11-15: labels instead of percentages ---
+
+
+def test_explain_prompt_has_labels_and_no_numbers():
+    p, client = provider("감기 가능성이 있습니다.")
+
+    p.explain(["감기", "알레르기"], ["cough"], likelihoods=["high", "low"])
+
+    prompt = client.models.calls[0]["contents"]
+    assert "감기(가능성 높음)" in prompt and "알레르기(가능성 낮음)" in prompt
+    assert not any(ch.isdigit() for ch in prompt)
+    assert "숫자" in client.models.calls[0]["config"].system_instruction
+
+
+@pytest.mark.parametrize("reply", ["감기 가능성이 72%입니다.", "확률 37.5 %", "약 50퍼센트"])
+def test_explanation_with_a_percentage_falls_back(reply):
+    p, _ = provider(reply)
+
+    text = p.explain(["감기"], ["cough"], likelihoods=["high"])
+
+    assert text == FALLBACK_EXPLANATION

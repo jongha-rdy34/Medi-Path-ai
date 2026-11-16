@@ -40,11 +40,25 @@ export type MessageResponse =
   | (MessageBase & { status: 'needs_more_info'; questions: FollowUpQuestion[] })
   | (MessageBase & { status: 'result_ready'; result_url: string })
 
+export type Likelihood = 'high' | 'medium' | 'low'
+
 export interface TriageResult {
   session_id: string
   emergency: boolean
   emergency_notice: EmergencyNotice | null
-  predictions: { disease_id: string; disease_name_ko: string; probability: number }[]
+  /**
+   * Screen order. `probability` is for evaluation only and is never shown; the screen shows
+   * `likelihood` (contract 0.4.0). `note`: only for a disease rare in Korea (0.3.0).
+   */
+  predictions: {
+    disease_id: string
+    disease_name_ko: string
+    probability: number
+    likelihood?: Likelihood
+    note?: string
+  }[]
+  /** true only when diseases rare in Korea changed the on-screen order (0.4.0). */
+  order_adjusted?: boolean
   recommended_departments: { code: string; name_ko: string; reason: string }[]
   explanation: string
   structured_symptoms: StructuredSymptoms

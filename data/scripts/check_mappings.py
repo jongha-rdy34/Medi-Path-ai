@@ -161,6 +161,24 @@ def check_sensitive(m: Mappings, path: Path) -> list[str]:
     ]
 
 
+# Note keys the backend knows (backend/triage/service.py RARE_NOTES).
+RARE_NOTE_KEYS = ("travel", "travel_or_border")
+
+
+def check_rare_in_korea(m: Mappings, path: Path) -> list[str]:
+    """Rare-in-Korea list (rare_in_korea.csv): known diseases and known note keys."""
+    if not path.exists():
+        return []
+    known = {d["disease_id"] for d in m.diseases}
+    errors = []
+    for r in _read(path):
+        if r["disease_id"] not in known:
+            errors.append(f"{path.name}: unknown disease_id '{r['disease_id']}'")
+        if r["note_key"] not in RARE_NOTE_KEYS:
+            errors.append(f"{path.name}: unknown note_key '{r['note_key']}'")
+    return errors
+
+
 NMC_CODE_PATTERN = re.compile(r"^D[0-9]{3}$")
 NMC_CODES_CSV = REPO_DIR / "prototypes" / "kakao-hospital-search" / "nmc_department_codes.csv"
 
@@ -225,6 +243,7 @@ def main() -> int:
     errors, warnings = check_mappings(m)
     errors += check_raw_coverage(m, args.raw_dir)
     errors += check_sensitive(m, args.mappings_dir / "sensitive_diseases.csv")
+    errors += check_rare_in_korea(m, args.mappings_dir / "rare_in_korea.csv")
     errors += check_nmc_codes(m, NMC_CODES_CSV)
     errors += check_contract_examples(m, sorted((REPO_DIR / "contracts").glob("*.yaml")))
 

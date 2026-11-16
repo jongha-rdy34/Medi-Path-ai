@@ -1,0 +1,382 @@
+{
+  "model": "dropout-2026.11.0",
+  "rare_weight": 0.5,
+  "candidates": {
+    "high>=0.5,medium>=0.15": {
+      "short_test": {
+        "cases": 317,
+        "rank1": {
+          "high": 0.631,
+          "medium": 0.3,
+          "low": 0.069
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.161,
+          "low": 0.839
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.016,
+          "low": 0.984
+        },
+        "is_true_disease": {
+          "high": "193/200",
+          "medium": "67/151",
+          "low": "18/600"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.797,
+          "medium": 0.085,
+          "low": 0.119
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.102,
+          "low": 0.898
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.017,
+          "low": 0.983
+        },
+        "is_true_disease": {
+          "high": "46/47",
+          "medium": "4/12",
+          "low": "2/118"
+        }
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.797,
+          "medium": 0.085,
+          "low": 0.119
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.102,
+          "low": 0.898
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.017,
+          "low": 0.983
+        },
+        "is_true_disease": {
+          "high": "44/47",
+          "medium": "5/12",
+          "low": "2/118"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.763,
+          "medium": 0.136,
+          "low": 0.102
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.119,
+          "low": 0.881
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.017,
+          "low": 0.983
+        },
+        "is_true_disease": {
+          "high": "44/45",
+          "medium": "6/16",
+          "low": "2/116"
+        }
+      }
+    },
+    "high>=0.6,medium>=0.2": {
+      "short_test": {
+        "cases": 317,
+        "rank1": {
+          "high": 0.552,
+          "medium": 0.347,
+          "low": 0.101
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.082,
+          "low": 0.918
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.003,
+          "low": 0.997
+        },
+        "is_true_disease": {
+          "high": "172/175",
+          "medium": "82/137",
+          "low": "24/639"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.763,
+          "medium": 0.102,
+          "low": 0.136
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.051,
+          "low": 0.949
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "44/45",
+          "medium": "5/9",
+          "low": "3/123"
+        }
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.746,
+          "medium": 0.119,
+          "low": 0.136
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.051,
+          "low": 0.949
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "42/44",
+          "medium": "6/10",
+          "low": "3/123"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.712,
+          "medium": 0.153,
+          "low": 0.136
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.068,
+          "low": 0.932
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "41/42",
+          "medium": "8/13",
+          "low": "3/122"
+        }
+      }
+    },
+    "high>=0.7,medium>=0.2": {
+      "short_test": {
+        "cases": 317,
+        "rank1": {
+          "high": 0.457,
+          "medium": 0.442,
+          "low": 0.101
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.082,
+          "low": 0.918
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.003,
+          "low": 0.997
+        },
+        "is_true_disease": {
+          "high": "145/145",
+          "medium": "109/167",
+          "low": "24/639"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.729,
+          "medium": 0.136,
+          "low": 0.136
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.051,
+          "low": 0.949
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "42/43",
+          "medium": "7/11",
+          "low": "3/123"
+        }
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.729,
+          "medium": 0.136,
+          "low": 0.136
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.051,
+          "low": 0.949
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "41/43",
+          "medium": "7/11",
+          "low": "3/123"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.661,
+          "medium": 0.203,
+          "low": 0.136
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.068,
+          "low": 0.932
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "38/39",
+          "medium": "11/16",
+          "low": "3/122"
+        }
+      }
+    },
+    "high>=0.8,medium>=0.3": {
+      "short_test": {
+        "cases": 317,
+        "rank1": {
+          "high": 0.328,
+          "medium": 0.479,
+          "low": 0.192
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.025,
+          "low": 0.975
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "104/104",
+          "medium": "133/160",
+          "low": "41/687"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.695,
+          "medium": 0.153,
+          "low": 0.153
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "41/41",
+          "medium": "8/9",
+          "low": "3/127"
+        }
+      },
+      "e2e:gemini-3.1-flash-lite": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.661,
+          "medium": 0.169,
+          "low": 0.169
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "39/39",
+          "medium": "7/10",
+          "low": "5/128"
+        }
+      },
+      "e2e:gemini-3.5-flash-lite-k30": {
+        "cases": 59,
+        "rank1": {
+          "high": 0.627,
+          "medium": 0.203,
+          "low": 0.169
+        },
+        "rank2": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "rank3": {
+          "high": 0.0,
+          "medium": 0.0,
+          "low": 1.0
+        },
+        "is_true_disease": {
+          "high": "37/37",
+          "medium": "11/12",
+          "low": "4/128"
+        }
+      }
+    }
+  }
+}

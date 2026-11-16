@@ -24,7 +24,7 @@ from triage.model import TriageModel
 log = logging.getLogger("ml-service")
 
 DEFAULT_MODEL_DIR = Path(__file__).resolve().parents[1] / "models"
-DEFAULT_MODEL_VERSION = "baseline-2026.11.0"
+DEFAULT_MODEL_VERSION = "dropout-2026.11.0"  # symptom-dropout model (T30 follow-up C-2)
 
 
 def load_model() -> TriageModel | None:
@@ -39,7 +39,8 @@ def load_model() -> TriageModel | None:
 
 def load_llm():
     """GeminiProvider for the service: short retries (latency budget, SPEC p95 < 10 s),
-    fallback model from GEMINI_FALLBACK_MODEL, slim prompt (LLM_CANDIDATE_K, default 30)."""
+    fallback model from GEMINI_FALLBACK_MODEL, slim prompt (LLM_CANDIDATE_K, default 30),
+    per-call time limit (LLM_TIMEOUT_S, default 8 s; on timeout the fallback model answers)."""
     if not os.environ.get("GEMINI_API_KEY") and not os.environ.get("GOOGLE_API_KEY"):
         log.warning("GEMINI_API_KEY is not set; /llm/* will return 503")
         return None
@@ -49,6 +50,7 @@ def load_llm():
         max_retries=1,
         retry_sleep=1.0,
         candidate_k=int(os.environ.get("LLM_CANDIDATE_K", "30")),
+        timeout_s=float(os.environ.get("LLM_TIMEOUT_S", "8")),
     )
 
 
@@ -138,6 +140,7 @@ class ExplainRequest(BaseModel):
     disease_names: list[str] = Field(min_length=1, max_length=3)
     symptom_ids: list[Annotated[str, Field(pattern=SYMPTOM_ID)]] = Field(max_length=30)
     emergency: bool = False
+    likelihoods: list[Literal["high", "medium", "low"]] | None = Field(default=None, max_length=3)
 
 
 class SafetyRequest(BaseModel):
@@ -203,7 +206,9 @@ def llm_explain(body: ExplainRequest, request: Request) -> dict | JSONResponse:
     result, failure = call_llm(
         request,
         "explain",
-        lambda llm: llm.explain(body.disease_names, body.symptom_ids, body.emergency),
+        lambda llm: llm.explain(
+            body.disease_names, body.symptom_ids, body.emergency, body.likelihoods
+        ),
     )
     return failure or {"explanation": result}
 

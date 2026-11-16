@@ -1,0 +1,409 @@
+{
+  "summary": {
+    "runs": 20,
+    "ok": 20,
+    "failures": [],
+    "p50_ms": 4270,
+    "p95_ms": 11288,
+    "max_ms": 11288,
+    "mean_ms": 4401
+  },
+  "runs": [
+    {
+      "run": 1,
+      "sentence_index": 0,
+      "ok": true,
+      "total_ms": 2381,
+      "turn_ms": [
+        2366
+      ],
+      "turns": 1,
+      "emergency": false,
+      "top3": [
+        "bronchial_asthma",
+        "impetigo",
+        "pneumonia"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 2,
+      "sentence_index": 1,
+      "ok": true,
+      "total_ms": 1805,
+      "turn_ms": [
+        1794
+      ],
+      "turns": 1,
+      "emergency": true,
+      "top3": [
+        "heart_attack",
+        "hypertension",
+        "gerd"
+      ],
+      "departments": [
+        "24"
+      ]
+    },
+    {
+      "run": 3,
+      "sentence_index": 2,
+      "ok": true,
+      "total_ms": 4270,
+      "turn_ms": [
+        2215,
+        2043
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "gastroenteritis",
+        "peptic_ulcer",
+        "alcoholic_hepatitis"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 4,
+      "sentence_index": 3,
+      "ok": true,
+      "total_ms": 4748,
+      "turn_ms": [
+        2176,
+        2561
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "bppv",
+        "paralysis_brain_hemorrhage",
+        "hypertension"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 5,
+      "sentence_index": 4,
+      "ok": true,
+      "total_ms": 4063,
+      "turn_ms": [
+        2238,
+        1815
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "gastroenteritis",
+        "urinary_tract_infection",
+        "allergy"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 6,
+      "sentence_index": 5,
+      "ok": true,
+      "total_ms": 4370,
+      "turn_ms": [
+        2825,
+        1534
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "urinary_tract_infection",
+        "drug_reaction",
+        "allergy"
+      ],
+      "departments": [
+        "15"
+      ]
+    },
+    {
+      "run": 7,
+      "sentence_index": 6,
+      "ok": true,
+      "total_ms": 4619,
+      "turn_ms": [
+        2627,
+        1981
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "fungal_infection",
+        "drug_reaction",
+        "acne"
+      ],
+      "departments": [
+        "14"
+      ]
+    },
+    {
+      "run": 8,
+      "sentence_index": 7,
+      "ok": true,
+      "total_ms": 4247,
+      "turn_ms": [
+        2271,
+        1966
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "arthritis",
+        "osteoarthritis",
+        "allergy"
+      ],
+      "departments": [
+        "05"
+      ]
+    },
+    {
+      "run": 9,
+      "sentence_index": 8,
+      "ok": true,
+      "total_ms": 11288,
+      "turn_ms": [
+        2476,
+        8801
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "gerd",
+        "allergy",
+        "urinary_tract_infection"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 10,
+      "sentence_index": 9,
+      "ok": true,
+      "total_ms": 5359,
+      "turn_ms": [
+        2765,
+        2582
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "cervical_spondylosis",
+        "hypertension",
+        "bronchial_asthma"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 11,
+      "sentence_index": 0,
+      "ok": true,
+      "total_ms": 1951,
+      "turn_ms": [
+        1939
+      ],
+      "turns": 1,
+      "emergency": false,
+      "top3": [
+        "bronchial_asthma",
+        "gerd",
+        "urinary_tract_infection"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 12,
+      "sentence_index": 1,
+      "ok": true,
+      "total_ms": 2137,
+      "turn_ms": [
+        2122
+      ],
+      "turns": 1,
+      "emergency": true,
+      "top3": [
+        "heart_attack",
+        "hypertension",
+        "gerd"
+      ],
+      "departments": [
+        "24"
+      ]
+    },
+    {
+      "run": 13,
+      "sentence_index": 2,
+      "ok": true,
+      "total_ms": 4506,
+      "turn_ms": [
+        2415,
+        2080
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "gastroenteritis",
+        "peptic_ulcer",
+        "alcoholic_hepatitis"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 14,
+      "sentence_index": 3,
+      "ok": true,
+      "total_ms": 5889,
+      "turn_ms": [
+        2269,
+        3609
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "bppv",
+        "paralysis_brain_hemorrhage",
+        "hypertension"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 15,
+      "sentence_index": 4,
+      "ok": true,
+      "total_ms": 4342,
+      "turn_ms": [
+        2411,
+        1918
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "gastroenteritis",
+        "urinary_tract_infection",
+        "allergy"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 16,
+      "sentence_index": 5,
+      "ok": true,
+      "total_ms": 4793,
+      "turn_ms": [
+        2221,
+        2554
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "urinary_tract_infection",
+        "drug_reaction",
+        "allergy"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 17,
+      "sentence_index": 6,
+      "ok": true,
+      "total_ms": 5257,
+      "turn_ms": [
+        3521,
+        1723
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "fungal_infection",
+        "drug_reaction",
+        "acne"
+      ],
+      "departments": [
+        "14"
+      ]
+    },
+    {
+      "run": 18,
+      "sentence_index": 7,
+      "ok": true,
+      "total_ms": 4060,
+      "turn_ms": [
+        2334,
+        1711
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "arthritis",
+        "osteoarthritis",
+        "allergy"
+      ],
+      "departments": [
+        "05"
+      ]
+    },
+    {
+      "run": 19,
+      "sentence_index": 8,
+      "ok": true,
+      "total_ms": 3943,
+      "turn_ms": [
+        2221,
+        1711
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "gerd",
+        "allergy",
+        "urinary_tract_infection"
+      ],
+      "departments": [
+        "01"
+      ]
+    },
+    {
+      "run": 20,
+      "sentence_index": 9,
+      "ok": true,
+      "total_ms": 3988,
+      "turn_ms": [
+        2222,
+        1756
+      ],
+      "turns": 2,
+      "emergency": false,
+      "top3": [
+        "cervical_spondylosis",
+        "hypertension",
+        "bronchial_asthma"
+      ],
+      "departments": [
+        "01"
+      ]
+    }
+  ]
+}
