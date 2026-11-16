@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TriageResult } from '../api/types'
 import EmergencyBanner from './EmergencyBanner.vue'
-import HospitalFinder from './HospitalFinderPlaceholder.vue'
+import HospitalFinder from '../features/hospitals/HospitalFinder.vue'
 import MedicalDisclaimer from './MedicalDisclaimer.vue'
 
 const props = defineProps<{ result: TriageResult }>()
