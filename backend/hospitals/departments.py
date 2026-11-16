@@ -64,6 +64,7 @@ NAME_RULE_EXEMPT_TYPES = frozenset({"종합병원"})
 # Synonyms cover old names (비뇨기과, 소아과, 정신과) and common clinic names (여성의원, 통증).
 _SURGERY_PREFIXES = ("정형", "성형", "신경", "흉부", "악안면")
 NAME_PATTERNS: dict[str, str] = {
+    "01": r"내과|가정의학과",  # 동네 가정의학과 의원이 내과 진료를 많이 봄 (#16 review, 2026-11-13)
     "02": r"신경과",
     "03": r"정신건강의학과|정신과|정신의학과",
     "04": "".join(f"(?<!{p})" for p in _SURGERY_PREFIXES) + r"외과",

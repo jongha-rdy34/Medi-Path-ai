@@ -73,11 +73,13 @@ def test_real_same_open_and_close_days_are_ignored(fake_http):
 
 
 def test_real_results_are_internal_medicine_or_general_hospitals(client, real):
-    """Name rule on live data: no 안과·성형외과 clinics in a 내과 search."""
+    """Name rule on live data: no 안과·성형외과 clinics in a 내과 search; 가정의학과 is allowed."""
     body = client.get(
         "/api/hospitals", {**GANGNAM_STATION, "department": "01", "radius": 10000}
     ).json()
 
     assert body["items"]
     for h in body["items"]:
-        assert "내과" in h["name"] or h["type"] == "종합병원", h["name"]
+        assert "내과" in h["name"] or "가정의학과" in h["name"] or h["type"] == "종합병원", h[
+            "name"
+        ]

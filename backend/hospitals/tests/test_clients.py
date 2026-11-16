@@ -109,6 +109,12 @@ def test_kakao_bad_json_raises(fake_http):
     ("code", "name", "kind", "expected"),
     [
         ("01", "가까운내과의원", "의원", True),
+        (
+            "01",
+            "연세가정의학과의원",
+            "의원",
+            True,
+        ),  # 가정의학과 sees many 내과 patients (#16 review)
         ("01", "튼튼정형외과의원", "의원", False),
         ("01", "뉴민병원", "병원", False),  # 병원 needs the name too
         ("01", "서울성모병원", "종합병원", True),  # 종합병원 is kept
