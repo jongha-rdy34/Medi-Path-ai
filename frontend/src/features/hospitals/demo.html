@@ -1,0 +1,26 @@
+<!doctype html>
+<!--
+  HospitalFinder 확인용 페이지(개발 서버 전용, 배포 빌드에는 포함되지 않음).
+  npm run dev 후 http://localhost:5173/src/features/hospitals/demo.html?department=01
+  /api/hospitals는 vite.config.ts의 프록시로 백엔드(localhost:8000)에 갑니다.
+-->
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HospitalFinder 데모</title>
+  </head>
+  <body style="font-family: sans-serif; max-width: 1000px; margin: 16px auto; padding: 0 12px">
+    <p style="font-size: 13px; color: #666">
+      확인용 페이지 · 진료과 코드는 주소 뒤 <code>?department=11</code>처럼 바꿀 수 있어요.
+    </p>
+    <div id="app"></div>
+    <script type="module">
+      import { createApp, h } from 'vue'
+      import HospitalFinder from '/src/features/hospitals/HospitalFinder.vue'
+
+      const department = new URLSearchParams(location.search).get('department') ?? '01'
+      createApp({ render: () => h(HospitalFinder, { department }) }).mount('#app')
+    </script>
+  </body>
+</html>

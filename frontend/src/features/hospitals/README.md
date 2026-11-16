@@ -31,3 +31,11 @@
 ```bash
 cd frontend && npm run test    # 지도 SDK와 API는 가짜로 대체
 ```
+
+## 화면으로 확인 (데모 페이지)
+결과 화면에 연결하지 않고도 컴포넌트만 띄워 볼 수 있습니다. `demo.html`은 개발 서버 전용이라 배포 빌드에 들어가지 않습니다.
+
+1. 카카오 콘솔 JavaScript SDK 도메인에 `http://localhost:5173` 등록
+2. 백엔드: `cd backend && set -a; source .env; set +a` 후 `DJANGO_SETTINGS_MODULE=config.test_settings python manage.py runserver`
+3. 프론트: `cd frontend && npm ci && VITE_KAKAO_MAP_JS_KEY=<JavaScript 키> npm run dev`
+4. http://localhost:5173/src/features/hospitals/demo.html?department=01 (진료과 코드는 바꿔 가며)
