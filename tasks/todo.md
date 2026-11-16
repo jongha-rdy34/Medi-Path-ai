@@ -73,7 +73,7 @@ Kakao 키 발급은 팀원이 이미 했습니다(설정 절차만 문서화). �
 
 ### T20 [A] 프론트: 증상 대화, 결과 화면(Mock) · M
 - [x] Vue 3 + Vite + TS + Pinia, MSW로 OpenAPI 예시 응답을 사용 · _예시는 계약에서 추출(`npm run mocks:sync`), 어긋나면 테스트 실패_
-- [x] 화면: 증상 입력·대화 → 결과(질환 Top-3 확률 막대, 진료과, 설명) → 병원 목록 · _병원 목록 자리는 `<HospitalFinder :department>`와 같은 props의 임시 컴포넌트_
+- [x] 화면: 증상 입력·대화 → 결과(질환 Top-3 확률 막대, 진료과, 설명) → 병원 목록 · _병원 목록 자리는 `<HospitalFinder :department>`와 같은 props의 임시 컴포넌트. 이후 T30에서 확률 막대 → 단계 라벨, T21 PR 4(#22)에서 진짜 HospitalFinder로 교체하고 임시 컴포넌트 삭제(2026-11-16)_
 - [x] `emergency=true`이면 다른 내용보다 위에 119 안내 배너 표시
 - [x] 모든 결과 화면 하단에 의료 고지 문구 표시
 - **검증**: `npm run test`, 모바일 폭(375px)에서 수동 확인
@@ -84,10 +84,10 @@ Kakao 키 발급은 팀원이 이미 했습니다(설정 절차만 문서화). �
 결정(SPEC 결정 표): 병원 데이터는 국립중앙의료원 전국 병·의원 찾기 서비스, Kakao는 지도 SDK와 좌표 → 시도·시군구 변환에만 사용.
 
 PR 4개를 이 순서로 올립니다.
-1. **[진행 중]** 프로토타입과 `nmc_department_codes.csv`(`nmc_code,name_ko`) 업로드 → `prototypes/kakao-hospital-search/` (키 제외). 프로토타입 업로드 완료(PR #2), 코드표 추가 대기
-2. 계약 → `contracts/openapi.yaml`의 `Hospital`·`HospitalSearchResponse`·`/api/hospitals`를 NMC 기준으로 변경. 공동 소유라 상대 리뷰 필수
-3. Django 이식 → `backend/hospitals/` 앱과 `GET /api/hospitals`(연결 지점: `INSTALLED_APPS`, `urls.py` 각 한 줄), NMC 응답 fixture 테스트
-4. HospitalFinder → `frontend/src/features/hospitals/`의 `<HospitalFinder :department="..." />`(위치 권한, 위치 실패 시 지도 클릭, API 호출, 목록·카카오맵)
+1. **[완료]** 프로토타입과 `nmc_department_codes.csv`(`nmc_code,name_ko`) 업로드 → `prototypes/kakao-hospital-search/` (키 제외) · _PR #2 등_
+2. **[완료, #10]** 계약 → `contracts/openapi.yaml`의 `Hospital`·`HospitalSearchResponse`·`/api/hospitals`를 NMC 기준으로 변경. 공동 소유라 상대 리뷰 필수
+3. **[완료, #13]** Django 이식 → `backend/hospitals/` 앱과 `GET /api/hospitals`(연결 지점: `INSTALLED_APPS`, `urls.py` 각 한 줄), NMC 응답 fixture 테스트
+4. **[완료, #22]** HospitalFinder → `frontend/src/features/hospitals/`의 `<HospitalFinder :department="..." />`(위치 권한, 위치 실패 시 지도 클릭, API 호출, 목록·카카오맵)
 
 - [x] 진료과 필터: 권장 진료과(심평원 코드)가 초기값, 사용자가 변경 가능. 심평원 → NMC 코드 변환은 `backend/hospitals/` 안에서만
 - [x] 지금 진료 중(KST, 자정 넘김·전날 심야 연장 포함), 야간 진료(평일 20시 이후), 주말 진료 필터. 전문의 필터·표기 없음
@@ -146,7 +146,7 @@ PR 4개를 이 순서로 올립니다.
 ## Phase 2 — 통합과 첫 배포 (W3: 11/25–12/01)
 
 ### T30 [A] 실제 연동과 지도 · M
-- [ ] 백엔드의 stub을 실제 ml-service, LLMProvider, Kakao 병원 검색으로 교체. 위급 판정은 규칙 OR LLM
+- [x] 백엔드의 stub을 실제 ml-service, LLMProvider, Kakao 병원 검색으로 교체. 위급 판정은 규칙 OR LLM · _ml-service·LLM은 HTTP 클라이언트(`TRIAGE_CLIENTS=http`), 위급 = 규칙 OR LLM. 병원 검색은 T21 PR 3·4(#13, #22)의 `/api/hospitals`와 HospitalFinder로 연결_
 - [x] 프론트의 Mock을 끄고 실제 API에 연결, 카카오맵에 병원 마커 표시, 브라우저 위치 권한(거부 시 주소 입력) · _실제 API 기본·MSW는 `VITE_USE_MOCK=true`일 때만. 지도·위치는 팀원 HospitalFinder(T21 PR 4) 머지 후 import만 교체_
 - [x] LLM 대체 모델 전환: 기본 `GEMINI_MODEL`이 429·5xx로 실패하면 `GEMINI_FALLBACK_MODEL`로 다시 시도(ADR 0001) · _`GeminiProvider._generate`, 결과에 실제 응답 모델(`served_model`) 기록_
 - [x] 프롬프트 증상 사전 축소: 전체 131개 대신 입력과 관련된 후보만 보내 **증상 추출 입력 토큰을 지금(평균 2,684)의 절반 이하**로. T13 평가셋으로 F1이 떨어지지 않는지 확인 · _후보 30개(`LLM_CANDIDATE_K=30`, 위급 증상 8개 항상 포함): 입력 토큰 2,684 → 741(−72%), F1 0.968 → 0.954(−0.014, 재현율 0.955 → 0.928), JSON 100%, 추출 p95 10.6 s → 9.2 s. 놓친 9개 중 후보 누락은 3개(눈이 노래지고·땀이 쏟아져요·속이 쓰리고), 나머지 6개는 후보에 있었으나 실행마다 달라지는 응답. `results/gemini-3.5-flash-lite-k30.json`_
@@ -159,9 +159,10 @@ PR 4개를 이 순서로 올립니다.
   - [x] 국내에서 드문 질환: 화면 순위 낮춤(가중치 `RARE_DISEASE_WEIGHT`, 추천·기본 0.5) + 안내 문구(`note`), 확률·진료과는 그대로 · _`data/mappings/rare_in_korea.csv`(사용자 확정 필요, REVIEW 0-2), `docs/perf/rare-disease-weight.md`, 계약 0.3.0_
   - [x] 결과 화면: 확률 %·막대 대신 단계 라벨(높음 ≥ 0.7, 보통 ≥ 0.2, 원래 확률 기준) + 드문 질환으로 순서가 바뀐 경우만 "국내 발생 빈도를 반영해 순서를 조정했습니다." · _계약 0.4.0(`likelihood`, `order_adjusted`), 설명에 숫자 % 금지, `docs/perf/likelihood-labels.md`_
 - **검증**: "열이 나고 기침과 가래가 나와요"를 입력하면 결과(폐렴 가능성), 진료과(내과·호흡기), 병원 목록·지도까지 전부 뜨고 p95 < 10s(진행 표시는 요청 직후 바로 보임). "가슴이 아프고 식은땀이 나요"를 입력하면 응급 안내(119)가 결과보다 먼저 뜸. Playwright E2E 1개 통과
+- **검증 결과(2026-11-16)**: p95 단독 6.1 s·연속 호출 5.9 s(`docs/perf/t30-llm-timeout.md`). 위급 문장 → 119·응급실 안내가 먼저, 병원 목록 없음. Playwright E2E 2개 통과(진짜 HospitalFinder, `/api/hospitals`는 계약 예시로 가짜 응답, Kakao SDK 없이 목록 표시). 시연 문장은 무릎(일반)·가슴 통증(위급)으로 변경(기침·가래 문장은 증상 2~3개 입력에서 폐렴이 안 나와서). 전체 흐름 캡처는 README. **지도는 Kakao 키가 있는 환경(T31)에서 확인 필요**
 - **의존**: T13, T14, T15, T20, T21, T22
 
-### T31 [A] 클라우드 배포 + 가이드 · M
+### T31 [A] 클라우드 배포 + 가이드 · M — **대기: 클라우드 결정 보류(2026-11-16). 배포 서버에서 모델 학습 단계 필요(`python -m triage.train`)**
 - [ ] 클라우드 후보(GCP 크레딧, AWS 프리티어, Oracle Free ARM)를 비교해 결정 → `docs/adr/0002-hosting.md`
 - [ ] VM에 docker compose `core` 프로필을 올리고, Caddy로 HTTPS, 도메인 연결
 - [ ] `docs/deploy.md`: 처음 쓰는 사람도 따라 할 수 있는 단계별 가이드(VM 생성, 방화벽, 도커 설치, 배포, 업데이트)
@@ -170,9 +171,9 @@ PR 4개를 이 순서로 올립니다.
 - **의존**: T02, T30
 
 ### ✅ Checkpoint 2 (12/1): MVP 공개
-- [ ] 공개 URL에서 증상 입력부터 결과, 병원 지도까지 동작
-- [ ] 위급 신호 테스트 100%, CI 통과
-- [ ] 이 시점 상태를 `v0.1.0`으로 태그(발표 백업용)
+- [ ] **남음 · T31 대기(클라우드 결정 보류)**: 공개 URL에서 증상 입력부터 결과, 병원 지도까지 동작. 로컬에서는 결과·병원 목록까지 확인(병원 데이터 가짜, 지도 미확인)
+- [x] 위급 신호 테스트 100%, CI 통과 · _위급 규칙 응급 25/25, `main` 6740425 CI 성공(2026-11-16)_
+- [ ] **남음 · 공개 URL 확인 후**: 이 시점 상태를 `v0.1.0`으로 태그(발표 백업용)
 
 ---
 
