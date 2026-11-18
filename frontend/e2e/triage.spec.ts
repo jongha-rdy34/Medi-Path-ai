@@ -27,14 +27,14 @@ async function fakeHospitalSearch(page: Page): Promise<Request[]> {
   return calls
 }
 
-test('symptom chat -> follow-up -> result with the hospital list', async ({ page }) => {
+test('demo sentence -> result -> hospital list', async ({ page }) => {
   const hospitalCalls = await fakeHospitalSearch(page)
   await page.goto('/')
-  await page.getByLabel('증상 입력').fill('어제부터 열이 나요')
+  // Main demo sentence (docs/demo/scenarios.md). AI is stubbed, so the result is fixed.
+  await page.getByLabel('증상 입력').fill('몸에 가려운 발진이 오돌토돌 올라오고 피부에 얼룩덜룩한 반점이 생겼어요')
   await page.getByRole('button', { name: '보내기' }).click()
 
-  await expect(page.locator('[data-test="progress"]').or(page.locator('.assistant').first())).toBeVisible()
-  await page.getByRole('button', { name: '오늘' }).click()
+  // Three symptoms: the result comes at once, without a follow-up question (as in the real demo).
 
   await expect(page.locator('[data-test="prediction"]')).toHaveCount(3)
   // Labels instead of percentages (2026-11-15); stub ranking has no rare-disease reorder.
@@ -47,13 +47,15 @@ test('symptom chat -> follow-up -> result with the hospital list', async ({ page
 
   const finder = page.locator('[data-test="hospital-finder"]')
   await expect(finder).toBeVisible()
-  await expect(finder).toHaveAttribute('data-department', '01')
+  await expect(page.locator('[data-test="prediction"]').first()).toContainText('진균 감염')
+  await expect(page.locator('[data-test="likelihood"]').first()).toHaveText('가능성 높음')
+  await expect(finder).toHaveAttribute('data-department', '14')
   await expect(finder.locator('[data-test="hospital"]')).toHaveCount(HOSPITALS.items.length)
   // No Kakao SDK: the list still works and the map says it is unavailable.
   await expect(finder.locator('[data-test="map-error"]')).toBeVisible()
   expect(hospitalCalls.length).toBeGreaterThan(0)
   const query = new URL(hospitalCalls[0]!.url()).searchParams
-  expect(query.get('department')).toBe('01')
+  expect(query.get('department')).toBe('14')
   expect(Number(query.get('lat'))).toBeCloseTo(37.4979)
 })
 

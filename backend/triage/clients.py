@@ -28,10 +28,15 @@ class StubLLMClient:
         "가슴": "chest_pain",
         "숨": "breathlessness",
         "설사": "diarrhoea",
-        "토": "vomiting",
+        "토했": "vomiting",  # not bare "토": it matches "오돌토돌"
+        "구토": "vomiting",
         "배": "abdominal_pain",
         "머리": "headache",
         "콧물": "runny_nose",
+        # Demo sentence (docs/demo/scenarios.md): itchy rash with patches.
+        "가려": "itching",
+        "발진": "skin_rash",
+        "반점": "dischromic_patches",
     }
 
     def extract_symptoms(self, text: str) -> Extracted:
@@ -76,6 +81,9 @@ class StubMLClient:
         s = set(symptom_ids)
         if "chest_pain" in s:
             ranked = [("heart_attack", 0.56), ("pneumonia", 0.14), ("gerd", 0.08)]
+        elif s & {"itching", "skin_rash", "dischromic_patches"}:
+            # Same order as dropout-2026.11.0 for the demo sentence (docs/perf/demo-stability.md).
+            ranked = [("fungal_infection", 0.93), ("drug_reaction", 0.03), ("chicken_pox", 0.02)]
         elif s & {"cough", "phlegm"}:
             ranked = [("pneumonia", 0.48), ("bronchial_asthma", 0.21), ("common_cold", 0.12)]
         else:
