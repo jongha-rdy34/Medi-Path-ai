@@ -140,6 +140,7 @@ CANDIDATES = [
             "allergy",
             "drug_reaction",
             "acne",
+            "chicken_pox",  # itchy rash: a reasonable runner-up
         },
     },
     # Round 3: diseases whose runners-up are related (offline check), for a backup sentence.

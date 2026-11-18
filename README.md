@@ -10,12 +10,12 @@ MediPath: AI-Powered Symptom Triage & Hospital Navigation.
 
 ## 스크린샷
 
-375px 휴대폰 화면, 로컬 스택 + 실제 Gemini(2026-11-16). 화면에는 확률 숫자 대신 "가능성 높음·보통·낮음"만 보여 줍니다.
+375px 휴대폰 화면, 로컬 스택 + 실제 Gemini(2026-11-16·18). 시연 대본과 안정성 측정: `docs/demo/scenarios.md`, `docs/perf/demo-stability.md`. 화면에는 확률 숫자 대신 "가능성 높음·보통·낮음"만 보여 줍니다.
 
 | 일반: 결과 → 주변 병원 | 위급: 119·응급실 안내 | 국내에서 드문 질환 안내 |
 |---|---|---|
-| <img src="docs/perf/flow-normal-knee.png" width="240" alt="무릎이 붓고 걸을 때 아파요 → 권장 진료과 정형외과와 병원 목록"> | <img src="docs/perf/flow-emergency-chest.png" width="240" alt="갑자기 가슴이 아프고 식은땀이 나요 → 119와 응급실 찾기 안내, 병원 목록 없음"> | <img src="docs/perf/flow-rare-disease.png" width="240" alt="열이 조금 있고 머리가 아프고 근육이 쑤셔요 → 순서 조정 안내와 말라리아 안내"> |
-| "무릎이 붓고 걸을 때 아파요" | "갑자기 가슴이 아프고 식은땀이 나요" | "열이 조금 있고 머리가 아프고 근육이 쑤셔요" |
+| <img src="docs/perf/demo-main-skin.png" width="240" alt="몸에 가려운 발진 → 진균 감염 가능성 높음, 권장 진료과 피부과와 병원 목록"> | <img src="docs/perf/flow-emergency-chest.png" width="240" alt="갑자기 가슴이 아프고 식은땀이 나요 → 119와 응급실 찾기 안내, 병원 목록 없음"> | <img src="docs/perf/flow-rare-disease.png" width="240" alt="열이 조금 있고 머리가 아프고 근육이 쑤셔요 → 순서 조정 안내와 말라리아 안내"> |
+| "몸에 가려운 발진이 오돌토돌 올라오고 피부에 얼룩덜룩한 반점이 생겼어요" | "갑자기 가슴이 아프고 식은땀이 나요" | "열이 조금 있고 머리가 아프고 근육이 쑤셔요" |
 
 > 캡처의 **병원 목록은 가짜 데이터**입니다(계약 예시를 진료과에 맞춰 바꾼 값, 위치도 테스트 좌표). 이 환경에서는 공공데이터·Kakao API에 접근할 수 없어 지도도 표시되지 않았습니다.
 

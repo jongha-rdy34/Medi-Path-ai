@@ -1,5 +1,8 @@
 {
   "runs_per_candidate": 5,
+  "model": "dropout-2026.11.0",
+  "llm": "gemini-3.5-flash-lite (fallback 3.1)",
+  "date": "2026-11-18",
   "candidates": [
     {
       "id": "acne",
@@ -15,6 +18,7 @@
         "impetigo",
         "psoriasis"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": true,
@@ -116,6 +120,7 @@
         "impetigo",
         "psoriasis"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": true,
@@ -216,6 +221,7 @@
         "gerd",
         "peptic_ulcer"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": true,
@@ -316,6 +322,7 @@
         "migraine",
         "osteoarthritis"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": false,
@@ -360,6 +367,7 @@
         "common_cold",
         "pneumonia"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": true,
@@ -459,6 +467,7 @@
         "hypoglycemia",
         "migraine"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": true,
@@ -559,6 +568,7 @@
         "osteoarthritis",
         "varicose_veins"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": true,
@@ -661,6 +671,7 @@
         "hypertension",
         "pneumonia"
       ],
+      "round": 1,
       "runs": [
         {
           "ok": true,
@@ -739,6 +750,812 @@
             "hypertension:low"
           ],
           "department": "24",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": true,
+      "reasons": []
+    },
+    {
+      "id": "acne-2",
+      "kind": "normal",
+      "text": "얼굴에 블랙헤드가 많고 고름 찬 여드름이 올라오고 흉터가 남아요",
+      "reply": "몇 달 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "14",
+      "plausible": [
+        "acne",
+        "chicken_pox",
+        "fungal_infection",
+        "impetigo",
+        "psoriasis"
+      ],
+      "round": 2,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 2227,
+          "turns": 1,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "high",
+          "top3": [
+            "acne:high",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 1832,
+          "turns": 1,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "high",
+          "top3": [
+            "acne:high",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2825,
+          "turns": 1,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "high",
+          "top3": [
+            "acne:high",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2292,
+          "turns": 1,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "high",
+          "top3": [
+            "acne:high",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2203,
+          "turns": 1,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "high",
+          "top3": [
+            "acne:high",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "unrelated in top3: hemorrhoids,migraine"
+      ]
+    },
+    {
+      "id": "knee-2",
+      "kind": "normal",
+      "text": "무릎이랑 고관절이 쑤시고 걸을 때 더 아파요",
+      "reply": "몇 달 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "05",
+      "plausible": [
+        "arthritis",
+        "cervical_spondylosis",
+        "osteoarthritis",
+        "varicose_veins"
+      ],
+      "round": 2,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 3020,
+          "turns": 1,
+          "emergency": false,
+          "top1": "osteoarthritis",
+          "top1_likelihood": "high",
+          "top3": [
+            "osteoarthritis:high",
+            "arthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2712,
+          "turns": 1,
+          "emergency": false,
+          "top1": "osteoarthritis",
+          "top1_likelihood": "high",
+          "top3": [
+            "osteoarthritis:high",
+            "arthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2847,
+          "turns": 1,
+          "emergency": false,
+          "top1": "osteoarthritis",
+          "top1_likelihood": "high",
+          "top3": [
+            "osteoarthritis:high",
+            "arthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 5831,
+          "turns": 1,
+          "emergency": false,
+          "top1": "osteoarthritis",
+          "top1_likelihood": "high",
+          "top3": [
+            "osteoarthritis:high",
+            "arthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2342,
+          "turns": 1,
+          "emergency": false,
+          "top1": "osteoarthritis",
+          "top1_likelihood": "high",
+          "top3": [
+            "osteoarthritis:high",
+            "arthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "unrelated in top3: migraine"
+      ]
+    },
+    {
+      "id": "uti-2",
+      "kind": "normal",
+      "text": "소변을 봐도 시원하지 않고 소변 냄새가 심하고 아랫배 방광 쪽이 불편해요",
+      "reply": "사흘 전부터 그랬고 열은 없어요",
+      "want_department": "15",
+      "plausible": [
+        "diabetes",
+        "drug_reaction",
+        "urinary_tract_infection"
+      ],
+      "round": 2,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 2112,
+          "turns": 1,
+          "emergency": false,
+          "top1": "urinary_tract_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "urinary_tract_infection:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "15",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2155,
+          "turns": 1,
+          "emergency": false,
+          "top1": "urinary_tract_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "urinary_tract_infection:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "15",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2148,
+          "turns": 1,
+          "emergency": false,
+          "top1": "urinary_tract_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "urinary_tract_infection:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "15",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3952,
+          "turns": 1,
+          "emergency": false,
+          "top1": "urinary_tract_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "urinary_tract_infection:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "15",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2008,
+          "turns": 1,
+          "emergency": false,
+          "top1": "urinary_tract_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "urinary_tract_infection:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "15",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "unrelated in top3: hyperthyroidism,migraine"
+      ]
+    },
+    {
+      "id": "psoriasis-2",
+      "kind": "normal",
+      "text": "팔꿈치 피부가 붉게 일어나고 하얀 각질이 벗겨지고 손발톱도 울퉁불퉁해졌어요",
+      "reply": "몇 달 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "14",
+      "plausible": [
+        "acne",
+        "allergy",
+        "drug_reaction",
+        "fungal_infection",
+        "impetigo",
+        "psoriasis"
+      ],
+      "round": 2,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 2255,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "medium",
+          "top3": [
+            "psoriasis:medium",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2549,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "high",
+          "top3": [
+            "psoriasis:high",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2094,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "medium",
+          "top3": [
+            "psoriasis:medium",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3162,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "medium",
+          "top3": [
+            "psoriasis:medium",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2439,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "high",
+          "top3": [
+            "psoriasis:high",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "top1 not high"
+      ]
+    },
+    {
+      "id": "fungal-2",
+      "kind": "normal",
+      "text": "몸에 가려운 발진이 오돌토돌 올라오고 피부에 얼룩덜룩한 반점이 생겼어요",
+      "reply": "일주일 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "14",
+      "plausible": [
+        "acne",
+        "allergy",
+        "chicken_pox",
+        "drug_reaction",
+        "fungal_infection",
+        "impetigo",
+        "psoriasis"
+      ],
+      "round": 2,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 2392,
+          "turns": 1,
+          "emergency": false,
+          "top1": "fungal_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "fungal_infection:high",
+            "drug_reaction:low",
+            "chicken_pox:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2048,
+          "turns": 1,
+          "emergency": false,
+          "top1": "fungal_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "fungal_infection:high",
+            "drug_reaction:low",
+            "chicken_pox:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2281,
+          "turns": 1,
+          "emergency": false,
+          "top1": "fungal_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "fungal_infection:high",
+            "drug_reaction:low",
+            "chicken_pox:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2220,
+          "turns": 1,
+          "emergency": false,
+          "top1": "fungal_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "fungal_infection:high",
+            "drug_reaction:low",
+            "chicken_pox:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2304,
+          "turns": 1,
+          "emergency": false,
+          "top1": "fungal_infection",
+          "top1_likelihood": "high",
+          "top3": [
+            "fungal_infection:high",
+            "drug_reaction:low",
+            "chicken_pox:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": true,
+      "reasons": []
+    },
+    {
+      "id": "impetigo-3",
+      "kind": "normal",
+      "text": "코 주변에 붉은 상처가 생기고 물집이 잡히더니 노란 딱지가 앉았어요",
+      "reply": "사흘 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "14",
+      "plausible": [
+        "acne",
+        "chicken_pox",
+        "drug_reaction",
+        "fungal_infection",
+        "impetigo",
+        "psoriasis"
+      ],
+      "round": 3,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 2307,
+          "turns": 1,
+          "emergency": false,
+          "top1": "impetigo",
+          "top1_likelihood": "high",
+          "top3": [
+            "impetigo:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4925,
+          "turns": 1,
+          "emergency": false,
+          "top1": "impetigo",
+          "top1_likelihood": "high",
+          "top3": [
+            "impetigo:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2179,
+          "turns": 1,
+          "emergency": false,
+          "top1": "impetigo",
+          "top1_likelihood": "high",
+          "top3": [
+            "impetigo:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3070,
+          "turns": 1,
+          "emergency": false,
+          "top1": "impetigo",
+          "top1_likelihood": "high",
+          "top3": [
+            "impetigo:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3871,
+          "turns": 1,
+          "emergency": false,
+          "top1": "impetigo",
+          "top1_likelihood": "high",
+          "top3": [
+            "impetigo:high",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "unrelated in top3: hyperthyroidism,migraine"
+      ]
+    },
+    {
+      "id": "diabetes-3",
+      "kind": "normal",
+      "text": "요즘 물을 많이 마시고 소변을 자주 보고 배가 자주 고픈데 살은 빠져요",
+      "reply": "몇 주 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "01",
+      "plausible": [
+        "diabetes",
+        "hyperthyroidism",
+        "hypoglycemia",
+        "hypothyroidism"
+      ],
+      "round": 3,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 5892,
+          "turns": 2,
+          "emergency": false,
+          "top1": "diabetes",
+          "top1_likelihood": "medium",
+          "top3": [
+            "diabetes:medium",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 8562,
+          "turns": 2,
+          "emergency": false,
+          "top1": "diabetes",
+          "top1_likelihood": "medium",
+          "top3": [
+            "diabetes:medium",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 7312,
+          "turns": 2,
+          "emergency": false,
+          "top1": "diabetes",
+          "top1_likelihood": "medium",
+          "top3": [
+            "diabetes:medium",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 9087,
+          "turns": 2,
+          "emergency": false,
+          "top1": "diabetes",
+          "top1_likelihood": "medium",
+          "top3": [
+            "diabetes:medium",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 8378,
+          "turns": 2,
+          "emergency": false,
+          "top1": "diabetes",
+          "top1_likelihood": "medium",
+          "top3": [
+            "diabetes:medium",
+            "migraine:low",
+            "hyperthyroidism:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "top1 not high",
+        "unrelated in top3: migraine"
+      ]
+    },
+    {
+      "id": "psoriasis-3",
+      "kind": "normal",
+      "text": "팔꿈치와 무릎 피부에 은백색 각질이 벗겨지고 붉은 발진이 있고 손톱이 움푹 패였어요",
+      "reply": "몇 달 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "14",
+      "plausible": [
+        "acne",
+        "allergy",
+        "drug_reaction",
+        "fungal_infection",
+        "impetigo",
+        "psoriasis"
+      ],
+      "round": 3,
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 2480,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "high",
+          "top3": [
+            "psoriasis:high",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4690,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "high",
+          "top3": [
+            "psoriasis:high",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3021,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "high",
+          "top3": [
+            "psoriasis:high",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2457,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "high",
+          "top3": [
+            "psoriasis:high",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2387,
+          "turns": 1,
+          "emergency": false,
+          "top1": "psoriasis",
+          "top1_likelihood": "high",
+          "top3": [
+            "psoriasis:high",
+            "acne:low",
+            "fungal_infection:low"
+          ],
+          "department": "14",
           "rare_note": false,
           "order_adjusted": false
         }
