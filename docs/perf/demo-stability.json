@@ -1,0 +1,750 @@
+{
+  "runs_per_candidate": 5,
+  "candidates": [
+    {
+      "id": "acne",
+      "kind": "normal",
+      "text": "얼굴에 여드름이 많이 나고 고름이 잡혀요",
+      "reply": "몇 주 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "14",
+      "plausible": [
+        "acne",
+        "allergy",
+        "chicken_pox",
+        "fungal_infection",
+        "impetigo",
+        "psoriasis"
+      ],
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 4757,
+          "turns": 2,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "medium",
+          "top3": [
+            "acne:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 11172,
+          "turns": 2,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "medium",
+          "top3": [
+            "acne:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4203,
+          "turns": 2,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "medium",
+          "top3": [
+            "acne:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3919,
+          "turns": 2,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "medium",
+          "top3": [
+            "acne:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4987,
+          "turns": 2,
+          "emergency": false,
+          "top1": "acne",
+          "top1_likelihood": "medium",
+          "top3": [
+            "acne:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "top1 not high",
+        "unrelated in top3: hemorrhoids,migraine"
+      ]
+    },
+    {
+      "id": "athletes-foot",
+      "kind": "normal",
+      "text": "발가락 사이가 너무 가렵고 피부가 하얗게 일어나요",
+      "reply": "일주일 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "14",
+      "plausible": [
+        "allergy",
+        "drug_reaction",
+        "fungal_infection",
+        "impetigo",
+        "psoriasis"
+      ],
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 4406,
+          "turns": 2,
+          "emergency": false,
+          "top1": "chronic_cholestasis",
+          "top1_likelihood": "low",
+          "top3": [
+            "chronic_cholestasis:low",
+            "drug_reaction:low",
+            "psoriasis:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4570,
+          "turns": 2,
+          "emergency": false,
+          "top1": "chronic_cholestasis",
+          "top1_likelihood": "low",
+          "top3": [
+            "chronic_cholestasis:low",
+            "drug_reaction:low",
+            "psoriasis:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4855,
+          "turns": 2,
+          "emergency": false,
+          "top1": "chronic_cholestasis",
+          "top1_likelihood": "low",
+          "top3": [
+            "chronic_cholestasis:low",
+            "drug_reaction:low",
+            "psoriasis:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4223,
+          "turns": 2,
+          "emergency": false,
+          "top1": "chronic_cholestasis",
+          "top1_likelihood": "low",
+          "top3": [
+            "chronic_cholestasis:low",
+            "drug_reaction:low",
+            "psoriasis:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4843,
+          "turns": 2,
+          "emergency": false,
+          "top1": "chronic_cholestasis",
+          "top1_likelihood": "low",
+          "top3": [
+            "chronic_cholestasis:low",
+            "drug_reaction:low",
+            "psoriasis:low"
+          ],
+          "department": "14",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "top1 not high",
+        "unrelated in top3: chronic_cholestasis"
+      ]
+    },
+    {
+      "id": "reflux",
+      "kind": "normal",
+      "text": "밥 먹고 나면 속이 쓰리고 신물이 목까지 올라와요",
+      "reply": "몇 주 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "01",
+      "plausible": [
+        "chronic_cholestasis",
+        "gastroenteritis",
+        "gerd",
+        "peptic_ulcer"
+      ],
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 4610,
+          "turns": 2,
+          "emergency": false,
+          "top1": "gerd",
+          "top1_likelihood": "medium",
+          "top3": [
+            "gerd:medium",
+            "migraine:medium",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3900,
+          "turns": 2,
+          "emergency": false,
+          "top1": "gerd",
+          "top1_likelihood": "medium",
+          "top3": [
+            "gerd:medium",
+            "migraine:medium",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 5788,
+          "turns": 2,
+          "emergency": false,
+          "top1": "gerd",
+          "top1_likelihood": "medium",
+          "top3": [
+            "gerd:medium",
+            "migraine:medium",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3835,
+          "turns": 2,
+          "emergency": false,
+          "top1": "gerd",
+          "top1_likelihood": "medium",
+          "top3": [
+            "gerd:medium",
+            "migraine:medium",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4112,
+          "turns": 2,
+          "emergency": false,
+          "top1": "gerd",
+          "top1_likelihood": "medium",
+          "top3": [
+            "gerd:medium",
+            "migraine:medium",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "top1 not high",
+        "unrelated in top3: hemorrhoids,migraine"
+      ]
+    },
+    {
+      "id": "neck",
+      "kind": "normal",
+      "text": "목 뒤가 뻐근하고 어깨까지 결리고 고개를 돌리기 힘들어요",
+      "reply": "몇 주 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "05",
+      "plausible": [
+        "arthritis",
+        "cervical_spondylosis",
+        "migraine",
+        "osteoarthritis"
+      ],
+      "runs": [
+        {
+          "ok": false,
+          "error": "no_result",
+          "turns": 4
+        },
+        {
+          "ok": false,
+          "error": "no_result",
+          "turns": 4
+        },
+        {
+          "ok": false,
+          "error": "no_result",
+          "turns": 4
+        },
+        {
+          "ok": false,
+          "error": "no_result",
+          "turns": 4
+        },
+        {
+          "ok": false,
+          "error": "no_result",
+          "turns": 4
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "failed runs 5"
+      ]
+    },
+    {
+      "id": "cold",
+      "kind": "normal",
+      "text": "콧물이 계속 나고 재채기가 나고 목이 칼칼해요",
+      "reply": "이틀 전부터 그랬고 열은 없어요",
+      "want_department": "01",
+      "plausible": [
+        "allergy",
+        "bronchial_asthma",
+        "common_cold",
+        "pneumonia"
+      ],
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 3281,
+          "turns": 1,
+          "emergency": false,
+          "top1": "common_cold",
+          "top1_likelihood": "high",
+          "top3": [
+            "common_cold:high",
+            "allergy:low",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2776,
+          "turns": 1,
+          "emergency": false,
+          "top1": "common_cold",
+          "top1_likelihood": "high",
+          "top3": [
+            "common_cold:high",
+            "allergy:low",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 1983,
+          "turns": 1,
+          "emergency": false,
+          "top1": "common_cold",
+          "top1_likelihood": "high",
+          "top3": [
+            "common_cold:high",
+            "allergy:low",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2274,
+          "turns": 1,
+          "emergency": false,
+          "top1": "common_cold",
+          "top1_likelihood": "high",
+          "top3": [
+            "common_cold:high",
+            "allergy:low",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2738,
+          "turns": 1,
+          "emergency": false,
+          "top1": "common_cold",
+          "top1_likelihood": "high",
+          "top3": [
+            "common_cold:high",
+            "allergy:low",
+            "hemorrhoids:low"
+          ],
+          "department": "01",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "unrelated in top3: hemorrhoids"
+      ]
+    },
+    {
+      "id": "vertigo",
+      "kind": "normal",
+      "text": "누웠다 일어나거나 고개를 돌리면 빙글빙글 어지러워요",
+      "reply": "사흘 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "13",
+      "plausible": [
+        "bppv",
+        "hypertension",
+        "hypoglycemia",
+        "migraine"
+      ],
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 6539,
+          "turns": 2,
+          "emergency": false,
+          "top1": "bppv",
+          "top1_likelihood": "medium",
+          "top3": [
+            "bppv:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "13",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 5000,
+          "turns": 2,
+          "emergency": false,
+          "top1": "bppv",
+          "top1_likelihood": "medium",
+          "top3": [
+            "bppv:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "13",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4323,
+          "turns": 2,
+          "emergency": false,
+          "top1": "bppv",
+          "top1_likelihood": "medium",
+          "top3": [
+            "bppv:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "13",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 6038,
+          "turns": 2,
+          "emergency": false,
+          "top1": "bppv",
+          "top1_likelihood": "medium",
+          "top3": [
+            "bppv:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "13",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 5051,
+          "turns": 2,
+          "emergency": false,
+          "top1": "bppv",
+          "top1_likelihood": "medium",
+          "top3": [
+            "bppv:medium",
+            "migraine:low",
+            "hemorrhoids:low"
+          ],
+          "department": "13",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "top1 not high",
+        "unrelated in top3: hemorrhoids"
+      ]
+    },
+    {
+      "id": "knee",
+      "kind": "normal",
+      "text": "무릎이 붓고 걸을 때 아파요",
+      "reply": "몇 주 전부터 그랬고 다른 증상은 없어요",
+      "want_department": "05",
+      "plausible": [
+        "arthritis",
+        "cervical_spondylosis",
+        "osteoarthritis",
+        "varicose_veins"
+      ],
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 4439,
+          "turns": 2,
+          "emergency": false,
+          "top1": "osteoarthritis",
+          "top1_likelihood": "high",
+          "top3": [
+            "osteoarthritis:high",
+            "arthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3917,
+          "turns": 2,
+          "emergency": false,
+          "top1": "arthritis",
+          "top1_likelihood": "low",
+          "top3": [
+            "arthritis:low",
+            "osteoarthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 3840,
+          "turns": 2,
+          "emergency": false,
+          "top1": "arthritis",
+          "top1_likelihood": "low",
+          "top3": [
+            "arthritis:low",
+            "osteoarthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 4765,
+          "turns": 2,
+          "emergency": false,
+          "top1": "arthritis",
+          "top1_likelihood": "low",
+          "top3": [
+            "arthritis:low",
+            "osteoarthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 6987,
+          "turns": 2,
+          "emergency": false,
+          "top1": "arthritis",
+          "top1_likelihood": "low",
+          "top3": [
+            "arthritis:low",
+            "osteoarthritis:low",
+            "migraine:low"
+          ],
+          "department": "05",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": false,
+      "reasons": [
+        "top1 differs",
+        "top1 not high",
+        "unrelated in top3: migraine"
+      ]
+    },
+    {
+      "id": "chest",
+      "kind": "emergency",
+      "text": "갑자기 가슴이 아프고 식은땀이 나요",
+      "reply": "방금 전부터 그래요",
+      "want_department": "24",
+      "plausible": [
+        "bronchial_asthma",
+        "gerd",
+        "heart_attack",
+        "hypertension",
+        "pneumonia"
+      ],
+      "runs": [
+        {
+          "ok": true,
+          "total_ms": 2177,
+          "turns": 1,
+          "emergency": true,
+          "top1": "heart_attack",
+          "top1_likelihood": "high",
+          "top3": [
+            "heart_attack:high",
+            "pneumonia:low",
+            "hypertension:low"
+          ],
+          "department": "24",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 1896,
+          "turns": 1,
+          "emergency": true,
+          "top1": "heart_attack",
+          "top1_likelihood": "high",
+          "top3": [
+            "heart_attack:high",
+            "pneumonia:low",
+            "hypertension:low"
+          ],
+          "department": "24",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2202,
+          "turns": 1,
+          "emergency": true,
+          "top1": "heart_attack",
+          "top1_likelihood": "high",
+          "top3": [
+            "heart_attack:high",
+            "pneumonia:low",
+            "hypertension:low"
+          ],
+          "department": "24",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 1945,
+          "turns": 1,
+          "emergency": true,
+          "top1": "heart_attack",
+          "top1_likelihood": "high",
+          "top3": [
+            "heart_attack:high",
+            "pneumonia:low",
+            "hypertension:low"
+          ],
+          "department": "24",
+          "rare_note": false,
+          "order_adjusted": false
+        },
+        {
+          "ok": true,
+          "total_ms": 2793,
+          "turns": 1,
+          "emergency": true,
+          "top1": "heart_attack",
+          "top1_likelihood": "high",
+          "top3": [
+            "heart_attack:high",
+            "pneumonia:low",
+            "hypertension:low"
+          ],
+          "department": "24",
+          "rare_note": false,
+          "order_adjusted": false
+        }
+      ],
+      "stable": true,
+      "reasons": []
+    }
+  ]
+}
